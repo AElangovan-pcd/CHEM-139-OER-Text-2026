@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- (c) 2026 CHEM 139 OER. CC BY 4.0. Original figure built from public IUPAC/NIST data. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1242 1002.0" width="1242" height="1002.0" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Figure 5.1 — Periodic table annotated with blocks and categories</title>
+  <desc id="d">An eighteen-column periodic table with the f-block placed in a two-row inset below. Each cell shows atomic number, atomic symbol, element name, and IUPAC 2021 atomic mass. Cells are filled by element category (alkali metal, alkaline earth, transition metal, post-transition metal, metalloid, nonmetal, halogen, noble gas, lanthanide, actinide). Cell outline color and style encodes the s, p, d, or f block.</desc>
+  <style>
+    .figtitle { font-size:22px; font-weight:700; fill:#0E2D52; }
+    .figsub   { font-size:13px; fill:#444; }
+    .hdr   { font-size:13px; font-weight:700; fill:#1B1B1B; }
+    .z     { font-size:10.5px; fill:#1B1B1B; }
+    .mass  { font-size:9.5px; fill:#1B1B1B; }
+    .sym   { font-size:18px; font-weight:700; fill:#1B1B1B; }
+    .name  { font-size:7.5px; fill:#1B1B1B; }
+    .marker { font-size:13px; font-weight:700; fill:#777; }
+    .markersub { font-size:9px; fill:#777; font-style:italic; }
+    .bblock { font-size:11px; font-weight:700; }
+    .leghdr { font-size:12px; font-weight:700; fill:#0E2D52; }
+    .legtxt { font-size:11px; fill:#1B1B1B; }
+    .foot   { font-size:10px; fill:#444; font-style:italic; }
+  </style>
+  <text class="figtitle" x="60" y="42">Periodic Table of the Elements</text><text class="figsub"   x="60" y="68">Annotated with block (s, p, d, f) and category. CHEM 139 OER, 2026 ed. CC BY 4.0.</text>
+  <text class="hdr" x="90.0" y="98" text-anchor="middle">1</text><text class="hdr" x="154.0" y="98" text-anchor="middle">2</text><text class="hdr" x="218.0" y="98" text-anchor="middle">3</text><text class="hdr" x="282.0" y="98" text-anchor="middle">4</text><text class="hdr" x="346.0" y="98" text-anchor="middle">5</text><text class="hdr" x="410.0" y="98" text-anchor="middle">6</text><text class="hdr" x="474.0" y="98" text-anchor="middle">7</text><text class="hdr" x="538.0" y="98" text-anchor="middle">8</text><text class="hdr" x="602.0" y="98" text-anchor="middle">9</text><text class="hdr" x="666.0" y="98" text-anchor="middle">10</text><text class="hdr" x="730.0" y="98" text-anchor="middle">11</text><text class="hdr" x="794.0" y="98" text-anchor="middle">12</text><text class="hdr" x="858.0" y="98" text-anchor="middle">13</text><text class="hdr" x="922.0" y="98" text-anchor="middle">14</text><text class="hdr" x="986.0" y="98" text-anchor="middle">15</text><text class="hdr" x="1050.0" y="98" text-anchor="middle">16</text><text class="hdr" x="1114.0" y="98" text-anchor="middle">17</text><text class="hdr" x="1178.0" y="98" text-anchor="middle">18</text>
+  <text class="hdr" x="46" y="146.0" text-anchor="end">1</text><text class="hdr" x="46" y="214.0" text-anchor="end">2</text><text class="hdr" x="46" y="282.0" text-anchor="end">3</text><text class="hdr" x="46" y="350.0" text-anchor="end">4</text><text class="hdr" x="46" y="418.0" text-anchor="end">5</text><text class="hdr" x="46" y="486.0" text-anchor="end">6</text><text class="hdr" x="46" y="554.0" text-anchor="end">7</text>
+  <line x1="60" y1="80" x2="184" y2="80" stroke="#1F4F8B" stroke-width="2"/><text class="bblock" x="122.0" y="76" text-anchor="middle" fill="#1F4F8B">s-block</text><line x1="828" y1="80" x2="1208" y2="80" stroke="#0E6B36" stroke-width="2"/><text class="bblock" x="1018.0" y="76" text-anchor="middle" fill="#0E6B36">p-block</text><line x1="188" y1="80" x2="824" y2="80" stroke="#7A2A0A" stroke-width="2"/><text class="bblock" x="506.0" y="76" text-anchor="middle" fill="#7A2A0A">d-block</text><line x1="188" y1="666.0" x2="1144" y2="666.0" stroke="#5B2A8B" stroke-width="2" stroke-dasharray="3 2"/><text class="bblock" x="666.0" y="662.0" text-anchor="middle" fill="#5B2A8B">f-block</text>
+  <g><rect x="188" y="450" width="60" height="64" fill="#FAFAFA" stroke="#999" stroke-width="1.2" stroke-dasharray="3 3"/><text class="marker" x="218.0" y="484" text-anchor="middle">57–71</text><text class="markersub" x="218.0" y="500" text-anchor="middle">see below</text></g><g><rect x="188" y="518" width="60" height="64" fill="#FAFAFA" stroke="#999" stroke-width="1.2" stroke-dasharray="3 3"/><text class="marker" x="218.0" y="552" text-anchor="middle">89–103</text><text class="markersub" x="218.0" y="568" text-anchor="middle">see below</text></g>
+  <text class="markersub" x="178" y="725.0" text-anchor="end">57&#8211;71 (lanthanides)</text><text class="markersub" x="178" y="793.0" text-anchor="end">89&#8211;103 (actinides)</text>
+  <g class="el">
+    <rect x="60" y="110" width="60" height="64" fill="#C5D8EC" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="123">1</text>
+    <text class="mass" x="115"     y="123" text-anchor="end">1.008</text>
+    <text class="sym"  x="90.0"     y="148" text-anchor="middle">H</text>
+    <text class="name" x="90.0"     y="165" text-anchor="middle">Hydrogen</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="110" width="60" height="64" fill="#D6C7E8" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="123">2</text>
+    <text class="mass" x="1203"     y="123" text-anchor="end">4.003</text>
+    <text class="sym"  x="1178.0"     y="148" text-anchor="middle">He</text>
+    <text class="name" x="1178.0"     y="165" text-anchor="middle">Helium</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="178" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="191">3</text>
+    <text class="mass" x="115"     y="191" text-anchor="end">6.94</text>
+    <text class="sym"  x="90.0"     y="216" text-anchor="middle">Li</text>
+    <text class="name" x="90.0"     y="233" text-anchor="middle">Lithium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="178" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="191">4</text>
+    <text class="mass" x="179"     y="191" text-anchor="end">9.012</text>
+    <text class="sym"  x="154.0"     y="216" text-anchor="middle">Be</text>
+    <text class="name" x="154.0"     y="233" text-anchor="middle">Beryllium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="178" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="191">5</text>
+    <text class="mass" x="883"     y="191" text-anchor="end">10.81</text>
+    <text class="sym"  x="858.0"     y="216" text-anchor="middle">B</text>
+    <text class="name" x="858.0"     y="233" text-anchor="middle">Boron</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="178" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="191">6</text>
+    <text class="mass" x="947"     y="191" text-anchor="end">12.01</text>
+    <text class="sym"  x="922.0"     y="216" text-anchor="middle">C</text>
+    <text class="name" x="922.0"     y="233" text-anchor="middle">Carbon</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="178" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="191">7</text>
+    <text class="mass" x="1011"     y="191" text-anchor="end">14.01</text>
+    <text class="sym"  x="986.0"     y="216" text-anchor="middle">N</text>
+    <text class="name" x="986.0"     y="233" text-anchor="middle">Nitrogen</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="178" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="191">8</text>
+    <text class="mass" x="1075"     y="191" text-anchor="end">16.00</text>
+    <text class="sym"  x="1050.0"     y="216" text-anchor="middle">O</text>
+    <text class="name" x="1050.0"     y="233" text-anchor="middle">Oxygen</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="178" width="60" height="64" fill="#A9C8E9" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="191">9</text>
+    <text class="mass" x="1139"     y="191" text-anchor="end">19.00</text>
+    <text class="sym"  x="1114.0"     y="216" text-anchor="middle">F</text>
+    <text class="name" x="1114.0"     y="233" text-anchor="middle">Fluorine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="178" width="60" height="64" fill="#D6C7E8" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="191">10</text>
+    <text class="mass" x="1203"     y="191" text-anchor="end">20.18</text>
+    <text class="sym"  x="1178.0"     y="216" text-anchor="middle">Ne</text>
+    <text class="name" x="1178.0"     y="233" text-anchor="middle">Neon</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="246" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="259">11</text>
+    <text class="mass" x="115"     y="259" text-anchor="end">22.99</text>
+    <text class="sym"  x="90.0"     y="284" text-anchor="middle">Na</text>
+    <text class="name" x="90.0"     y="301" text-anchor="middle">Sodium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="246" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="259">12</text>
+    <text class="mass" x="179"     y="259" text-anchor="end">24.31</text>
+    <text class="sym"  x="154.0"     y="284" text-anchor="middle">Mg</text>
+    <text class="name" x="154.0"     y="301" text-anchor="middle">Magnesium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="246" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="259">13</text>
+    <text class="mass" x="883"     y="259" text-anchor="end">26.98</text>
+    <text class="sym"  x="858.0"     y="284" text-anchor="middle">Al</text>
+    <text class="name" x="858.0"     y="301" text-anchor="middle">Aluminum</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="246" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="259">14</text>
+    <text class="mass" x="947"     y="259" text-anchor="end">28.09</text>
+    <text class="sym"  x="922.0"     y="284" text-anchor="middle">Si</text>
+    <text class="name" x="922.0"     y="301" text-anchor="middle">Silicon</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="246" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="259">15</text>
+    <text class="mass" x="1011"     y="259" text-anchor="end">30.97</text>
+    <text class="sym"  x="986.0"     y="284" text-anchor="middle">P</text>
+    <text class="name" x="986.0"     y="301" text-anchor="middle">Phosphorus</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="246" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="259">16</text>
+    <text class="mass" x="1075"     y="259" text-anchor="end">32.06</text>
+    <text class="sym"  x="1050.0"     y="284" text-anchor="middle">S</text>
+    <text class="name" x="1050.0"     y="301" text-anchor="middle">Sulfur</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="246" width="60" height="64" fill="#A9C8E9" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="259">17</text>
+    <text class="mass" x="1139"     y="259" text-anchor="end">35.45</text>
+    <text class="sym"  x="1114.0"     y="284" text-anchor="middle">Cl</text>
+    <text class="name" x="1114.0"     y="301" text-anchor="middle">Chlorine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="246" width="60" height="64" fill="#D6C7E8" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="259">18</text>
+    <text class="mass" x="1203"     y="259" text-anchor="end">39.95</text>
+    <text class="sym"  x="1178.0"     y="284" text-anchor="middle">Ar</text>
+    <text class="name" x="1178.0"     y="301" text-anchor="middle">Argon</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="314" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="327">19</text>
+    <text class="mass" x="115"     y="327" text-anchor="end">39.10</text>
+    <text class="sym"  x="90.0"     y="352" text-anchor="middle">K</text>
+    <text class="name" x="90.0"     y="369" text-anchor="middle">Potassium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="314" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="327">20</text>
+    <text class="mass" x="179"     y="327" text-anchor="end">40.08</text>
+    <text class="sym"  x="154.0"     y="352" text-anchor="middle">Ca</text>
+    <text class="name" x="154.0"     y="369" text-anchor="middle">Calcium</text>
+  </g>
+  <g class="el">
+    <rect x="188" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="193"            y="327">21</text>
+    <text class="mass" x="243"     y="327" text-anchor="end">44.96</text>
+    <text class="sym"  x="218.0"     y="352" text-anchor="middle">Sc</text>
+    <text class="name" x="218.0"     y="369" text-anchor="middle">Scandium</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="257"            y="327">22</text>
+    <text class="mass" x="307"     y="327" text-anchor="end">47.87</text>
+    <text class="sym"  x="282.0"     y="352" text-anchor="middle">Ti</text>
+    <text class="name" x="282.0"     y="369" text-anchor="middle">Titanium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="321"            y="327">23</text>
+    <text class="mass" x="371"     y="327" text-anchor="end">50.94</text>
+    <text class="sym"  x="346.0"     y="352" text-anchor="middle">V</text>
+    <text class="name" x="346.0"     y="369" text-anchor="middle">Vanadium</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="385"            y="327">24</text>
+    <text class="mass" x="435"     y="327" text-anchor="end">52.00</text>
+    <text class="sym"  x="410.0"     y="352" text-anchor="middle">Cr</text>
+    <text class="name" x="410.0"     y="369" text-anchor="middle">Chromium</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="449"            y="327">25</text>
+    <text class="mass" x="499"     y="327" text-anchor="end">54.94</text>
+    <text class="sym"  x="474.0"     y="352" text-anchor="middle">Mn</text>
+    <text class="name" x="474.0"     y="369" text-anchor="middle">Manganese</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="513"            y="327">26</text>
+    <text class="mass" x="563"     y="327" text-anchor="end">55.85</text>
+    <text class="sym"  x="538.0"     y="352" text-anchor="middle">Fe</text>
+    <text class="name" x="538.0"     y="369" text-anchor="middle">Iron</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="577"            y="327">27</text>
+    <text class="mass" x="627"     y="327" text-anchor="end">58.93</text>
+    <text class="sym"  x="602.0"     y="352" text-anchor="middle">Co</text>
+    <text class="name" x="602.0"     y="369" text-anchor="middle">Cobalt</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="641"            y="327">28</text>
+    <text class="mass" x="691"     y="327" text-anchor="end">58.69</text>
+    <text class="sym"  x="666.0"     y="352" text-anchor="middle">Ni</text>
+    <text class="name" x="666.0"     y="369" text-anchor="middle">Nickel</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="705"            y="327">29</text>
+    <text class="mass" x="755"     y="327" text-anchor="end">63.55</text>
+    <text class="sym"  x="730.0"     y="352" text-anchor="middle">Cu</text>
+    <text class="name" x="730.0"     y="369" text-anchor="middle">Copper</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="314" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="769"            y="327">30</text>
+    <text class="mass" x="819"     y="327" text-anchor="end">65.38</text>
+    <text class="sym"  x="794.0"     y="352" text-anchor="middle">Zn</text>
+    <text class="name" x="794.0"     y="369" text-anchor="middle">Zinc</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="314" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="327">31</text>
+    <text class="mass" x="883"     y="327" text-anchor="end">69.72</text>
+    <text class="sym"  x="858.0"     y="352" text-anchor="middle">Ga</text>
+    <text class="name" x="858.0"     y="369" text-anchor="middle">Gallium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="314" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="327">32</text>
+    <text class="mass" x="947"     y="327" text-anchor="end">72.63</text>
+    <text class="sym"  x="922.0"     y="352" text-anchor="middle">Ge</text>
+    <text class="name" x="922.0"     y="369" text-anchor="middle">Germanium</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="314" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="327">33</text>
+    <text class="mass" x="1011"     y="327" text-anchor="end">74.92</text>
+    <text class="sym"  x="986.0"     y="352" text-anchor="middle">As</text>
+    <text class="name" x="986.0"     y="369" text-anchor="middle">Arsenic</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="314" width="60" height="64" fill="#C5D8EC" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="327">34</text>
+    <text class="mass" x="1075"     y="327" text-anchor="end">78.97</text>
+    <text class="sym"  x="1050.0"     y="352" text-anchor="middle">Se</text>
+    <text class="name" x="1050.0"     y="369" text-anchor="middle">Selenium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="314" width="60" height="64" fill="#A9C8E9" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="327">35</text>
+    <text class="mass" x="1139"     y="327" text-anchor="end">79.90</text>
+    <text class="sym"  x="1114.0"     y="352" text-anchor="middle">Br</text>
+    <text class="name" x="1114.0"     y="369" text-anchor="middle">Bromine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="314" width="60" height="64" fill="#D6C7E8" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="327">36</text>
+    <text class="mass" x="1203"     y="327" text-anchor="end">83.80</text>
+    <text class="sym"  x="1178.0"     y="352" text-anchor="middle">Kr</text>
+    <text class="name" x="1178.0"     y="369" text-anchor="middle">Krypton</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="382" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="395">37</text>
+    <text class="mass" x="115"     y="395" text-anchor="end">85.47</text>
+    <text class="sym"  x="90.0"     y="420" text-anchor="middle">Rb</text>
+    <text class="name" x="90.0"     y="437" text-anchor="middle">Rubidium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="382" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="395">38</text>
+    <text class="mass" x="179"     y="395" text-anchor="end">87.62</text>
+    <text class="sym"  x="154.0"     y="420" text-anchor="middle">Sr</text>
+    <text class="name" x="154.0"     y="437" text-anchor="middle">Strontium</text>
+  </g>
+  <g class="el">
+    <rect x="188" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="193"            y="395">39</text>
+    <text class="mass" x="243"     y="395" text-anchor="end">88.91</text>
+    <text class="sym"  x="218.0"     y="420" text-anchor="middle">Y</text>
+    <text class="name" x="218.0"     y="437" text-anchor="middle">Yttrium</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="257"            y="395">40</text>
+    <text class="mass" x="307"     y="395" text-anchor="end">91.22</text>
+    <text class="sym"  x="282.0"     y="420" text-anchor="middle">Zr</text>
+    <text class="name" x="282.0"     y="437" text-anchor="middle">Zirconium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="321"            y="395">41</text>
+    <text class="mass" x="371"     y="395" text-anchor="end">92.91</text>
+    <text class="sym"  x="346.0"     y="420" text-anchor="middle">Nb</text>
+    <text class="name" x="346.0"     y="437" text-anchor="middle">Niobium</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="385"            y="395">42</text>
+    <text class="mass" x="435"     y="395" text-anchor="end">95.95</text>
+    <text class="sym"  x="410.0"     y="420" text-anchor="middle">Mo</text>
+    <text class="name" x="410.0"     y="437" text-anchor="middle">Molybdenum</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="449"            y="395">43</text>
+    <text class="mass" x="499"     y="395" text-anchor="end">[98]</text>
+    <text class="sym"  x="474.0"     y="420" text-anchor="middle">Tc</text>
+    <text class="name" x="474.0"     y="437" text-anchor="middle">Technetium</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="513"            y="395">44</text>
+    <text class="mass" x="563"     y="395" text-anchor="end">101.1</text>
+    <text class="sym"  x="538.0"     y="420" text-anchor="middle">Ru</text>
+    <text class="name" x="538.0"     y="437" text-anchor="middle">Ruthenium</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="577"            y="395">45</text>
+    <text class="mass" x="627"     y="395" text-anchor="end">102.9</text>
+    <text class="sym"  x="602.0"     y="420" text-anchor="middle">Rh</text>
+    <text class="name" x="602.0"     y="437" text-anchor="middle">Rhodium</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="641"            y="395">46</text>
+    <text class="mass" x="691"     y="395" text-anchor="end">106.4</text>
+    <text class="sym"  x="666.0"     y="420" text-anchor="middle">Pd</text>
+    <text class="name" x="666.0"     y="437" text-anchor="middle">Palladium</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="705"            y="395">47</text>
+    <text class="mass" x="755"     y="395" text-anchor="end">107.9</text>
+    <text class="sym"  x="730.0"     y="420" text-anchor="middle">Ag</text>
+    <text class="name" x="730.0"     y="437" text-anchor="middle">Silver</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="382" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="769"            y="395">48</text>
+    <text class="mass" x="819"     y="395" text-anchor="end">112.4</text>
+    <text class="sym"  x="794.0"     y="420" text-anchor="middle">Cd</text>
+    <text class="name" x="794.0"     y="437" text-anchor="middle">Cadmium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="382" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="395">49</text>
+    <text class="mass" x="883"     y="395" text-anchor="end">114.8</text>
+    <text class="sym"  x="858.0"     y="420" text-anchor="middle">In</text>
+    <text class="name" x="858.0"     y="437" text-anchor="middle">Indium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="382" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="395">50</text>
+    <text class="mass" x="947"     y="395" text-anchor="end">118.7</text>
+    <text class="sym"  x="922.0"     y="420" text-anchor="middle">Sn</text>
+    <text class="name" x="922.0"     y="437" text-anchor="middle">Tin</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="382" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="395">51</text>
+    <text class="mass" x="1011"     y="395" text-anchor="end">121.8</text>
+    <text class="sym"  x="986.0"     y="420" text-anchor="middle">Sb</text>
+    <text class="name" x="986.0"     y="437" text-anchor="middle">Antimony</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="382" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="395">52</text>
+    <text class="mass" x="1075"     y="395" text-anchor="end">127.6</text>
+    <text class="sym"  x="1050.0"     y="420" text-anchor="middle">Te</text>
+    <text class="name" x="1050.0"     y="437" text-anchor="middle">Tellurium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="382" width="60" height="64" fill="#A9C8E9" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="395">53</text>
+    <text class="mass" x="1139"     y="395" text-anchor="end">126.9</text>
+    <text class="sym"  x="1114.0"     y="420" text-anchor="middle">I</text>
+    <text class="name" x="1114.0"     y="437" text-anchor="middle">Iodine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="382" width="60" height="64" fill="#D6C7E8" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="395">54</text>
+    <text class="mass" x="1203"     y="395" text-anchor="end">131.3</text>
+    <text class="sym"  x="1178.0"     y="420" text-anchor="middle">Xe</text>
+    <text class="name" x="1178.0"     y="437" text-anchor="middle">Xenon</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="450" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="463">55</text>
+    <text class="mass" x="115"     y="463" text-anchor="end">132.9</text>
+    <text class="sym"  x="90.0"     y="488" text-anchor="middle">Cs</text>
+    <text class="name" x="90.0"     y="505" text-anchor="middle">Cesium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="450" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="463">56</text>
+    <text class="mass" x="179"     y="463" text-anchor="end">137.3</text>
+    <text class="sym"  x="154.0"     y="488" text-anchor="middle">Ba</text>
+    <text class="name" x="154.0"     y="505" text-anchor="middle">Barium</text>
+  </g>
+  <g class="el">
+    <rect x="188" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="193"            y="701.0">57</text>
+    <text class="mass" x="243"     y="701.0" text-anchor="end">138.9</text>
+    <text class="sym"  x="218.0"     y="726.0" text-anchor="middle">La</text>
+    <text class="name" x="218.0"     y="743.0" text-anchor="middle">Lanthanum</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="257"            y="701.0">58</text>
+    <text class="mass" x="307"     y="701.0" text-anchor="end">140.1</text>
+    <text class="sym"  x="282.0"     y="726.0" text-anchor="middle">Ce</text>
+    <text class="name" x="282.0"     y="743.0" text-anchor="middle">Cerium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="321"            y="701.0">59</text>
+    <text class="mass" x="371"     y="701.0" text-anchor="end">140.9</text>
+    <text class="sym"  x="346.0"     y="726.0" text-anchor="middle">Pr</text>
+    <text class="name" x="346.0"     y="743.0" text-anchor="middle">Praseodymium</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="385"            y="701.0">60</text>
+    <text class="mass" x="435"     y="701.0" text-anchor="end">144.2</text>
+    <text class="sym"  x="410.0"     y="726.0" text-anchor="middle">Nd</text>
+    <text class="name" x="410.0"     y="743.0" text-anchor="middle">Neodymium</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="449"            y="701.0">61</text>
+    <text class="mass" x="499"     y="701.0" text-anchor="end">[145]</text>
+    <text class="sym"  x="474.0"     y="726.0" text-anchor="middle">Pm</text>
+    <text class="name" x="474.0"     y="743.0" text-anchor="middle">Promethium</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="513"            y="701.0">62</text>
+    <text class="mass" x="563"     y="701.0" text-anchor="end">150.4</text>
+    <text class="sym"  x="538.0"     y="726.0" text-anchor="middle">Sm</text>
+    <text class="name" x="538.0"     y="743.0" text-anchor="middle">Samarium</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="577"            y="701.0">63</text>
+    <text class="mass" x="627"     y="701.0" text-anchor="end">152.0</text>
+    <text class="sym"  x="602.0"     y="726.0" text-anchor="middle">Eu</text>
+    <text class="name" x="602.0"     y="743.0" text-anchor="middle">Europium</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="641"            y="701.0">64</text>
+    <text class="mass" x="691"     y="701.0" text-anchor="end">157.3</text>
+    <text class="sym"  x="666.0"     y="726.0" text-anchor="middle">Gd</text>
+    <text class="name" x="666.0"     y="743.0" text-anchor="middle">Gadolinium</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="705"            y="701.0">65</text>
+    <text class="mass" x="755"     y="701.0" text-anchor="end">158.9</text>
+    <text class="sym"  x="730.0"     y="726.0" text-anchor="middle">Tb</text>
+    <text class="name" x="730.0"     y="743.0" text-anchor="middle">Terbium</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="769"            y="701.0">66</text>
+    <text class="mass" x="819"     y="701.0" text-anchor="end">162.5</text>
+    <text class="sym"  x="794.0"     y="726.0" text-anchor="middle">Dy</text>
+    <text class="name" x="794.0"     y="743.0" text-anchor="middle">Dysprosium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="833"            y="701.0">67</text>
+    <text class="mass" x="883"     y="701.0" text-anchor="end">164.9</text>
+    <text class="sym"  x="858.0"     y="726.0" text-anchor="middle">Ho</text>
+    <text class="name" x="858.0"     y="743.0" text-anchor="middle">Holmium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="897"            y="701.0">68</text>
+    <text class="mass" x="947"     y="701.0" text-anchor="end">167.3</text>
+    <text class="sym"  x="922.0"     y="726.0" text-anchor="middle">Er</text>
+    <text class="name" x="922.0"     y="743.0" text-anchor="middle">Erbium</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="961"            y="701.0">69</text>
+    <text class="mass" x="1011"     y="701.0" text-anchor="end">168.9</text>
+    <text class="sym"  x="986.0"     y="726.0" text-anchor="middle">Tm</text>
+    <text class="name" x="986.0"     y="743.0" text-anchor="middle">Thulium</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="1025"            y="701.0">70</text>
+    <text class="mass" x="1075"     y="701.0" text-anchor="end">173.0</text>
+    <text class="sym"  x="1050.0"     y="726.0" text-anchor="middle">Yb</text>
+    <text class="name" x="1050.0"     y="743.0" text-anchor="middle">Ytterbium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="688.0" width="60" height="64" fill="#F0CFE8" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="1089"            y="701.0">71</text>
+    <text class="mass" x="1139"     y="701.0" text-anchor="end">175.0</text>
+    <text class="sym"  x="1114.0"     y="726.0" text-anchor="middle">Lu</text>
+    <text class="name" x="1114.0"     y="743.0" text-anchor="middle">Lutetium</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="257"            y="463">72</text>
+    <text class="mass" x="307"     y="463" text-anchor="end">178.5</text>
+    <text class="sym"  x="282.0"     y="488" text-anchor="middle">Hf</text>
+    <text class="name" x="282.0"     y="505" text-anchor="middle">Hafnium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="321"            y="463">73</text>
+    <text class="mass" x="371"     y="463" text-anchor="end">180.9</text>
+    <text class="sym"  x="346.0"     y="488" text-anchor="middle">Ta</text>
+    <text class="name" x="346.0"     y="505" text-anchor="middle">Tantalum</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="385"            y="463">74</text>
+    <text class="mass" x="435"     y="463" text-anchor="end">183.8</text>
+    <text class="sym"  x="410.0"     y="488" text-anchor="middle">W</text>
+    <text class="name" x="410.0"     y="505" text-anchor="middle">Tungsten</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="449"            y="463">75</text>
+    <text class="mass" x="499"     y="463" text-anchor="end">186.2</text>
+    <text class="sym"  x="474.0"     y="488" text-anchor="middle">Re</text>
+    <text class="name" x="474.0"     y="505" text-anchor="middle">Rhenium</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="513"            y="463">76</text>
+    <text class="mass" x="563"     y="463" text-anchor="end">190.2</text>
+    <text class="sym"  x="538.0"     y="488" text-anchor="middle">Os</text>
+    <text class="name" x="538.0"     y="505" text-anchor="middle">Osmium</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="577"            y="463">77</text>
+    <text class="mass" x="627"     y="463" text-anchor="end">192.2</text>
+    <text class="sym"  x="602.0"     y="488" text-anchor="middle">Ir</text>
+    <text class="name" x="602.0"     y="505" text-anchor="middle">Iridium</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="641"            y="463">78</text>
+    <text class="mass" x="691"     y="463" text-anchor="end">195.1</text>
+    <text class="sym"  x="666.0"     y="488" text-anchor="middle">Pt</text>
+    <text class="name" x="666.0"     y="505" text-anchor="middle">Platinum</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="705"            y="463">79</text>
+    <text class="mass" x="755"     y="463" text-anchor="end">197.0</text>
+    <text class="sym"  x="730.0"     y="488" text-anchor="middle">Au</text>
+    <text class="name" x="730.0"     y="505" text-anchor="middle">Gold</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="450" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="769"            y="463">80</text>
+    <text class="mass" x="819"     y="463" text-anchor="end">200.6</text>
+    <text class="sym"  x="794.0"     y="488" text-anchor="middle">Hg</text>
+    <text class="name" x="794.0"     y="505" text-anchor="middle">Mercury</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="450" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="463">81</text>
+    <text class="mass" x="883"     y="463" text-anchor="end">204.4</text>
+    <text class="sym"  x="858.0"     y="488" text-anchor="middle">Tl</text>
+    <text class="name" x="858.0"     y="505" text-anchor="middle">Thallium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="450" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="463">82</text>
+    <text class="mass" x="947"     y="463" text-anchor="end">207.2</text>
+    <text class="sym"  x="922.0"     y="488" text-anchor="middle">Pb</text>
+    <text class="name" x="922.0"     y="505" text-anchor="middle">Lead</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="450" width="60" height="64" fill="#D9E5C7" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="463">83</text>
+    <text class="mass" x="1011"     y="463" text-anchor="end">209.0</text>
+    <text class="sym"  x="986.0"     y="488" text-anchor="middle">Bi</text>
+    <text class="name" x="986.0"     y="505" text-anchor="middle">Bismuth</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="450" width="60" height="64" fill="#C9DDC1" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="463">84</text>
+    <text class="mass" x="1075"     y="463" text-anchor="end">[209]</text>
+    <text class="sym"  x="1050.0"     y="488" text-anchor="middle">Po</text>
+    <text class="name" x="1050.0"     y="505" text-anchor="middle">Polonium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="450" width="60" height="64" fill="#A9C8E9" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="463">85</text>
+    <text class="mass" x="1139"     y="463" text-anchor="end">[210]</text>
+    <text class="sym"  x="1114.0"     y="488" text-anchor="middle">At</text>
+    <text class="name" x="1114.0"     y="505" text-anchor="middle">Astatine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="450" width="60" height="64" fill="#D6C7E8" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="463">86</text>
+    <text class="mass" x="1203"     y="463" text-anchor="end">[222]</text>
+    <text class="sym"  x="1178.0"     y="488" text-anchor="middle">Rn</text>
+    <text class="name" x="1178.0"     y="505" text-anchor="middle">Radon</text>
+  </g>
+  <g class="el">
+    <rect x="60" y="518" width="60" height="64" fill="#F4C7C0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="65"            y="531">87</text>
+    <text class="mass" x="115"     y="531" text-anchor="end">[223]</text>
+    <text class="sym"  x="90.0"     y="556" text-anchor="middle">Fr</text>
+    <text class="name" x="90.0"     y="573" text-anchor="middle">Francium</text>
+  </g>
+  <g class="el">
+    <rect x="124" y="518" width="60" height="64" fill="#F8DDB0" stroke="#1F4F8B" stroke-width="1.6"/>
+    <text class="z"    x="129"            y="531">88</text>
+    <text class="mass" x="179"     y="531" text-anchor="end">[226]</text>
+    <text class="sym"  x="154.0"     y="556" text-anchor="middle">Ra</text>
+    <text class="name" x="154.0"     y="573" text-anchor="middle">Radium</text>
+  </g>
+  <g class="el">
+    <rect x="188" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="193"            y="769.0">89</text>
+    <text class="mass" x="243"     y="769.0" text-anchor="end">[227]</text>
+    <text class="sym"  x="218.0"     y="794.0" text-anchor="middle">Ac</text>
+    <text class="name" x="218.0"     y="811.0" text-anchor="middle">Actinium</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="257"            y="769.0">90</text>
+    <text class="mass" x="307"     y="769.0" text-anchor="end">232.0</text>
+    <text class="sym"  x="282.0"     y="794.0" text-anchor="middle">Th</text>
+    <text class="name" x="282.0"     y="811.0" text-anchor="middle">Thorium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="321"            y="769.0">91</text>
+    <text class="mass" x="371"     y="769.0" text-anchor="end">231.0</text>
+    <text class="sym"  x="346.0"     y="794.0" text-anchor="middle">Pa</text>
+    <text class="name" x="346.0"     y="811.0" text-anchor="middle">Protactinium</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="385"            y="769.0">92</text>
+    <text class="mass" x="435"     y="769.0" text-anchor="end">238.0</text>
+    <text class="sym"  x="410.0"     y="794.0" text-anchor="middle">U</text>
+    <text class="name" x="410.0"     y="811.0" text-anchor="middle">Uranium</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="449"            y="769.0">93</text>
+    <text class="mass" x="499"     y="769.0" text-anchor="end">[237]</text>
+    <text class="sym"  x="474.0"     y="794.0" text-anchor="middle">Np</text>
+    <text class="name" x="474.0"     y="811.0" text-anchor="middle">Neptunium</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="513"            y="769.0">94</text>
+    <text class="mass" x="563"     y="769.0" text-anchor="end">[244]</text>
+    <text class="sym"  x="538.0"     y="794.0" text-anchor="middle">Pu</text>
+    <text class="name" x="538.0"     y="811.0" text-anchor="middle">Plutonium</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="577"            y="769.0">95</text>
+    <text class="mass" x="627"     y="769.0" text-anchor="end">[243]</text>
+    <text class="sym"  x="602.0"     y="794.0" text-anchor="middle">Am</text>
+    <text class="name" x="602.0"     y="811.0" text-anchor="middle">Americium</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="641"            y="769.0">96</text>
+    <text class="mass" x="691"     y="769.0" text-anchor="end">[247]</text>
+    <text class="sym"  x="666.0"     y="794.0" text-anchor="middle">Cm</text>
+    <text class="name" x="666.0"     y="811.0" text-anchor="middle">Curium</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="705"            y="769.0">97</text>
+    <text class="mass" x="755"     y="769.0" text-anchor="end">[247]</text>
+    <text class="sym"  x="730.0"     y="794.0" text-anchor="middle">Bk</text>
+    <text class="name" x="730.0"     y="811.0" text-anchor="middle">Berkelium</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="769"            y="769.0">98</text>
+    <text class="mass" x="819"     y="769.0" text-anchor="end">[251]</text>
+    <text class="sym"  x="794.0"     y="794.0" text-anchor="middle">Cf</text>
+    <text class="name" x="794.0"     y="811.0" text-anchor="middle">Californium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="833"            y="769.0">99</text>
+    <text class="mass" x="883"     y="769.0" text-anchor="end">[252]</text>
+    <text class="sym"  x="858.0"     y="794.0" text-anchor="middle">Es</text>
+    <text class="name" x="858.0"     y="811.0" text-anchor="middle">Einsteinium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="897"            y="769.0">100</text>
+    <text class="mass" x="947"     y="769.0" text-anchor="end">[257]</text>
+    <text class="sym"  x="922.0"     y="794.0" text-anchor="middle">Fm</text>
+    <text class="name" x="922.0"     y="811.0" text-anchor="middle">Fermium</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="961"            y="769.0">101</text>
+    <text class="mass" x="1011"     y="769.0" text-anchor="end">[258]</text>
+    <text class="sym"  x="986.0"     y="794.0" text-anchor="middle">Md</text>
+    <text class="name" x="986.0"     y="811.0" text-anchor="middle">Mendelevium</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="1025"            y="769.0">102</text>
+    <text class="mass" x="1075"     y="769.0" text-anchor="end">[259]</text>
+    <text class="sym"  x="1050.0"     y="794.0" text-anchor="middle">No</text>
+    <text class="name" x="1050.0"     y="811.0" text-anchor="middle">Nobelium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="756.0" width="60" height="64" fill="#E9C0D9" stroke="#5B2A8B" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <text class="z"    x="1089"            y="769.0">103</text>
+    <text class="mass" x="1139"     y="769.0" text-anchor="end">[266]</text>
+    <text class="sym"  x="1114.0"     y="794.0" text-anchor="middle">Lr</text>
+    <text class="name" x="1114.0"     y="811.0" text-anchor="middle">Lawrencium</text>
+  </g>
+  <g class="el">
+    <rect x="252" y="518" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="257"            y="531">104</text>
+    <text class="mass" x="307"     y="531" text-anchor="end">[267]</text>
+    <text class="sym"  x="282.0"     y="556" text-anchor="middle">Rf</text>
+    <text class="name" x="282.0"     y="573" text-anchor="middle">Rutherfordium</text>
+  </g>
+  <g class="el">
+    <rect x="316" y="518" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="321"            y="531">105</text>
+    <text class="mass" x="371"     y="531" text-anchor="end">[268]</text>
+    <text class="sym"  x="346.0"     y="556" text-anchor="middle">Db</text>
+    <text class="name" x="346.0"     y="573" text-anchor="middle">Dubnium</text>
+  </g>
+  <g class="el">
+    <rect x="380" y="518" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="385"            y="531">106</text>
+    <text class="mass" x="435"     y="531" text-anchor="end">[269]</text>
+    <text class="sym"  x="410.0"     y="556" text-anchor="middle">Sg</text>
+    <text class="name" x="410.0"     y="573" text-anchor="middle">Seaborgium</text>
+  </g>
+  <g class="el">
+    <rect x="444" y="518" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="449"            y="531">107</text>
+    <text class="mass" x="499"     y="531" text-anchor="end">[270]</text>
+    <text class="sym"  x="474.0"     y="556" text-anchor="middle">Bh</text>
+    <text class="name" x="474.0"     y="573" text-anchor="middle">Bohrium</text>
+  </g>
+  <g class="el">
+    <rect x="508" y="518" width="60" height="64" fill="#FFE9A0" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="513"            y="531">108</text>
+    <text class="mass" x="563"     y="531" text-anchor="end">[277]</text>
+    <text class="sym"  x="538.0"     y="556" text-anchor="middle">Hs</text>
+    <text class="name" x="538.0"     y="573" text-anchor="middle">Hassium</text>
+  </g>
+  <g class="el">
+    <rect x="572" y="518" width="60" height="64" fill="#E5E5E5" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="577"            y="531">109</text>
+    <text class="mass" x="627"     y="531" text-anchor="end">[278]</text>
+    <text class="sym"  x="602.0"     y="556" text-anchor="middle">Mt</text>
+    <text class="name" x="602.0"     y="573" text-anchor="middle">Meitnerium</text>
+  </g>
+  <g class="el">
+    <rect x="636" y="518" width="60" height="64" fill="#E5E5E5" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="641"            y="531">110</text>
+    <text class="mass" x="691"     y="531" text-anchor="end">[281]</text>
+    <text class="sym"  x="666.0"     y="556" text-anchor="middle">Ds</text>
+    <text class="name" x="666.0"     y="573" text-anchor="middle">Darmstadtium</text>
+  </g>
+  <g class="el">
+    <rect x="700" y="518" width="60" height="64" fill="#E5E5E5" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="705"            y="531">111</text>
+    <text class="mass" x="755"     y="531" text-anchor="end">[282]</text>
+    <text class="sym"  x="730.0"     y="556" text-anchor="middle">Rg</text>
+    <text class="name" x="730.0"     y="573" text-anchor="middle">Roentgenium</text>
+  </g>
+  <g class="el">
+    <rect x="764" y="518" width="60" height="64" fill="#E5E5E5" stroke="#7A2A0A" stroke-width="1.6"/>
+    <text class="z"    x="769"            y="531">112</text>
+    <text class="mass" x="819"     y="531" text-anchor="end">[285]</text>
+    <text class="sym"  x="794.0"     y="556" text-anchor="middle">Cn</text>
+    <text class="name" x="794.0"     y="573" text-anchor="middle">Copernicium</text>
+  </g>
+  <g class="el">
+    <rect x="828" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="833"            y="531">113</text>
+    <text class="mass" x="883"     y="531" text-anchor="end">[286]</text>
+    <text class="sym"  x="858.0"     y="556" text-anchor="middle">Nh</text>
+    <text class="name" x="858.0"     y="573" text-anchor="middle">Nihonium</text>
+  </g>
+  <g class="el">
+    <rect x="892" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="897"            y="531">114</text>
+    <text class="mass" x="947"     y="531" text-anchor="end">[289]</text>
+    <text class="sym"  x="922.0"     y="556" text-anchor="middle">Fl</text>
+    <text class="name" x="922.0"     y="573" text-anchor="middle">Flerovium</text>
+  </g>
+  <g class="el">
+    <rect x="956" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="961"            y="531">115</text>
+    <text class="mass" x="1011"     y="531" text-anchor="end">[290]</text>
+    <text class="sym"  x="986.0"     y="556" text-anchor="middle">Mc</text>
+    <text class="name" x="986.0"     y="573" text-anchor="middle">Moscovium</text>
+  </g>
+  <g class="el">
+    <rect x="1020" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1025"            y="531">116</text>
+    <text class="mass" x="1075"     y="531" text-anchor="end">[293]</text>
+    <text class="sym"  x="1050.0"     y="556" text-anchor="middle">Lv</text>
+    <text class="name" x="1050.0"     y="573" text-anchor="middle">Livermorium</text>
+  </g>
+  <g class="el">
+    <rect x="1084" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1089"            y="531">117</text>
+    <text class="mass" x="1139"     y="531" text-anchor="end">[294]</text>
+    <text class="sym"  x="1114.0"     y="556" text-anchor="middle">Ts</text>
+    <text class="name" x="1114.0"     y="573" text-anchor="middle">Tennessine</text>
+  </g>
+  <g class="el">
+    <rect x="1148" y="518" width="60" height="64" fill="#E5E5E5" stroke="#0E6B36" stroke-width="1.6"/>
+    <text class="z"    x="1153"            y="531">118</text>
+    <text class="mass" x="1203"     y="531" text-anchor="end">[294]</text>
+    <text class="sym"  x="1178.0"     y="556" text-anchor="middle">Og</text>
+    <text class="name" x="1178.0"     y="573" text-anchor="middle">Oganesson</text>
+  </g>
+  <text class="leghdr" x="60" y="846.0">Element category (color)</text><rect x="60" y="858.0" width="22" height="14" fill="#F4C7C0" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="90" y="869.0">Alkali metal</text><rect x="280" y="858.0" width="22" height="14" fill="#F8DDB0" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="310" y="869.0">Alkaline earth metal</text><rect x="500" y="858.0" width="22" height="14" fill="#FFE9A0" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="530" y="869.0">Transition metal</text><rect x="720" y="858.0" width="22" height="14" fill="#D9E5C7" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="750" y="869.0">Post-transition metal</text><rect x="940" y="858.0" width="22" height="14" fill="#C9DDC1" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="970" y="869.0">Metalloid</text><rect x="60" y="880.0" width="22" height="14" fill="#C5D8EC" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="90" y="891.0">Nonmetal</text><rect x="280" y="880.0" width="22" height="14" fill="#A9C8E9" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="310" y="891.0">Halogen</text><rect x="500" y="880.0" width="22" height="14" fill="#D6C7E8" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="530" y="891.0">Noble gas</text><rect x="720" y="880.0" width="22" height="14" fill="#F0CFE8" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="750" y="891.0">Lanthanide</text><rect x="940" y="880.0" width="22" height="14" fill="#E9C0D9" stroke="#444" stroke-width="0.8"/><text class="legtxt" x="970" y="891.0">Actinide</text><text class="leghdr" x="60" y="916.0">Outermost subshell being filled (cell-border color/style)</text><rect x="60" y="928.0" width="22" height="14" fill="white" stroke="#1F4F8B" stroke-width="2"/><text class="legtxt" x="90" y="939.0">s-block</text><rect x="330" y="928.0" width="22" height="14" fill="white" stroke="#0E6B36" stroke-width="2"/><text class="legtxt" x="360" y="939.0">p-block</text><rect x="600" y="928.0" width="22" height="14" fill="white" stroke="#7A2A0A" stroke-width="2"/><text class="legtxt" x="630" y="939.0">d-block</text><rect x="870" y="928.0" width="22" height="14" fill="white" stroke="#5B2A8B" stroke-width="2" stroke-dasharray="3 2"/><text class="legtxt" x="900" y="939.0">f-block (dashed)</text>
+  <text class="foot" x="60" y="972.0">Atomic-mass values: IUPAC 2021 standard atomic weights (rounded). Brackets indicate the most stable isotope for elements with no stable form.</text>
+</svg>

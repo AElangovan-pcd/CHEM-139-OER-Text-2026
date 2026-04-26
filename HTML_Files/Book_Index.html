@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index</title>
+<style>
+:root {
+  --max-w: 800px;
+  --accent: #0b5cad;
+  --accent-soft: #e8f0fb;
+  --rule: #d8d8d8;
+  --figure-bg: #f3f3f3;
+  --figure-border: #b9b9b9;
+  --solution-bg: #eef7ee;
+  --solution-border: #2e7d32;
+  --text: #1a1a1a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  line-height: 1.65;
+  background: #fafafa;
+}
+header.site, footer.site {
+  background: #fff;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.85rem 1.5rem;
+}
+footer.site { border-top: 1px solid var(--rule); border-bottom: none; }
+header.site nav, footer.site nav {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font: 600 0.9rem -apple-system, system-ui, sans-serif;
+}
+header.site nav a, footer.site nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+header.site nav a:hover, footer.site nav a:hover { text-decoration: underline; }
+main.container {
+  max-width: var(--max-w);
+  margin: 1.5rem auto 3rem;
+  padding: 2.5rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+}
+@media (max-width: 700px) {
+  main.container { padding: 1.25rem; margin: 0.5rem; }
+}
+h1, h2, h3, h4 {
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  line-height: 1.25;
+  margin-block: 1.5em 0.5em;
+}
+h1 { font-size: 1.95rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; }
+h2 { font-size: 1.45rem; color: var(--accent); }
+h3 { font-size: 1.15rem; }
+h4 { font-size: 1.0rem; color: #333; }
+p { margin-block: 0.7em; }
+ol, ul { padding-left: 1.6rem; }
+li { margin-block: 0.25em; }
+table { border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+th, td { border: 1px solid var(--rule); padding: 0.4rem 0.7rem; text-align: left; vertical-align: top; }
+th { background: var(--accent-soft); }
+
+a { color: var(--accent); }
+strong { color: #000; }
+
+.problem-stem {
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+.problem-stem > strong:first-child {
+  display: inline-block;
+  min-width: 2em;
+  color: var(--accent);
+}
+.problem-subparts { margin-top: 0.2em; }
+.problem-subparts > li { margin-block: 0.3em; }
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 4px;
+}
+figure { margin: 1.2rem 0; text-align: center; }
+figure img { margin: 0 auto; }
+figcaption { font-size: 0.9rem; color: #555; margin-top: 0.4rem; font-style: italic; }
+
+.figure-description {
+  background: var(--figure-bg);
+  border-left: 4px solid var(--figure-border);
+  padding: 0.9rem 1.1rem;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+}
+.figure-description > p:first-child { margin-top: 0; }
+.figure-description > p:last-child { margin-bottom: 0; }
+
+details.solution {
+  background: var(--solution-bg);
+  border-left: 4px solid var(--solution-border);
+  padding: 0.55rem 1rem 0.55rem;
+  margin: 0.6rem 0 1.1rem;
+  border-radius: 4px;
+}
+details.solution[open] { padding-bottom: 0.9rem; }
+details.solution > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--solution-border);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--solution-border);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.solution > summary::-webkit-details-marker { display: none; }
+details.solution > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.solution[open] > summary::before { transform: rotate(90deg); }
+details.solution > summary:hover {
+  background: var(--solution-border);
+  color: #fff;
+}
+details.solution > *:not(summary) { margin-top: 0.6rem; }
+details.solution > p:empty { display: none; }
+
+@media print {
+  details.solution { background: none; border: 1px dashed #888; }
+  details.solution > summary { display: none; }
+}
+
+.toc { font-size: 1.05rem; }
+.toc li { margin: 0.4em 0; }
+
+/* Solution math chains rendered by MathJax. The plain-text fallback (before
+   MathJax loads) wraps in a slightly smaller serif. */
+p.math-chain {
+  text-align: left;
+  margin-block: 0.4em;
+  overflow-x: auto;
+}
+
+/* In case any <s> tags survive in solutions where MathJax was not applied
+   (e.g. multi-step prose mixing words and math), give the strikethrough a
+   bold red rule so cancellation is unmistakable. */
+details.solution s {
+  text-decoration: line-through;
+  text-decoration-color: #c0392b;
+  text-decoration-thickness: 0.12em;
+}
+</style>
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/cancel'] },
+  tex: {
+    packages: { '[+]': ['cancel'] },
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']]
+  },
+  svg: { fontCache: 'global' },
+  startup: {
+    typeset: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<header class="site"><nav>
+  <a href="Periodic_Table_Reference_Page.html" rel="prev">&larr; Previous</a>
+  <a href="index.html">Contents</a>
+  <span></span>
+</nav></header>
+<main class="container">
+<div class="doc"><h1><strong>Index</strong></h1><p><em>Each entry references chapter.section. Bold page-style references indicate the primary discussion of the term.</em></p><table><thead><tr><th><p><strong>Term</strong></p></th><th><p><strong>Section(s)</strong></p></th><th><p><strong>Term</strong></p></th><th><p><strong>Section(s)</strong></p></th></tr></thead><tbody><tr><td><p>Absolute zero</p></td><td><p>2.11, 10.1, 10.11</p></td><td><p>Accuracy</p></td><td><p>1.9</p></td></tr><tr><td><p>Acid (binary, oxyacid)</p></td><td><p>7.7</p></td><td><p>Activity series</p></td><td><p>9.6</p></td></tr><tr><td><p>Actinide series</p></td><td><p>5.2</p></td><td><p>Actual yield</p></td><td><p>9.10</p></td></tr><tr><td><p>Alkali metals</p></td><td><p>5.11</p></td><td><p>Alkaline-earth metals</p></td><td><p>5.11</p></td></tr><tr><td><p>Amorphous solid</p></td><td><p>10.2</p></td><td><p>Atom</p></td><td><p>4.1</p></td></tr><tr><td><p>Atomic mass</p></td><td><p>4.8, 8.6</p></td><td><p>Atomic mass unit (u, amu)</p></td><td><p>4.8, 8.6</p></td></tr><tr><td><p>Atomic number (Z)</p></td><td><p>4.6</p></td><td><p>Atomic radius</p></td><td><p>5.12</p></td></tr><tr><td><p>Aufbau principle</p></td><td><p>5.7</p></td><td><p>Avogadro's number</p></td><td><p>8.5</p></td></tr><tr><td><p>Balanced equation</p></td><td><p>9.4</p></td><td><p>Boiling point</p></td><td><p>10.9</p></td></tr><tr><td><p>Bond, covalent</p></td><td><p>6.10</p></td><td><p>Bond, ionic</p></td><td><p>6.4</p></td></tr><tr><td><p>Bond, metallic</p></td><td><p>6.1, 10.3</p></td><td><p>Bond polarity</p></td><td><p>6.19</p></td></tr><tr><td><p>Cathode-ray tube</p></td><td><p>4.9</p></td><td><p>Catalyst</p></td><td><p>9.5</p></td></tr><tr><td><p>Celsius scale</p></td><td><p>2.11</p></td><td><p>Chemical change</p></td><td><p>3.4</p></td></tr><tr><td><p>Chemical equation</p></td><td><p>9.2</p></td><td><p>Chemical formula</p></td><td><p>4.4</p></td></tr><tr><td><p>Chemical property</p></td><td><p>3.3</p></td><td><p>Chemistry, defined</p></td><td><p>1.1, 3.1</p></td></tr><tr><td><p>Coefficient</p></td><td><p>9.3</p></td><td><p>Combustion</p></td><td><p>9.6</p></td></tr><tr><td><p>Combustion analysis</p></td><td><p>8.13</p></td><td><p>Compound</p></td><td><p>3.7, 4.3</p></td></tr><tr><td><p>Compound, binary ionic</p></td><td><p>7.2</p></td><td><p>Concentration (as conversion factor)</p></td><td><p>2.9</p></td></tr><tr><td><p>Condensation (vapor pressure)</p></td><td><p>10.9</p></td><td><p>Conservation of mass</p></td><td><p>9.1</p></td></tr><tr><td><p>Conversion factor</p></td><td><p>2.6</p></td><td><p>Coordinate covalent bond</p></td><td><p>6.14</p></td></tr><tr><td><p>Covalent network solid</p></td><td><p>10.3</p></td><td><p>Crystalline solid</p></td><td><p>10.2, 10.3</p></td></tr><tr><td><p>Dalton, John</p></td><td><p>4.1</p></td><td><p>Dalton's atomic theory</p></td><td><p>4.1</p></td></tr><tr><td><p>Decomposition reaction</p></td><td><p>9.6</p></td><td><p>Density</p></td><td><p>2.8</p></td></tr><tr><td><p>Diatomic elements (seven)</p></td><td><p>4.2</p></td><td><p>Dimensional analysis</p></td><td><p>2.7</p></td></tr><tr><td><p>Dipole–dipole force</p></td><td><p>10.10</p></td><td><p>Double bond</p></td><td><p>6.12</p></td></tr><tr><td><p>Double-replacement reaction</p></td><td><p>9.6</p></td><td><p>Electron</p></td><td><p>4.5</p></td></tr><tr><td><p>Electron configuration</p></td><td><p>5.7</p></td><td><p>Electron shell</p></td><td><p>5.4</p></td></tr><tr><td><p>Electron subshell</p></td><td><p>5.5</p></td><td><p>Electron orbital</p></td><td><p>5.6</p></td></tr><tr><td><p>Electronegativity</p></td><td><p>6.18</p></td><td><p>Element</p></td><td><p>3.7, 3.9</p></td></tr><tr><td><p>Empirical formula</p></td><td><p>8.12, 8.13</p></td><td><p>English units</p></td><td><p>2.6</p></td></tr><tr><td><p>Equilibrium vapor pressure</p></td><td><p>10.9</p></td><td><p>Evaporation</p></td><td><p>10.8</p></td></tr><tr><td><p>Exact number</p></td><td><p>1.8</p></td><td><p>Extensive property</p></td><td><p>3.3</p></td></tr><tr><td><p>Fact, scientific</p></td><td><p>1.4</p></td><td><p>Fahrenheit scale</p></td><td><p>2.11</p></td></tr><tr><td><p>Formula mass</p></td><td><p>8.2</p></td><td><p>Gas</p></td><td><p>3.2, 10.1</p></td></tr><tr><td><p>Gold-foil experiment</p></td><td><p>4.9</p></td><td><p>Group (periodic table)</p></td><td><p>5.2</p></td></tr><tr><td><p>Halogens</p></td><td><p>5.11</p></td><td><p>Heat of vaporization</p></td><td><p>10.11</p></td></tr><tr><td><p>Heterogeneous mixture</p></td><td><p>3.6</p></td><td><p>Homogeneous mixture</p></td><td><p>3.6</p></td></tr><tr><td><p>Hund's rule</p></td><td><p>5.8</p></td><td><p>Hydrogen bond</p></td><td><p>10.10, 10.11</p></td></tr><tr><td><p>Hypothesis, scientific</p></td><td><p>1.4</p></td><td><p>Inexact number</p></td><td><p>1.8</p></td></tr><tr><td><p>Intensive property</p></td><td><p>3.3</p></td><td><p>Intermolecular force</p></td><td><p>10.10</p></td></tr><tr><td><p>Ion</p></td><td><p>6.4, 6.5</p></td><td><p>Ion, polyatomic</p></td><td><p>6.9</p></td></tr><tr><td><p>Ionic bond</p></td><td><p>6.4</p></td><td><p>Ionic compound</p></td><td><p>6.7</p></td></tr><tr><td><p>Ion–dipole force</p></td><td><p>10.10</p></td><td><p>Ion–ion force</p></td><td><p>10.10</p></td></tr><tr><td><p>Isoelectronic species</p></td><td><p>6.5</p></td><td><p>Isotope</p></td><td><p>4.7</p></td></tr><tr><td><p>Kelvin scale</p></td><td><p>2.11</p></td><td><p>Kinetic molecular theory</p></td><td><p>10.1</p></td></tr><tr><td><p>Lanthanide series</p></td><td><p>5.2</p></td><td><p>Lavoisier, Antoine</p></td><td><p>9.1</p></td></tr><tr><td><p>Law, scientific</p></td><td><p>1.4</p></td><td><p>Law of conservation of mass</p></td><td><p>9.1</p></td></tr><tr><td><p>Law of definite proportions</p></td><td><p>8.1</p></td><td><p>Lewis dot symbol</p></td><td><p>6.2</p></td></tr><tr><td><p>Lewis structure</p></td><td><p>6.11, 6.16</p></td><td><p>Limiting reactant</p></td><td><p>9.11, 9.12</p></td></tr><tr><td><p>Liquid</p></td><td><p>3.2, 10.5</p></td><td><p>London (dispersion) force</p></td><td><p>10.10</p></td></tr><tr><td><p>Mass</p></td><td><p>2.3</p></td><td><p>Mass number (A)</p></td><td><p>4.6</p></td></tr><tr><td><p>Mass percent composition</p></td><td><p>8.4</p></td><td><p>Matter</p></td><td><p>3.1</p></td></tr><tr><td><p>Measurement</p></td><td><p>1.7, 2.1</p></td><td><p>Melting point</p></td><td><p>10.4</p></td></tr><tr><td><p>Mendeleev, Dmitri</p></td><td><p>5.1</p></td><td><p>Metallic bond</p></td><td><p>6.1, 10.3</p></td></tr><tr><td><p>Metalloid</p></td><td><p>5.11</p></td><td><p>Metric system</p></td><td><p>2.1</p></td></tr><tr><td><p>Mixture</p></td><td><p>3.5, 3.6</p></td><td><p>Molar mass</p></td><td><p>8.6</p></td></tr><tr><td><p>Mole</p></td><td><p>8.5</p></td><td><p>Mole map</p></td><td><p>8.10</p></td></tr><tr><td><p>Mole ratio</p></td><td><p>8.9, 9.7</p></td><td><p>Molecular compound</p></td><td><p>7.6</p></td></tr><tr><td><p>Molecular formula</p></td><td><p>8.12, 8.14</p></td><td><p>Molecular geometry</p></td><td><p>6.17</p></td></tr><tr><td><p>Molecular polarity</p></td><td><p>6.20</p></td><td><p>Molecule</p></td><td><p>4.2</p></td></tr><tr><td><p>Neutron</p></td><td><p>4.5</p></td><td><p>Noble gases</p></td><td><p>5.11</p></td></tr><tr><td><p>Nomenclature, ionic</p></td><td><p>7.3, 7.5</p></td><td><p>Nomenclature, molecular</p></td><td><p>7.6</p></td></tr><tr><td><p>Nomenclature, acid</p></td><td><p>7.7</p></td><td><p>Nucleus</p></td><td><p>4.5, 4.9</p></td></tr><tr><td><p>Octet rule</p></td><td><p>6.3</p></td><td><p>Orbital</p></td><td><p>5.6</p></td></tr><tr><td><p>Orbital diagram</p></td><td><p>5.8</p></td><td><p>Oxyacid</p></td><td><p>7.7</p></td></tr><tr><td><p>Pauli exclusion principle</p></td><td><p>5.6, 5.8</p></td><td><p>Pauling, Linus</p></td><td><p>6.18</p></td></tr><tr><td><p>Percent composition</p></td><td><p>8.4</p></td><td><p>Percent error</p></td><td><p>2.10</p></td></tr><tr><td><p>Percent yield</p></td><td><p>9.10</p></td><td><p>Period (periodic table)</p></td><td><p>5.2</p></td></tr><tr><td><p>Periodic law</p></td><td><p>5.1</p></td><td><p>Periodic table</p></td><td><p>5.2, 5.10</p></td></tr><tr><td><p>Phase diagram (water)</p></td><td><p>10.11</p></td><td><p>Physical change</p></td><td><p>3.4</p></td></tr><tr><td><p>Physical property</p></td><td><p>3.3</p></td><td><p>Polyatomic ion</p></td><td><p>6.9, 7.5</p></td></tr><tr><td><p>Precision</p></td><td><p>1.9</p></td><td><p>Priestley, Joseph</p></td><td><p>3.8</p></td></tr><tr><td><p>Proton</p></td><td><p>4.5</p></td><td><p>Proust, Joseph</p></td><td><p>8.1</p></td></tr><tr><td><p>Pure substance</p></td><td><p>3.5</p></td><td><p>Random error</p></td><td><p>1.9</p></td></tr><tr><td><p>Resonance structure</p></td><td><p>6.15</p></td><td><p>Rutherford, Ernest</p></td><td><p>4.9</p></td></tr><tr><td><p>Schrödinger, Erwin</p></td><td><p>5.3</p></td><td><p>Scientific method</p></td><td><p>1.4</p></td></tr><tr><td><p>Scientific notation</p></td><td><p>1.13</p></td><td><p>SI units</p></td><td><p>2.1</p></td></tr><tr><td><p>Significant figures</p></td><td><p>1.11, 1.12</p></td><td><p>Single-replacement reaction</p></td><td><p>9.6</p></td></tr><tr><td><p>Solid</p></td><td><p>3.2, 10.2, 10.3</p></td><td><p>Specific heat</p></td><td><p>10.11</p></td></tr><tr><td><p>States of matter</p></td><td><p>3.2, 10.1</p></td><td><p>Stock system (nomenclature)</p></td><td><p>7.3</p></td></tr><tr><td><p>Stoichiometry</p></td><td><p>9.7–9.9</p></td><td><p>Surface tension</p></td><td><p>10.7</p></td></tr><tr><td><p>Synthesis (combination) reaction</p></td><td><p>9.6</p></td><td><p>Systematic error</p></td><td><p>1.9</p></td></tr><tr><td><p>Technology</p></td><td><p>1.2</p></td><td><p>Temperature scales</p></td><td><p>2.11</p></td></tr><tr><td><p>Theoretical yield</p></td><td><p>9.10</p></td><td><p>Theory, scientific</p></td><td><p>1.4</p></td></tr><tr><td><p>Triple bond</p></td><td><p>6.12</p></td><td><p>Type I / Type II ionic compounds</p></td><td><p>7.2</p></td></tr><tr><td><p>Uncertainty (in measurement)</p></td><td><p>1.10</p></td><td><p>Valence electrons</p></td><td><p>6.2</p></td></tr><tr><td><p>Vapor pressure</p></td><td><p>10.9</p></td><td><p>Viscosity</p></td><td><p>10.6</p></td></tr><tr><td><p>VSEPR theory</p></td><td><p>6.17</p></td><td><p>Water, anomalous properties</p></td><td><p>10.11</p></td></tr><tr><td><p>Yield (theoretical, actual, percent)</p></td><td><p>9.10</p></td><td></td><td></td></tr></tbody></table></div>
+</main>
+<footer class="site"><nav>
+  <a href="Periodic_Table_Reference_Page.html" rel="prev">&larr; Previous</a>
+  <a href="index.html">Contents</a>
+  <span></span>
+</nav></footer>
+<script>
+window.addEventListener("beforeprint", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    d.dataset.wasOpen = d.open ? "1" : "0";
+    d.open = true;
+  });
+});
+window.addEventListener("afterprint", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    d.open = d.dataset.wasOpen === "1";
+  });
+});
+
+// Swap the summary label between "Show solution" / "Hide solution" so the
+// pill mirrors the disclosure state.
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    const summary = d.querySelector("summary");
+    if (!summary) return;
+    const setLabel = () => {
+      summary.textContent = d.open ? "Hide solution" : "Show solution";
+    };
+    setLabel();
+    d.addEventListener("toggle", setLabel);
+  });
+});
+</script>
+</body>
+</html>
