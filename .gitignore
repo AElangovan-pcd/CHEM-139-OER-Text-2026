@@ -1,0 +1,43 @@
+# LibreOffice / Word lock files
+.~lock.*#
+
+# Python build / cache
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# Backup .docx files (large; reproducible from history if ever needed)
+.firecrawl/backups/
+
+# Generated HTML preview output (rebuildable from .docx via .firecrawl/build_html.py)
+# Keep these IN the repo so reviewers can read without running the build:
+#   HTML_Files/
+#   HTML_Files_Canvas/
+# Uncomment the next two lines if you'd rather treat them as build artefacts.
+# HTML_Files/
+# HTML_Files_Canvas/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local secrets (Canvas API tokens, etc.) — never commit
+.env
+.env.local
+canvas_token*
+*.token
+
+# Downloaded source-material PDFs (reference only, not authored content;
+# users can re-download from the original source if needed)
+acs-periodic-table-poster_download.pdf
+
+# Stray pre-rewrite docx left at .firecrawl root by an earlier scratch run
+.firecrawl/Chapter_*.before-*.docx

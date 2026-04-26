@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- (c) 2026 CHEM 139 OER. CC BY 4.0. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" width="760" height="460" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Figure 10.1 — Hierarchy of intermolecular forces</title>
+  <desc id="d">Horizontal bar chart of approximate energies in kilojoules per mole on a logarithmic x-axis. Five force types from weakest to strongest: London dispersion (about 0.05 to 40), dipole-dipole (about 5 to 25), hydrogen bond (about 10 to 40), ion-dipole (about 40 to 600), ion-ion (about 400 to 4000).</desc>
+
+  <style>
+    .axis { stroke:#1B1B1B; stroke-width:1.4; }
+    .grid { stroke:#CCC; stroke-width:1; stroke-dasharray:3 3; }
+    .tick { font-size:12px; fill:#1B1B1B; text-anchor:middle; }
+    .label { font-size:14px; font-weight:700; fill:#0E2D52; }
+    .range { font-size:12px; fill:#444; }
+    .axislabel { font-size:13px; font-weight:700; fill:#1B1B1B; text-anchor:middle; }
+  </style>
+
+  <!-- Layout constants:
+       x range: 0.01 to 10000 (log10) -> pixel range 180 to 720
+       Each log decade: (720-180)/6 = 90 px
+       x(v) = 180 + (log10(v) - (-2)) * 90
+  -->
+
+  <!-- Title -->
+  <text x="380" y="28" font-size="14" font-style="italic" fill="#444" text-anchor="middle">Approximate energies of intermolecular and inter-ion attractions (overlapping ranges).</text>
+
+  <!-- Vertical gridlines for log decades -->
+  <g class="grid">
+    <line x1="180" y1="60"  x2="180" y2="380"/>
+    <line x1="270" y1="60"  x2="270" y2="380"/>
+    <line x1="360" y1="60"  x2="360" y2="380"/>
+    <line x1="450" y1="60"  x2="450" y2="380"/>
+    <line x1="540" y1="60"  x2="540" y2="380"/>
+    <line x1="630" y1="60"  x2="630" y2="380"/>
+    <line x1="720" y1="60"  x2="720" y2="380"/>
+  </g>
+
+  <!-- Bars (light blue weakest to dark red strongest). Labels are placed in the
+       LEFT margin (right-aligned at x=170) so they never overlap the bars. -->
+  <!-- 1. London dispersion: 0.05 to 40 -->
+  <rect x="234" y="70"  width="265" height="36" fill="#BAD7F2" stroke="#1F4F8B" stroke-width="1.2"/>
+  <text class="label" x="170" y="86"  text-anchor="end">London dispersion</text>
+  <text class="range" x="170" y="102" text-anchor="end">&#8776; 0.05&#8211;40 kJ/mol</text>
+
+  <!-- 2. Dipole-dipole: 5 to 25 -->
+  <rect x="423" y="120" width="62"  height="36" fill="#7FB3DC" stroke="#1F4F8B" stroke-width="1.2"/>
+  <text class="label" x="170" y="136" text-anchor="end">Dipole&#8211;dipole</text>
+  <text class="range" x="170" y="152" text-anchor="end">&#8776; 5&#8211;25 kJ/mol</text>
+
+  <!-- 3. Hydrogen bond: 10 to 40 -->
+  <rect x="450" y="170" width="54"  height="36" fill="#3F92C8" stroke="#1F4F8B" stroke-width="1.2"/>
+  <text class="label" x="170" y="186" text-anchor="end">Hydrogen bond</text>
+  <text class="range" x="170" y="202" text-anchor="end">&#8776; 10&#8211;40 kJ/mol</text>
+
+  <!-- 4. Ion-dipole: 40 to 600 -->
+  <rect x="504" y="220" width="106" height="36" fill="#E07B4D" stroke="#7A2A0A" stroke-width="1.2"/>
+  <text class="label" x="170" y="236" text-anchor="end">Ion&#8211;dipole</text>
+  <text class="range" x="170" y="252" text-anchor="end">&#8776; 40&#8211;600 kJ/mol</text>
+
+  <!-- 5. Ion-ion: 400 to 4000 -->
+  <rect x="594" y="270" width="90"  height="36" fill="#B3322C" stroke="#5C0A0A" stroke-width="1.2"/>
+  <text class="label" x="170" y="286" text-anchor="end">Ion&#8211;ion</text>
+  <text class="range" x="170" y="302" text-anchor="end">&#8776; 400&#8211;4000 kJ/mol</text>
+
+  <!-- X-axis -->
+  <line class="axis" x1="180" y1="380" x2="720" y2="380"/>
+  <!-- Tick marks -->
+  <g>
+    <line class="axis" x1="180" y1="380" x2="180" y2="386"/><text class="tick" x="180" y="402">0.01</text>
+    <line class="axis" x1="270" y1="380" x2="270" y2="386"/><text class="tick" x="270" y="402">0.1</text>
+    <line class="axis" x1="360" y1="380" x2="360" y2="386"/><text class="tick" x="360" y="402">1</text>
+    <line class="axis" x1="450" y1="380" x2="450" y2="386"/><text class="tick" x="450" y="402">10</text>
+    <line class="axis" x1="540" y1="380" x2="540" y2="386"/><text class="tick" x="540" y="402">100</text>
+    <line class="axis" x1="630" y1="380" x2="630" y2="386"/><text class="tick" x="630" y="402">1,000</text>
+    <line class="axis" x1="720" y1="380" x2="720" y2="386"/><text class="tick" x="720" y="402">10,000</text>
+  </g>
+  <text class="axislabel" x="450" y="430">Approximate energy (kJ/mol, log scale)</text>
+
+  <!-- "Weaker / Stronger" arrow -->
+  <g>
+    <line x1="180" y1="450" x2="720" y2="450" stroke="#444" stroke-width="1.3" marker-end="url(#stronger)"/>
+    <text class="tick" x="180" y="445" text-anchor="start" fill="#444" font-style="italic">weaker</text>
+    <text class="tick" x="720" y="445" text-anchor="end"  fill="#444" font-style="italic">stronger</text>
+  </g>
+  <defs>
+    <marker id="stronger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+  </defs>
+</svg>

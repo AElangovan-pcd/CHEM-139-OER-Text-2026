@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- (c) 2026 CHEM 139 OER. CC BY 4.0. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" width="720" height="420" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Figure 2.1 — Two ways to think about density</title>
+  <desc id="d">Two side-by-side cubes representing equal-volume samples of two substances with different densities. Left: gold cube, 19.3 g, 1 cm cubed. Right: water cube, 1.00 g, 1 cm cubed. Same volume, different mass equals different density.</desc>
+
+  <defs>
+    <linearGradient id="goldTop" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#F1D26B"/><stop offset="1" stop-color="#C49A2C"/>
+    </linearGradient>
+    <linearGradient id="goldRight" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#B8862A"/><stop offset="1" stop-color="#8E6720"/>
+    </linearGradient>
+    <linearGradient id="blueTop" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#86B0DC"/><stop offset="1" stop-color="#4F86C8"/>
+    </linearGradient>
+    <linearGradient id="blueRight" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#3F6CA3"/><stop offset="1" stop-color="#2C507A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left cube: gold (19.3 g) -->
+  <g transform="translate(80,110)">
+    <!-- top face -->
+    <polygon points="0,40 60,0 200,0 140,40" fill="url(#goldTop)" stroke="#5C4514" stroke-width="1.5"/>
+    <!-- right face -->
+    <polygon points="140,40 200,0 200,140 140,180" fill="url(#goldRight)" stroke="#5C4514" stroke-width="1.5"/>
+    <!-- front face -->
+    <rect x="0" y="40" width="140" height="140" fill="#D4AF37" stroke="#5C4514" stroke-width="1.5"/>
+    <text x="70" y="120" font-size="22" font-weight="700" fill="#1B1B1B" text-anchor="middle">19.3 g</text>
+    <text x="70" y="148" font-size="13" fill="#1B1B1B" text-anchor="middle">1 cm&#179;</text>
+    <!-- label below -->
+    <text x="100" y="210" font-size="16" font-weight="700" fill="#5C4514" text-anchor="middle">Gold</text>
+  </g>
+
+  <!-- Right cube: water (1.00 g) -->
+  <g transform="translate(440,110)">
+    <polygon points="0,40 60,0 200,0 140,40" fill="url(#blueTop)" stroke="#1F3957" stroke-width="1.5"/>
+    <polygon points="140,40 200,0 200,140 140,180" fill="url(#blueRight)" stroke="#1F3957" stroke-width="1.5"/>
+    <rect x="0" y="40" width="140" height="140" fill="#4F86C8" stroke="#1F3957" stroke-width="1.5"/>
+    <text x="70" y="120" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">1.00 g</text>
+    <text x="70" y="148" font-size="13" fill="#FFFFFF" text-anchor="middle">1 cm&#179;</text>
+    <text x="100" y="210" font-size="16" font-weight="700" fill="#1F3957" text-anchor="middle">Water (4 &#176;C)</text>
+  </g>
+
+  <!-- Center caption -->
+  <g>
+    <text x="360" y="40" font-size="16" font-weight="700" fill="#1B1B1B" text-anchor="middle">Same volume, different mass = different density</text>
+    <text x="360" y="62" font-size="12" fill="#444" text-anchor="middle">density = mass / volume</text>
+  </g>
+
+  <!-- Balance icon + arrow at bottom (gold is heavier per unit volume) -->
+  <g transform="translate(285,330)" stroke="#1B1B1B" stroke-width="2" fill="none">
+    <line x1="40" y1="0" x2="40" y2="40"/>
+    <line x1="0" y1="40" x2="80" y2="40"/>
+    <line x1="0" y1="40" x2="0" y2="55"/>
+    <line x1="80" y1="40" x2="80" y2="55"/>
+    <rect x="-15" y="55" width="30" height="14" fill="#EEE"/>
+    <rect x="65" y="55" width="30" height="14" fill="#EEE"/>
+  </g>
+  <text x="325" y="395" font-size="11" fill="#444" text-anchor="middle" font-style="italic">heavier per unit volume</text>
+  <line x1="285" y1="375" x2="220" y2="320" stroke="#1B1B1B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1B1B1B"/>
+    </marker>
+  </defs>
+</svg>

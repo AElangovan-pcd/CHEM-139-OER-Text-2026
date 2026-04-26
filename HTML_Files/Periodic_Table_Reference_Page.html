@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Periodic Table Reference Page</title>
+<style>
+:root {
+  --max-w: 800px;
+  --accent: #0b5cad;
+  --accent-soft: #e8f0fb;
+  --rule: #d8d8d8;
+  --figure-bg: #f3f3f3;
+  --figure-border: #b9b9b9;
+  --solution-bg: #eef7ee;
+  --solution-border: #2e7d32;
+  --text: #1a1a1a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  line-height: 1.65;
+  background: #fafafa;
+}
+header.site, footer.site {
+  background: #fff;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.85rem 1.5rem;
+}
+footer.site { border-top: 1px solid var(--rule); border-bottom: none; }
+header.site nav, footer.site nav {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font: 600 0.9rem -apple-system, system-ui, sans-serif;
+}
+header.site nav a, footer.site nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+header.site nav a:hover, footer.site nav a:hover { text-decoration: underline; }
+main.container {
+  max-width: var(--max-w);
+  margin: 1.5rem auto 3rem;
+  padding: 2.5rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+}
+@media (max-width: 700px) {
+  main.container { padding: 1.25rem; margin: 0.5rem; }
+}
+h1, h2, h3, h4 {
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  line-height: 1.25;
+  margin-block: 1.5em 0.5em;
+}
+h1 { font-size: 1.95rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; }
+h2 { font-size: 1.45rem; color: var(--accent); }
+h3 { font-size: 1.15rem; }
+h4 { font-size: 1.0rem; color: #333; }
+p { margin-block: 0.7em; }
+ol, ul { padding-left: 1.6rem; }
+li { margin-block: 0.25em; }
+table { border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+th, td { border: 1px solid var(--rule); padding: 0.4rem 0.7rem; text-align: left; vertical-align: top; }
+th { background: var(--accent-soft); }
+
+a { color: var(--accent); }
+strong { color: #000; }
+
+.problem-stem {
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+.problem-stem > strong:first-child {
+  display: inline-block;
+  min-width: 2em;
+  color: var(--accent);
+}
+.problem-subparts { margin-top: 0.2em; }
+.problem-subparts > li { margin-block: 0.3em; }
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 4px;
+}
+figure { margin: 1.2rem 0; text-align: center; }
+figure img { margin: 0 auto; }
+figcaption { font-size: 0.9rem; color: #555; margin-top: 0.4rem; font-style: italic; }
+
+.figure-description {
+  background: var(--figure-bg);
+  border-left: 4px solid var(--figure-border);
+  padding: 0.9rem 1.1rem;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+}
+.figure-description > p:first-child { margin-top: 0; }
+.figure-description > p:last-child { margin-bottom: 0; }
+
+details.solution {
+  background: var(--solution-bg);
+  border-left: 4px solid var(--solution-border);
+  padding: 0.55rem 1rem 0.55rem;
+  margin: 0.6rem 0 1.1rem;
+  border-radius: 4px;
+}
+details.solution[open] { padding-bottom: 0.9rem; }
+details.solution > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--solution-border);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--solution-border);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.solution > summary::-webkit-details-marker { display: none; }
+details.solution > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.solution[open] > summary::before { transform: rotate(90deg); }
+details.solution > summary:hover {
+  background: var(--solution-border);
+  color: #fff;
+}
+details.solution > *:not(summary) { margin-top: 0.6rem; }
+details.solution > p:empty { display: none; }
+
+@media print {
+  details.solution { background: none; border: 1px dashed #888; }
+  details.solution > summary { display: none; }
+}
+
+.toc { font-size: 1.05rem; }
+.toc li { margin: 0.4em 0; }
+
+/* Solution math chains rendered by MathJax. The plain-text fallback (before
+   MathJax loads) wraps in a slightly smaller serif. */
+p.math-chain {
+  text-align: left;
+  margin-block: 0.4em;
+  overflow-x: auto;
+}
+
+/* In case any <s> tags survive in solutions where MathJax was not applied
+   (e.g. multi-step prose mixing words and math), give the strikethrough a
+   bold red rule so cancellation is unmistakable. */
+details.solution s {
+  text-decoration: line-through;
+  text-decoration-color: #c0392b;
+  text-decoration-thickness: 0.12em;
+}
+</style>
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/cancel'] },
+  tex: {
+    packages: { '[+]': ['cancel'] },
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']]
+  },
+  svg: { fontCache: 'global' },
+  startup: {
+    typeset: true
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<header class="site"><nav>
+  <a href="Formula_and_Constant_Reference_Sheet.html" rel="prev">&larr; Previous</a>
+  <a href="index.html">Contents</a>
+  <a href="Book_Index.html" rel="next">Next &rarr;</a>
+</nav></header>
+<main class="container">
+<div class="doc"><h1><strong>Periodic Table Reference Page</strong></h1><p><em>Use this annotated reference page alongside the textbook. The 118-element table appears in Chapter 3, Table 3.6.</em></p><h2><strong>Anatomy of the Table</strong></h2><p>The periodic table is a 2-D map of the elements arranged by atomic number (Z), with chemically similar elements aligned in vertical columns (groups) and elements with the same outer-shell number (n) in horizontal rows (periods).</p><table><tr><td><p><strong>Annotated periodic table — block, region, and trend overlay.</strong></p><p><strong>Alt text: </strong>A standard wide-form periodic table colored to show s, p, d, f blocks; metals/nonmetals/metalloids; named groups; and major trend arrows.</p><p><strong>Description: </strong>An 18-column × 7-row periodic table with the f-block (14 columns) printed beneath the main grid. Color scheme: s-block (Groups 1–2 plus He) in light yellow; d-block (Groups 3–12) in light green; p-block (Groups 13–18 except He) in light blue; f-block in light pink. A heavy zig-zag stair-step line runs from B to At separating metals (left) from nonmetals (right). Six metalloid cells (B, Si, Ge, As, Sb, Te) are outlined with a dashed black border and labeled "metalloid." Group labels: Group 1 "Alkali metals" (excluding H); Group 2 "Alkaline-earth metals"; Group 17 "Halogens"; Group 18 "Noble gases." Period numbers 1–7 along the left edge; group numbers 1–18 (IUPAC) and IA–VIIIA / IB–VIIIB (older Roman) along the top. Two heavy trend arrows: (1) bold blue arrow pointing UP-AND-RIGHT, labeled "electronegativity, ionization energy increase"; (2) bold red arrow pointing DOWN-AND-LEFT, labeled "atomic radius, metallic character increase." Each cell shows the atomic number (top), symbol (center large), and atomic mass (bottom small). Use Arial 9 pt for symbols and 7 pt for masses.</p><p><strong><em>Caption: </em></strong><em>Annotated periodic table reference: blocks, metals/nonmetals/metalloids, major named groups, and the two diagonal trend directions.</em></p></td></tr></table><h2><strong>Trends — Quick Reference</strong></h2><table><thead><tr><th><p><strong>Trend</strong></p></th><th><p><strong>Across a period (left → right)</strong></p></th><th><p><strong>Down a group (top → bottom)</strong></p></th></tr></thead><tbody><tr><td><p>Atomic radius</p></td><td><p>DECREASES</p></td><td><p>INCREASES</p></td></tr><tr><td><p>Ionization energy</p></td><td><p>INCREASES</p></td><td><p>DECREASES</p></td></tr><tr><td><p>Electronegativity</p></td><td><p>INCREASES</p></td><td><p>DECREASES</p></td></tr><tr><td><p>Metallic character</p></td><td><p>DECREASES</p></td><td><p>INCREASES</p></td></tr><tr><td><p>Nonmetallic character</p></td><td><p>INCREASES</p></td><td><p>DECREASES</p></td></tr></tbody></table><h2><strong>Block ↔ Outer-Subshell Map</strong></h2><table><thead><tr><th><p><strong>Block</strong></p></th><th><p><strong>Groups</strong></p></th><th><p><strong>Outer subshell being filled</strong></p></th><th><p><strong>Example elements</strong></p></th></tr></thead><tbody><tr><td><p>s</p></td><td><p>1, 2</p></td><td><p>ns</p></td><td><p>H, He, Li, Mg, Cs</p></td></tr><tr><td><p>p</p></td><td><p>13–18</p></td><td><p>np</p></td><td><p>B, C, N, O, F, Cl, I, He</p></td></tr><tr><td><p>d</p></td><td><p>3–12</p></td><td><p>(n−1)d</p></td><td><p>Sc, Fe, Cu, Au, Hg</p></td></tr><tr><td><p>f</p></td><td><p>Lanthanides + Actinides</p></td><td><p>(n−2)f</p></td><td><p>Ce, Nd, U, Pu</p></td></tr></tbody></table><h2><strong>Named Groups and Their Common Behavior</strong></h2><p><strong>Group 1 — Alkali metals (Li, Na, K, Rb, Cs, Fr) — </strong>Very reactive metals; form +1 cations; react vigorously with water to give H₂.</p><p><strong>Group 2 — Alkaline-earth metals (Be, Mg, Ca, Sr, Ba, Ra) — </strong>Reactive metals; form +2 cations; less violent with water than Group 1.</p><p><strong>Group 17 — Halogens (F, Cl, Br, I, At) — </strong>Reactive nonmetals; form −1 anions; diatomic in elemental form (F₂, Cl₂, Br₂, I₂).</p><p><strong>Group 18 — Noble gases (He, Ne, Ar, Kr, Xe, Rn) — </strong>Full valence shells (ns² np⁶ except He = 1s²); essentially unreactive under ordinary conditions.</p><p><strong>Transition metals (d-block, Groups 3–12) — </strong>Often form multiple cation charges (Fe²⁺/Fe³⁺, Cu⁺/Cu²⁺); colored compounds; many catalytic uses.</p><p><strong>Lanthanides and actinides (f-block) — </strong>Used in magnets, lasers, and nuclear technology; radioactive past Z = 83.</p><h2><strong>Most Common Ion Charges by Group</strong></h2><table><thead><tr><th><p><strong>Group</strong></p></th><th><p><strong>Charge</strong></p></th><th><p><strong>Examples</strong></p></th></tr></thead><tbody><tr><td><p>1</p></td><td><p>+1</p></td><td><p>Na⁺, K⁺</p></td></tr><tr><td><p>2</p></td><td><p>+2</p></td><td><p>Mg²⁺, Ca²⁺</p></td></tr><tr><td><p>13</p></td><td><p>+3</p></td><td><p>Al³⁺</p></td></tr><tr><td><p>15</p></td><td><p>−3</p></td><td><p>N³⁻, P³⁻</p></td></tr><tr><td><p>16</p></td><td><p>−2</p></td><td><p>O²⁻, S²⁻</p></td></tr><tr><td><p>17</p></td><td><p>−1</p></td><td><p>F⁻, Cl⁻</p></td></tr><tr><td><p>18</p></td><td><p>0</p></td><td><p>Noble gases — no common ion</p></td></tr></tbody></table></div>
+</main>
+<footer class="site"><nav>
+  <a href="Formula_and_Constant_Reference_Sheet.html" rel="prev">&larr; Previous</a>
+  <a href="index.html">Contents</a>
+  <a href="Book_Index.html" rel="next">Next &rarr;</a>
+</nav></footer>
+<script>
+window.addEventListener("beforeprint", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    d.dataset.wasOpen = d.open ? "1" : "0";
+    d.open = true;
+  });
+});
+window.addEventListener("afterprint", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    d.open = d.dataset.wasOpen === "1";
+  });
+});
+
+// Swap the summary label between "Show solution" / "Hide solution" so the
+// pill mirrors the disclosure state.
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("details.solution").forEach(d => {
+    const summary = d.querySelector("summary");
+    if (!summary) return;
+    const setLabel = () => {
+      summary.textContent = d.open ? "Hide solution" : "Show solution";
+    };
+    setLabel();
+    d.addEventListener("toggle", setLabel);
+  });
+});
+</script>
+</body>
+</html>

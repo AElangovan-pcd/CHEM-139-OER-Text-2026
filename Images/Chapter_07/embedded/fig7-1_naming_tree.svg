@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- (c) 2026 CHEM 139 OER. CC BY 4.0. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1100" width="1080" height="1100" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Figure 7.1 — Naming decision tree</title>
+  <desc id="d">A flowchart that takes a chemical formula and routes it through Yes/No decisions to the correct naming rule. Branches by whether the formula starts with H, then by whether a metal is present, then by whether the metal has variable charge or whether a polyatomic ion is present. Acids branch into oxyacids and binary acids based on whether oxygen is in the formula.</desc>
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1B1B1B"/>
+    </marker>
+  </defs>
+
+  <style>
+    .start { fill:#DDDDDD; stroke:#444;    stroke-width:2; }
+    .dec   { fill:#FFFFFF; stroke:#1F4F8B; stroke-width:2; }
+    .term  { fill:#D6E8F7; stroke:#1F4F8B; stroke-width:2; }
+    .lab   { font-size:14px; fill:#0E2D52; text-anchor:middle; }
+    .labb  { font-size:14px; font-weight:700; fill:#0E2D52; text-anchor:middle; }
+    .yn    { font-size:13px; font-weight:700; fill:#1B1B1B; text-anchor:middle; }
+    .edge  { stroke:#1B1B1B; stroke-width:1.8; fill:none; marker-end:url(#ar); }
+    .secthdr { font-size:12px; font-weight:700; fill:#7A2A0A; text-anchor:middle; letter-spacing:1px; }
+  </style>
+
+  <!-- Section banners -->
+  <text class="secthdr" x="270"  y="22">ACID PATH</text>
+  <text class="secthdr" x="540"  y="22">START</text>
+  <text class="secthdr" x="810"  y="22">METAL / NONMETAL PATH</text>
+
+  <!-- ===== START + Q1 (top center) ===== -->
+  <rect class="start" x="430" y="40" width="220" height="50" rx="22"/>
+  <text class="labb" x="540" y="70">Start: chemical formula</text>
+  <line class="edge" x1="540" y1="90" x2="540" y2="118"/>
+
+  <polygon class="dec" points="540,120 700,180 540,240 380,180"/>
+  <text class="lab"  x="540" y="172">Does the formula</text>
+  <text class="labb" x="540" y="192">start with H?</text>
+
+  <!-- ===== Q1 YES -> Acid sub-tree (left side) ===== -->
+  <line class="edge" x1="380" y1="180" x2="220" y2="180"/>
+  <text class="yn" x="300" y="170">Yes</text>
+
+  <polygon class="dec" points="220,140 320,180 220,220 120,180"/>
+  <text class="labb" x="220" y="186">Aqueous?</text>
+
+  <line class="edge" x1="220" y1="220" x2="220" y2="248"/>
+  <text class="yn" x="234" y="240">Yes</text>
+  <polygon class="dec" points="220,250 320,300 220,350 120,300"/>
+  <text class="labb" x="220" y="306">Contains O?</text>
+
+  <!-- O? Yes (down) -> Oxyacid -->
+  <line class="edge" x1="220" y1="350" x2="220" y2="378"/>
+  <text class="yn" x="234" y="370">Yes</text>
+  <g>
+    <rect class="term" x="100" y="380" width="240" height="92" rx="10"/>
+    <text class="labb" x="220" y="406">Oxyacid</text>
+    <text class="lab"  x="220" y="426">-ate &#8594; -ic acid</text>
+    <text class="lab"  x="220" y="444">-ite &#8594; -ous acid</text>
+    <text class="lab"  x="220" y="462" font-style="italic">e.g., H&#8322;SO&#8324; sulfuric</text>
+  </g>
+
+  <!-- O? No (left) -> Binary acid -->
+  <line class="edge" x1="120" y1="300" x2="40" y2="300"/>
+  <text class="yn" x="80" y="290">No</text>
+  <g>
+    <rect class="term" x="-130" y="262" width="170" height="76" rx="10"/>
+    <text class="labb" x="-45" y="287">Binary acid</text>
+    <text class="lab"  x="-45" y="305">hydro- + -ic acid</text>
+    <text class="lab"  x="-45" y="325" font-style="italic">e.g., HCl hydrochloric</text>
+  </g>
+
+  <!-- Aqueous? No -> treat as molecular: small note pointing to right path -->
+  <line class="edge" x1="220" y1="140" x2="220" y2="105" stroke-dasharray="4 4"/>
+  <text class="yn" x="234" y="124">No</text>
+  <text class="lab" x="220" y="98" font-style="italic">treat as molecular &#8594;</text>
+
+  <!-- ===== Q1 NO -> down to Q2 (metal?) ===== -->
+  <line class="edge" x1="540" y1="240" x2="540" y2="288"/>
+  <text class="yn" x="558" y="265">No</text>
+
+  <polygon class="dec" points="540,290 700,350 540,410 380,350"/>
+  <text class="lab"  x="540" y="342">Is there a metal</text>
+  <text class="labb" x="540" y="362">in the formula?</text>
+
+  <!-- ===== Q2 YES -> right side: metal sub-tree ===== -->
+  <line class="edge" x1="700" y1="350" x2="820" y2="350"/>
+  <text class="yn" x="760" y="340">Yes</text>
+
+  <polygon class="dec" points="820,310 940,350 820,390 700,350"/>
+  <text class="lab"  x="820" y="346">Variable-charge</text>
+  <text class="labb" x="820" y="364">metal?</text>
+
+  <!-- Variable Yes -> Stock -->
+  <line class="edge" x1="940" y1="350" x2="980" y2="350"/>
+  <text class="yn" x="960" y="340">Yes</text>
+  <g>
+    <rect class="term" x="980" y="312" width="100" height="76" rx="10"/>
+    <text class="labb" x="1030" y="338">Stock</text>
+    <text class="lab"  x="1030" y="356">name + Roman</text>
+    <text class="lab"  x="1030" y="374">numeral + -ide</text>
+  </g>
+
+  <!-- Variable No -> Plain English -->
+  <line class="edge" x1="820" y1="390" x2="820" y2="418"/>
+  <text class="yn" x="836" y="410">No</text>
+  <g>
+    <rect class="term" x="730" y="420" width="180" height="76" rx="10"/>
+    <text class="labb" x="820" y="445">Use plain name</text>
+    <text class="lab"  x="820" y="465">metal + -ide</text>
+    <text class="lab"  x="820" y="483" font-style="italic">e.g., NaCl sodium chloride</text>
+  </g>
+
+  <!-- After metal naming, ask polyatomic? -->
+  <line class="edge" x1="820" y1="496" x2="820" y2="528"/>
+  <polygon class="dec" points="820,530 980,590 820,650 660,590"/>
+  <text class="lab"  x="820" y="582">Is there a polyatomic</text>
+  <text class="labb" x="820" y="602">ion in the formula?</text>
+
+  <!-- Polyatomic Yes -> use polyatomic-ion name -->
+  <line class="edge" x1="980" y1="590" x2="1020" y2="590"/>
+  <text class="yn" x="1000" y="580">Yes</text>
+  <g>
+    <rect class="term" x="1020" y="552" width="60" height="76" rx="10"/>
+    <text class="labb" x="1050" y="582">Use</text>
+    <text class="labb" x="1050" y="600">poly-</text>
+    <text class="labb" x="1050" y="618">atomic</text>
+  </g>
+
+  <!-- Polyatomic No -> -ide on second element -->
+  <line class="edge" x1="660" y1="590" x2="620" y2="590"/>
+  <text class="yn" x="640" y="580">No</text>
+  <g>
+    <rect class="term" x="440" y="552" width="180" height="76" rx="10"/>
+    <text class="labb" x="530" y="578">Use -ide ending</text>
+    <text class="lab"  x="530" y="598">on the second</text>
+    <text class="lab"  x="530" y="616">element of formula</text>
+  </g>
+
+  <!-- ===== Q2 NO -> Binary molecular (down/left) ===== -->
+  <line class="edge" x1="540" y1="410" x2="540" y2="468"/>
+  <text class="yn" x="558" y="445">No</text>
+  <g>
+    <rect class="term" x="430" y="470" width="220" height="120" rx="10"/>
+    <text class="labb" x="540" y="496">Binary molecular</text>
+    <text class="lab"  x="540" y="516">two nonmetals</text>
+    <text class="lab"  x="540" y="534">use Greek prefixes</text>
+    <text class="lab"  x="540" y="552">on each element</text>
+    <text class="lab"  x="540" y="572">+ -ide ending</text>
+  </g>
+
+  <!-- Greek prefixes reference panel -->
+  <g>
+    <rect x="120" y="700" width="840" height="120" rx="10" fill="#FFFAEA" stroke="#A56B00" stroke-width="1.5"/>
+    <text x="540" y="724" font-size="13" font-weight="700" fill="#7A2A0A" text-anchor="middle">Greek prefixes (used for binary molecular and oxyacid family roots)</text>
+    <text x="540" y="752" font-size="12" fill="#1B1B1B" text-anchor="middle">1 mono- &#8226; 2 di- &#8226; 3 tri- &#8226; 4 tetra- &#8226; 5 penta- &#8226; 6 hexa- &#8226; 7 hepta- &#8226; 8 octa- &#8226; 9 nona- &#8226; 10 deca-</text>
+    <text x="540" y="778" font-size="12" fill="#1B1B1B" text-anchor="middle" font-style="italic">"mono-" is dropped on the first element of a binary molecular name (CO is "carbon monoxide" not "monocarbon monoxide").</text>
+    <text x="540" y="800" font-size="12" fill="#1B1B1B" text-anchor="middle" font-style="italic">Worked examples: N&#8322;O = dinitrogen monoxide &#8226; PCl&#8325; = phosphorus pentachloride &#8226; SF&#8326; = sulfur hexafluoride</text>
+  </g>
+
+  <!-- Worked example panel -->
+  <g>
+    <rect x="120" y="850" width="840" height="200" rx="10" fill="#F2F7FB" stroke="#1F4F8B" stroke-width="1.5"/>
+    <text x="540" y="874" font-size="13" font-weight="700" fill="#0E2D52" text-anchor="middle">Worked routings</text>
+    <text x="140" y="900" font-size="12" fill="#1B1B1B">&#8226; CaCl&#8322; &#8594; H? No &#8594; metal? Yes &#8594; variable? No &#8594; polyatomic? No &#8594; <tspan font-weight="700">calcium chloride</tspan></text>
+    <text x="140" y="922" font-size="12" fill="#1B1B1B">&#8226; FeCl&#8323; &#8594; H? No &#8594; metal? Yes &#8594; variable? Yes &#8594; <tspan font-weight="700">iron(III) chloride</tspan></text>
+    <text x="140" y="944" font-size="12" fill="#1B1B1B">&#8226; Na&#8322;SO&#8324; &#8594; H? No &#8594; metal? Yes &#8594; variable? No &#8594; polyatomic? Yes &#8594; <tspan font-weight="700">sodium sulfate</tspan></text>
+    <text x="140" y="966" font-size="12" fill="#1B1B1B">&#8226; PCl&#8325; &#8594; H? No &#8594; metal? No &#8594; <tspan font-weight="700">phosphorus pentachloride</tspan></text>
+    <text x="140" y="988" font-size="12" fill="#1B1B1B">&#8226; HCl(aq) &#8594; H? Yes &#8594; aqueous? Yes &#8594; contains O? No &#8594; <tspan font-weight="700">hydrochloric acid</tspan></text>
+    <text x="140" y="1010" font-size="12" fill="#1B1B1B">&#8226; H&#8322;SO&#8324;(aq) &#8594; H? Yes &#8594; aqueous? Yes &#8594; contains O? Yes &#8594; -ate &#8594; <tspan font-weight="700">sulfuric acid</tspan></text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(740,1060)" font-size="12" fill="#1B1B1B">
+    <rect class="start" x="0"   y="0" width="22" height="14" rx="6"/><text x="32" y="11">start</text>
+    <polygon class="dec" points="100,7 112,0 124,7 112,14"/><text x="135" y="11">decision</text>
+    <rect class="term" x="200" y="0" width="22" height="14" rx="4"/><text x="232" y="11">naming rule</text>
+  </g>
+</svg>
