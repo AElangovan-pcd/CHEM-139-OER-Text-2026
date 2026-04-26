@@ -12,24 +12,121 @@ should be handled.
 
 ## TL;DR
 
+**Path C — single Common Cartridge import, recommended:**
+
 ```bash
 # 1. Build the preview HTML (always do this first; it reads from .docx).
 python .firecrawl/build_html.py
 
-# 2. Build the Canvas-tailored HTML.
+# 2. Build the Canvas-tailored HTML (sanitizer-friendly bodies).
 python .firecrawl/build_canvas.py
 
-# 3. For each chapter:
-#    Open HTML_Files_Canvas/Chapter_NN.html in a text editor, copy ALL of it.
-#    In Canvas: Pages -> + Page -> click </> (HTML editor) -> paste -> Save.
+# 3. Build a one-file Common Cartridge of all chapters + any referenced images.
+python .firecrawl/build_imscc.py
+
+# 4. In Canvas: Course -> Settings -> Import Course Content
+#    -> "Canvas Course Export Package" (or "Common Cartridge 1.x Package")
+#    -> upload CHEM_139_OER.imscc -> Import.
 ```
 
-Each Canvas Page now has working `<details>`/`<summary>` "Show solution"
-toggles, MathJax-rendered factor-label math (Canvas auto-typesets `\(...\)`
-and `\[...\]`), figure-description boxes, problem numbering, and inline
+Canvas creates one Module per chapter with the chapter Page inside.
+Images referenced by relative path are bundled into the cartridge and
+re-keyed to per-course Canvas File URLs **at import time**, which is
+why Path C avoids the per-instance `image_map.json` chore.
+
+**Path A — per-page paste, manual:** described in detail below; useful
+when you only need to refresh a single page or when your Canvas instance
+restricts cartridge imports.
+
+Each Canvas Page (whichever path you use) ends up with working
+`<details>`/`<summary>` "Show solution / Hide solution" toggles,
+MathJax-rendered factor-label math (Canvas auto-typesets `\(...\)` and
+`\[...\]`), figure-description boxes, problem numbering, and inline
 styling that survives the Canvas sanitizer.
 
-## Path A — One Canvas Page per chapter (recommended for student access)
+## Path C — Common Cartridge import (one-click, recommended)
+
+`.firecrawl/build_imscc.py` packages every Canvas-tailored chapter HTML
+(plus any referenced images) into a single
+[IMS Common Cartridge 1.1](https://www.imsglobal.org/cc/index.html) zip
+named `CHEM_139_OER.imscc`. Canvas accepts this format natively under
+*Course → Settings → Import Course Content → "Canvas Course Export
+Package"* (the same import widget also accepts "Common Cartridge 1.x
+Package"; either works).
+
+### What you get after import
+
+* **One Module per chapter** (organized by the manifest's
+  `<organizations>` tree). The order matches `PAGE_ORDER` in
+  `build_imscc.py` — Front Matter, Chapters 1–10, then the Reference
+  Pages module containing the formula sheet, periodic table, and index.
+* **One Canvas Page per HTML file**, with the same body markup, MathJax,
+  inlined CSS, and CSS-only Show/Hide toggles that the per-paste flow
+  (Path A) produces.
+* **Referenced images uploaded to Canvas Files** automatically. Canvas
+  rewrites every relative `<img src="…">` in the HTML to the per-course
+  Canvas File URL it generates. You don't manage IDs by hand and you
+  don't write an `image_map.json`.
+* **Images that aren't yet referenced** are NOT bundled — only `<img>`
+  targets that the build can resolve to a real file on disk get
+  included. As you add images to chapters, just rebuild the cartridge
+  and re-import.
+
+### When to choose Path C vs Path A
+
+| Need | Path |
+|---|---|
+| Initial deployment of all chapters at once | C (`.imscc`) |
+| Single-page bug fix mid-semester | A (paste-only) |
+| Two parallel Canvas courses sharing the same content | C, twice (Canvas re-keys File URLs per course) |
+| Your admin doesn't allow cartridge imports | A |
+| You want Canvas to handle all image URL bookkeeping | C |
+| You want to preview a draft chapter before publishing | A (creates a single unpublished Page) |
+
+### Re-imports
+
+Canvas treats a cartridge re-import as a content update. The dialog
+offers three conflict-resolution modes:
+
+* **"Add to existing course"** (default): pages with the same identifier
+  are overwritten; new pages are added; pages you've created manually
+  are untouched.
+* **"Adjust events and due dates"**: not relevant for static OER
+  content; leave unchecked.
+* **Selective import**: tick boxes to import only specific Modules /
+  Pages — useful for chapter-by-chapter rolling updates.
+
+The cartridge identifies pages by stable identifiers regenerated each
+build, so a strict "overwrite by identifier" match doesn't apply. Canvas
+matches on `<title>` text instead, which is why each `PAGE_ORDER` entry
+in `build_imscc.py` carries a unique, stable page title.
+
+### Cartridge anatomy (for the curious)
+
+The `.imscc` is just a ZIP with two top-level entries:
+
+```
+CHEM_139_OER.imscc
+├── imsmanifest.xml          # tree of modules + pages + resources
+└── web_resources/
+    ├── 00_Front_Matter.html
+    ├── Chapter_01.html
+    ├── …
+    ├── Chapter_10.html
+    ├── Formula_and_Constant_Reference_Sheet.html
+    ├── Periodic_Table_Reference_Page.html
+    ├── Book_Index.html
+    └── images/              # only if any chapter HTML references images
+        └── …
+```
+
+Unzip it with any standard tool to inspect; Canvas does the same on its
+side during import. Pages are listed as `webcontent` resources, which
+Canvas converts into Canvas Pages.
+
+---
+
+## Path A — One Canvas Page per chapter (manual paste)
 
 This is the path that `build_canvas.py` is designed for.
 

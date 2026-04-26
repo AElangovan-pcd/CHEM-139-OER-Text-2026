@@ -781,28 +781,32 @@ def _paragraph_to_latex(p):
 
 
 def mathjax_ify_solutions(soup):
-    """Replace math-chain paragraphs inside details.solution with MathJax LaTeX.
+    """Replace math-chain paragraphs anywhere in the doc with MathJax LaTeX.
 
     Restricted to paragraphs that contain at least one <s> strikethrough tag
-    -- i.e. paragraphs the dimensional-analysis rewriter has touched. This
-    avoids mangling free-form text in other chapters (where simple math
-    interleaves with prose like "addition gives 13.750") until those
-    chapters get their own rewrite pass.
+    AND match the math-chain heuristic. The strikethrough acts as an
+    explicit marker that the rewriter has been over this paragraph -- this
+    keeps free-form prose and unrewritten chapters untouched.
+
+    Originally this scanned only paragraphs inside <details class="solution">,
+    but the Worked Example "Step N —" math chains live inside table cells
+    (the EXAMPLE blocks are formatted as tables) and need the same
+    treatment. Scanning globally is safe because the <s>-tag prerequisite
+    keeps the conversion scoped to genuinely-rewritten paragraphs.
     """
     count = 0
-    for details in soup.find_all("details", class_="solution"):
-        for p in list(details.find_all("p")):
-            if not p.find(["s", "strike"]):
-                continue
-            if not _is_math_chain(p):
-                continue
-            latex = _paragraph_to_latex(p)
-            p.clear()
-            classes = p.get("class") or []
-            classes.append("math-chain")
-            p["class"] = classes
-            p.append(NavigableString(f"\\[{latex}\\]"))
-            count += 1
+    for p in list(soup.find_all("p")):
+        if not p.find(["s", "strike"]):
+            continue
+        if not _is_math_chain(p):
+            continue
+        latex = _paragraph_to_latex(p)
+        p.clear()
+        classes = p.get("class") or []
+        classes.append("math-chain")
+        p["class"] = classes
+        p.append(NavigableString(f"\\[{latex}\\]"))
+        count += 1
     return count
 
 
