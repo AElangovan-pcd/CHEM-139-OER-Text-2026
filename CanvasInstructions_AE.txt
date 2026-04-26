@@ -1,0 +1,66 @@
+● Embedding the HTML files in Canvas Pages
+
+  Canvas's Page HTML editor only accepts a subset of HTML — it will strip <script>, <style> blocks, <head>, and external CDN links on save. So you cannot just
+  paste a full chapter file in. Two practical paths:
+
+  Path A — One Canvas Page per chapter (recommended for student access)
+
+  For each chapter:
+
+  1. Open the chapter HTML in a browser, view source, and copy only the contents of <main class="container">…</main> (the body, not the wrapping page chrome). Or
+  strip everything outside that block.
+  2. In Canvas: Pages → + Page → HTML editor (the </> icon, top right of the editor). Paste the body markup.
+  3. Move CSS into the page itself: Canvas drops <style> on save, so styling has to be inlined or attached to a Theme. Two options:
+    - Inline-it once with a tool like https://pypi.org/project/premailer/ or juice (npm) before pasting. This expands the rules in CSS from build_html.py into
+  style="…" attributes that Canvas keeps.
+    - Ask your Canvas admin to drop the CSS into the institution's Global CSS (Theme Editor). Then you only paste markup — styling applies everywhere. Cleaner but
+  needs admin help.
+  4. MathJax: Canvas already ships MathJax 3 globally — it scans pages on render. But its TeX delimiters are \(…\) and \[…\], which is what build_html.py already
+  emits, so the equations should auto-typeset on save. The cancel extension is not in the default Canvas MathJax bundle; if \cancel{…} doesn't render, ask your
+  admin to enable the extension via custom JS, or pre-render to SVG (next bullet).
+  5. Alternative for math: pre-render each \[…\] block to SVG with mathjax-node-cli (mjpage command) so the page ships fully-rendered <svg> and doesn't depend on
+  Canvas MathJax at all. Works without admin help. I can add a flag to build_html.py for this if you want.
+  6. Show/Hide solution toggles: <details>/<summary> survive the Canvas sanitizer in current builds, and the toggle is native HTML so no JS is needed. The pill
+  styling won't survive without inlined CSS, but the disclosure still works. The "Show solution → Hide solution" label swap does rely on JS (which Canvas strips),
+  so the label will read "Show solution" both states. To get the swap back without JS, replace the <summary> content with a CSS-driven swap:
+  <summary><span class="show">Show solution</span><span class="hide">Hide solution</span></summary>
+  6.  plus the inlined rules .hide{display:none} details[open] .show{display:none} details[open] .hide{display:inline}. I can add this option to the build for a
+  Canvas-targeted variant.
+
+  Path B — Host the HTML elsewhere, embed via iframe (cleanest)
+
+  Push HTML_Files/ to any static host: GitHub Pages, Netlify, Vercel, or Canvas's own Files area (upload the whole folder, then use the file URLs). Then in each
+  Canvas Page:
+
+  <iframe src="https://<host>/Chapter_02.html"
+          width="100%" height="1200"
+          style="border:0;"
+          loading="lazy"></iframe>
+
+  This preserves your CSS, MathJax CDN, and the JS toggle exactly as built. Canvas usually allows iframes from the same Canvas instance without issues, and from
+  external hosts after your admin whitelists the domain (Account → Settings → CSP). For Canvas-hosted iframes, the URL pattern is
+  https://<your>.instructure.com/courses/<id>/files/<file_id>/preview.
+
+  About images
+
+  Right now HTML_Files/ doesn't reference any images — the figures live in the .docx chapters as FIGURE DESCRIPTION text blocks (the deliberate text-first
+  accessibility choice from CLAUDE.md). When you do start adding images:
+
+  1. Upload images to Canvas Files (one folder per chapter mirrors Images/Chapter_NN/).
+  2. Insert via the Rich Content Editor with the image picker — Canvas inserts <img src="/courses/<id>/files/<file_id>/preview" data-api-endpoint="…"
+  data-api-returntype="File">. Do not hand-write src="/files/123"-style URLs; Canvas may not authenticate them and they'll break for students who don't have direct
+   file access.
+  3. Cross-page image reuse: the same Canvas file ID works on every page, so you upload once and reference across chapters. Add alt="…" from your existing alt text
+   in the figure description blocks.
+  4. For iframe path (B), host images alongside the HTML and use relative paths (<img src="images/figure_2_1.svg">) — much simpler.
+
+  What I can automate for you
+
+  If you want, I can add a --canvas flag to build_html.py that emits a parallel HTML_Files_Canvas/ directory:
+
+  - Body-only HTML (no <head>, no nav header/footer)
+  - All CSS inlined onto each element
+  - The CSS-only "Show solution / Hide solution" trick instead of JS
+  - Optional pre-rendered SVG math via mjpage (so it works even without the Canvas cancel extension)
+
+  That gives you copy-paste-ready Canvas markup for each chapter. Want me to add it now?
