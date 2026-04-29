@@ -227,6 +227,51 @@ details.solution s {
   text-decoration-color: #c0392b;
   text-decoration-thickness: 0.12em;
 }
+
+/* Instructor Notes appear in chapters but are intended for instructors, not
+   students. The body is collapsed by default behind a labeled pill — the
+   "Instructor Notes" Heading 2 stays visible above so an instructor can find
+   the section, but a student opening the chapter sees only the closed pill. */
+details.instructor-notes {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  padding: 0.55rem 1rem;
+  margin: 0.4rem 0 1.4rem;
+  border-radius: 4px;
+}
+details.instructor-notes[open] { padding-bottom: 0.9rem; }
+details.instructor-notes > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.instructor-notes > summary::-webkit-details-marker { display: none; }
+details.instructor-notes > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.instructor-notes[open] > summary::before { transform: rotate(90deg); }
+details.instructor-notes > summary:hover {
+  background: var(--accent);
+  color: #fff;
+}
+details.instructor-notes > *:not(summary) { margin-top: 0.6rem; }
+@media print {
+  details.instructor-notes { background: none; border: 1px dashed #888; }
+  details.instructor-notes > summary { display: none; }
+}
 """
 
 JS_PRINT_OPEN = r"""
@@ -242,18 +287,22 @@ window.addEventListener("afterprint", () => {
   });
 });
 
-// Swap the summary label between "Show solution" / "Hide solution" so the
-// pill mirrors the disclosure state.
+// Swap the summary label so each pill mirrors its disclosure state.
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
-    const summary = d.querySelector("summary");
-    if (!summary) return;
-    const setLabel = () => {
-      summary.textContent = d.open ? "Hide solution" : "Show solution";
-    };
-    setLabel();
-    d.addEventListener("toggle", setLabel);
-  });
+  const bind = (selector, openLabel, closedLabel) => {
+    document.querySelectorAll(selector).forEach(d => {
+      const summary = d.querySelector("summary");
+      if (!summary) return;
+      const setLabel = () => {
+        summary.textContent = d.open ? openLabel : closedLabel;
+      };
+      setLabel();
+      d.addEventListener("toggle", setLabel);
+    });
+  };
+  bind("details.solution", "Hide solution", "Show solution");
+  bind("details.instructor-notes",
+       "Hide Instructor Notes", "Show Instructor Notes");
 });
 """
 
@@ -484,6 +533,56 @@ def wrap_solutions(soup):
             details.append(nxt.extract())
             nxt = nxt_next
     return count
+
+
+def wrap_instructor_notes(soup):
+    """Collapse the chapter's 'Instructor Notes' section behind a closed pill.
+
+    Finds the first 'Instructor Notes' h1/h2/h3 inside the document body and
+    moves every following sibling, up to the next h1/h2 (or end of document),
+    into a `<details class="instructor-notes">` placed immediately after the
+    heading. The heading itself stays in the flow so an instructor can locate
+    the section; the body is hidden until the pill is clicked.
+    """
+    doc = soup.find("div", class_="doc")
+    if doc is None:
+        return 0
+
+    target = None
+    for h in doc.find_all(["h1", "h2", "h3"]):
+        if h.get_text(" ", strip=True).lower().startswith("instructor notes"):
+            target = h
+            break
+    if target is None:
+        return 0
+
+    siblings = []
+    nxt = target.next_sibling
+    while nxt is not None:
+        nxt_after = nxt.next_sibling
+        if isinstance(nxt, NavigableString):
+            if str(nxt).strip() == "":
+                nxt = nxt_after
+                continue
+            siblings.append(nxt)
+            nxt = nxt_after
+            continue
+        if nxt.name in ("h1", "h2"):
+            break
+        siblings.append(nxt)
+        nxt = nxt_after
+
+    if not siblings:
+        return 0
+
+    details = soup.new_tag("details", **{"class": "instructor-notes"})
+    summary = soup.new_tag("summary")
+    summary.string = "Show Instructor Notes"
+    details.append(summary)
+    target.insert_after(details)
+    for s in siblings:
+        details.append(s.extract())
+    return 1
 
 
 def style_figure_descriptions(soup):
@@ -854,9 +953,10 @@ def convert_one(docx_path):
     n_solutions = wrap_solutions(soup)
     n_renumbered = restructure_problem_sets(soup)
     n_math = mathjax_ify_solutions(soup)
+    n_instructor = wrap_instructor_notes(soup)
     for ol in soup.find_all("ol", attrs={"data-next-question": True}):
         del ol["data-next-question"]
-    return str(soup), n_solutions, n_splits, n_renumbered, n_math, result.messages
+    return str(soup), n_solutions, n_splits, n_renumbered, n_math, n_instructor, result.messages
 
 
 def build_index(files):
@@ -883,14 +983,14 @@ def main():
         next_link = files[i + 1][0] if i + 1 < len(files) else None
         print(f"  {src.name} -> {outname}")
         try:
-            body, n_sol, n_splits, n_renum, n_math, _msgs = convert_one(src)
+            body, n_sol, n_splits, n_renum, n_math, n_inst, _msgs = convert_one(src)
         except Exception as e:
             print(f"    ERROR: {e}")
             continue
         total_solutions += n_sol
         page = build_page(label, body, prev_link, next_link)
         (OUT / outname).write_text(page, encoding="utf-8")
-        print(f"    {n_sol} solutions wrapped, {n_splits} merged lists split, {n_renum} problems renumbered, {n_math} math chains -> LaTeX")
+        print(f"    {n_sol} solutions wrapped, {n_splits} merged lists split, {n_renum} problems renumbered, {n_math} math chains -> LaTeX, {n_inst} instructor-notes collapsed")
     (OUT / "index.html").write_text(build_index(files), encoding="utf-8")
     print(f"\nTotal: {total_solutions} solution blocks across {len(files)} files.")
     print(f"Open: {OUT / 'index.html'}")

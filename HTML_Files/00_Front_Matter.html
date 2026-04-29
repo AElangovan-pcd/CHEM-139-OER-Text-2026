@@ -169,6 +169,51 @@ details.solution s {
   text-decoration-color: #c0392b;
   text-decoration-thickness: 0.12em;
 }
+
+/* Instructor Notes appear in chapters but are intended for instructors, not
+   students. The body is collapsed by default behind a labeled pill — the
+   "Instructor Notes" Heading 2 stays visible above so an instructor can find
+   the section, but a student opening the chapter sees only the closed pill. */
+details.instructor-notes {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  padding: 0.55rem 1rem;
+  margin: 0.4rem 0 1.4rem;
+  border-radius: 4px;
+}
+details.instructor-notes[open] { padding-bottom: 0.9rem; }
+details.instructor-notes > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.instructor-notes > summary::-webkit-details-marker { display: none; }
+details.instructor-notes > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.instructor-notes[open] > summary::before { transform: rotate(90deg); }
+details.instructor-notes > summary:hover {
+  background: var(--accent);
+  color: #fff;
+}
+details.instructor-notes > *:not(summary) { margin-top: 0.6rem; }
+@media print {
+  details.instructor-notes { background: none; border: 1px dashed #888; }
+  details.instructor-notes > summary { display: none; }
+}
 </style>
 <script>
 window.MathJax = {
@@ -193,7 +238,7 @@ window.MathJax = {
   <a href="Chapter_01.html" rel="next">Next &rarr;</a>
 </nav></header>
 <main class="container">
-<div class="doc"><h1><strong>Preface and License</strong></h1><p><strong>CHEM 139 — General Chemistry Prep</strong></p><p><em>An Open Educational Resource (OER) Textbook for Community-College Introductory Chemistry · 2026 Edition</em></p><h2><strong>License</strong></h2><p>This work is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0). You are free to share (copy and redistribute the material in any medium or format) and adapt (remix, transform, and build upon the material) for any purpose, even commercially, under the following terms: you must give appropriate credit, provide a link to the license, and indicate if changes were made. The full license text is available at https://creativecommons.org/licenses/by/4.0/.</p><h2><strong>Recommended Citation</strong></h2><p>CHEM 139 OER Textbook (2026 ed.). General Chemistry Prep for Community-College Students. Open Educational Resource. CC BY 4.0.</p><h2><strong>Scope and Audience</strong></h2><p>This textbook is designed as the sole required course resource for a one-quarter (or one-semester) introductory chemistry course at the community-college level. It is suitable for non-majors, students preparing for allied-health programs, and students returning to science after a long absence. The book assumes only high-school algebra and no prior chemistry coursework. Its scope and sequence are aligned with widely adopted introductory chemistry curricula and cover the topics typically expected for transfer credit to a four-year general chemistry sequence.</p><h2><strong>Chapter Map</strong></h2><ol><li>Chapter 1 — The Science of Chemistry and the Numbers of Measurement (combines two introductory units on the scientific method and on measurement, sig figs, and scientific notation).</li><li>Chapter 2 — Unit Systems and Dimensional Analysis (SI units, metric prefixes, conversion factors, density, percent error, temperature scales).</li><li>Chapter 3 — Basic Concepts About Matter (states, properties, mixtures, elements, compounds, abundance, symbols).</li><li>Chapter 4 — Atoms, Molecules, and Subatomic Particles (Dalton's theory, atomic number, isotopes, atomic mass, evidence for the nucleus).</li><li>Chapter 5 — Electronic Structure and Chemical Periodicity (shells, subshells, orbitals, electron configurations, periodic trends).</li><li>Chapter 6 — Chemical Bonds (ionic, covalent, Lewis structures, VSEPR, electronegativity, polarity).</li><li>Chapter 7 — Chemical Nomenclature (binary ionic, polyatomic-ion compounds, binary molecular, acids).</li><li>Chapter 8 — The Mole Concept and Chemical Formulas (formula mass, mole, Avogadro's number, percent composition, empirical and molecular formulas).</li><li>Chapter 9 — Chemical Calculations Involving Chemical Equations (balancing, reaction classes, stoichiometry, limiting reactant, percent yield).</li><li>Chapter 10 — States of Matter (KMT, solids, liquids, intermolecular forces, water anomalies).</li></ol><h2><strong>How to Use This Book — for Students</strong></h2><p>Each chapter follows the same structure: a chapter opener that connects the topic to a real-world application; a list of learning outcomes; sectional prose with embedded worked examples; reference tables; figure descriptions; a concepts-to-remember summary; a key-terms glossary; a graded set of practice problems with full solutions; multi-concept problems; and a 10-question multiple-choice practice test with answer key. To learn from a chapter, read the prose, work each example by hand before reading the solution, then attempt practice problems in order before checking solutions. The multiple-choice test at the end is a self-diagnostic for what to review.</p><h2><strong>How to Use This Book — for Instructors</strong></h2><p>Each chapter ends with an Instructor Notes section that flags common student difficulties, suggests in-class activities, and lists laboratory connections. Because the book is CC BY 4.0, you may reorder, remix, edit, or excerpt material freely; the only license requirement is attribution. Suggested course pacing for a one-quarter (10-week) course: two weeks on Chapter 1; one week each on Chapters 2 through 10. A 15-week semester course can spend additional time on stoichiometry (Chapter 9) and bonding (Chapter 6) and add introductory laboratory chapters not included here.</p><p>Numerical data in tables are drawn from public-domain sources (NIST, IUPAC, BIPM, CODATA, USGS, CRC Handbook of Chemistry and Physics). Atomic masses follow the IUPAC 2021 standard atomic weights. Constants follow CODATA 2018 recommendations.</p><h2><strong>Figure Sources and Acknowledgments</strong></h2><p>All figures in this edition are presented as detailed FIGURE DESCRIPTION blocks (alt-text, reconstruction description, and caption) rather than embedded raster images, to ensure accessibility under WCAG 2.2 guidelines and to allow instructors and graphic designers to produce visuals consistent with their preferred style. Where a figure description corresponds in scope to a widely-used open educational figure (for example, the periodic-table layout, mole-map triangle, VSEPR shapes, atomic-orbital shapes, or the gold-foil-experiment schematic), instructors who choose to embed an actual image should source it from an open educational resource and include a visible attribution line in the caption (e.g., "Adapted from OpenStax Chemistry 2e, Figure X.Y, CC BY 4.0" or "Adapted from LibreTexts Introductory Chemistry, CC BY-SA 4.0"). A consolidated image-credits page should accompany any future edition that embeds external images.</p><h2><strong>Accessibility Statement</strong></h2><p>This textbook is designed to meet the WCAG 2.2 accessibility guidelines. Every figure is described in text suitable for screen readers; tables include explicit headers and units; color is never used as the sole means of conveying information; mathematical notation is rendered in plain text where possible; and key terms are defined at first use and again in chapter glossaries. Suggestions for accessibility improvements are welcomed.</p></div>
+<div class="doc"><h1><strong>Preface and License</strong></h1><p><strong>CHEM 139 — General Chemistry Prep</strong></p><p><em>An Open Educational Resource (OER) Textbook for Community-College Introductory Chemistry · 2026 Edition</em></p><h2>A Note from the Author</h2><p>This text was written for one specific student: someone beginning General Chemistry — often at a community college, often working a job, often without a chemistry background — who picks up the book at home, late at night, with a problem set due tomorrow and no tutor or instructor on call. Everything in here is shaped by that student's situation.</p><p>The book is <strong>deliberately compact</strong>. Concepts are introduced crisply, with just enough detail to support the next idea, and historical context appears only where it genuinely aids understanding. There are no decorative figures, no marketing-driven sidebars, no chapter-opening photo essays. Every figure earns its place by being referenced in the surrounding text; every worked example is followed by full step-by-step reasoning, not just an answer.</p><p>The book is also <strong>deliberately self-contained</strong>. Each Worked Example shows its work in dimensional-analysis form so you can follow which units cancel and why. Practice Problems and Multi-Concept Problems carry full solutions, not just answer keys, so a student studying alone at midnight can check both their answer and their reasoning. The Multiple-Choice practice tests include a “Worked Rationales” section that explains each correct answer in one sentence.</p><p>Finally, this book is <strong>free</strong>. It is published as an Open Educational Resource under a Creative Commons Attribution 4.0 International (CC BY 4.0) license, with no print-edition price tag, no online-homework upcharge, and no access code. If you are a student reading this because the alternative was a $250 textbook you couldn't afford, this book exists for you.</p><p><em>— A. Elangovan PhD, Chemistry Professor, Pierce College, WA</em></p><h2><strong>License</strong></h2><p>This work is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0). You are free to share (copy and redistribute the material in any medium or format) and adapt (remix, transform, and build upon the material) for any purpose, even commercially, under the following terms: you must give appropriate credit, provide a link to the license, and indicate if changes were made. The full license text is available at https://creativecommons.org/licenses/by/4.0/.</p><h2><strong>Recommended Citation</strong></h2><p>CHEM 139 OER Textbook (2026 ed.). General Chemistry Prep for Community-College Students. Open Educational Resource. CC BY 4.0.</p><h2><strong>Scope and Audience</strong></h2><p>This textbook is designed as the sole required course resource for a one-quarter (or one-semester) introductory chemistry course at the community-college level. It is suitable for non-majors, students preparing for allied-health programs, and students returning to science after a long absence. The book assumes only high-school algebra and no prior chemistry coursework. Its scope and sequence are aligned with widely adopted introductory chemistry curricula and cover the topics typically expected for transfer credit to a four-year general chemistry sequence.</p><h2><strong>Chapter Map</strong></h2><ol><li>Chapter 1 — The Science of Chemistry and the Numbers of Measurement (combines two introductory units on the scientific method and on measurement, sig figs, and scientific notation).</li><li>Chapter 2 — Unit Systems and Dimensional Analysis (SI units, metric prefixes, conversion factors, density, percent error, temperature scales).</li><li>Chapter 3 — Basic Concepts About Matter (states, properties, mixtures, elements, compounds, abundance, symbols).</li><li>Chapter 4 — Atoms, Molecules, and Subatomic Particles (Dalton's theory, atomic number, isotopes, atomic mass, evidence for the nucleus).</li><li>Chapter 5 — Electronic Structure and Chemical Periodicity (shells, subshells, orbitals, electron configurations, periodic trends).</li><li>Chapter 6 — Chemical Bonds (ionic, covalent, Lewis structures, VSEPR, electronegativity, polarity).</li><li>Chapter 7 — Chemical Nomenclature (binary ionic, polyatomic-ion compounds, binary molecular, acids).</li><li>Chapter 8 — The Mole Concept and Chemical Formulas (formula mass, mole, Avogadro's number, percent composition, empirical and molecular formulas).</li><li>Chapter 9 — Chemical Calculations Involving Chemical Equations (balancing, reaction classes, stoichiometry, limiting reactant, percent yield).</li><li>Chapter 10 — States of Matter (KMT, solids, liquids, intermolecular forces, water anomalies).</li></ol><h2><strong>How to Use This Book — for Students</strong></h2><p>Each chapter follows the same structure: a chapter opener that connects the topic to a real-world application; a list of learning outcomes; sectional prose with embedded worked examples; reference tables; figure descriptions; a concepts-to-remember summary; a key-terms glossary; a graded set of practice problems with full solutions; multi-concept problems; and a 10-question multiple-choice practice test with answer key. To learn from a chapter, read the prose, work each example by hand before reading the solution, then attempt practice problems in order before checking solutions. The multiple-choice test at the end is a self-diagnostic for what to review.</p><h2><strong>How to Use This Book — for Instructors</strong></h2><p>Each chapter ends with an Instructor Notes section that flags common student difficulties, suggests in-class activities, and lists laboratory connections. Because the book is CC BY 4.0, you may reorder, remix, edit, or excerpt material freely; the only license requirement is attribution. Suggested course pacing for a one-quarter (10-week) course: two weeks on Chapter 1; one week each on Chapters 2 through 10. A 15-week semester course can spend additional time on stoichiometry (Chapter 9) and bonding (Chapter 6) and add introductory laboratory chapters not included here.</p><p>Numerical data in tables are drawn from public-domain sources (NIST, IUPAC, BIPM, CODATA, USGS, CRC Handbook of Chemistry and Physics). Atomic masses follow the IUPAC 2021 standard atomic weights. Constants follow CODATA 2018 recommendations.</p><h2><strong>Figure Sources and Acknowledgments</strong></h2><p>All figures in this edition are presented as detailed FIGURE DESCRIPTION blocks (alt-text, reconstruction description, and caption) rather than embedded raster images, to ensure accessibility under WCAG 2.2 guidelines and to allow instructors and graphic designers to produce visuals consistent with their preferred style. Where a figure description corresponds in scope to a widely-used open educational figure (for example, the periodic-table layout, mole-map triangle, VSEPR shapes, atomic-orbital shapes, or the gold-foil-experiment schematic), instructors who choose to embed an actual image should source it from an open educational resource and include a visible attribution line in the caption (e.g., "Adapted from OpenStax Chemistry 2e, Figure X.Y, CC BY 4.0" or "Adapted from LibreTexts Introductory Chemistry, CC BY-SA 4.0"). A consolidated image-credits page should accompany any future edition that embeds external images.</p><h2><strong>Accessibility Statement</strong></h2><p>This textbook is designed to meet the WCAG 2.2 accessibility guidelines. Every figure is described in text suitable for screen readers; tables include explicit headers and units; color is never used as the sole means of conveying information; mathematical notation is rendered in plain text where possible; and key terms are defined at first use and again in chapter glossaries. Suggestions for accessibility improvements are welcomed.</p></div>
 </main>
 <footer class="site"><nav>
   <span></span>
@@ -213,18 +258,22 @@ window.addEventListener("afterprint", () => {
   });
 });
 
-// Swap the summary label between "Show solution" / "Hide solution" so the
-// pill mirrors the disclosure state.
+// Swap the summary label so each pill mirrors its disclosure state.
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
-    const summary = d.querySelector("summary");
-    if (!summary) return;
-    const setLabel = () => {
-      summary.textContent = d.open ? "Hide solution" : "Show solution";
-    };
-    setLabel();
-    d.addEventListener("toggle", setLabel);
-  });
+  const bind = (selector, openLabel, closedLabel) => {
+    document.querySelectorAll(selector).forEach(d => {
+      const summary = d.querySelector("summary");
+      if (!summary) return;
+      const setLabel = () => {
+        summary.textContent = d.open ? openLabel : closedLabel;
+      };
+      setLabel();
+      d.addEventListener("toggle", setLabel);
+    });
+  };
+  bind("details.solution", "Hide solution", "Show solution");
+  bind("details.instructor-notes",
+       "Hide Instructor Notes", "Show Instructor Notes");
 });
 </script>
 </body>
