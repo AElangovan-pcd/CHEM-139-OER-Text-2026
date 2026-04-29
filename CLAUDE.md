@@ -33,10 +33,14 @@ Three Python scripts in `.firecrawl/` turn the `.docx` chapters into the three p
 | Command | Output | Use |
 |---|---|---|
 | `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes. |
-| `python .firecrawl/build_canvas.py` | `HTML_Files_Canvas/` | One file per chapter, pasteable into a Canvas Page's `</>` editor. Inlines CSS, swaps the JS toggle for a CSS-only `<details>` equivalent, strips any `<script>` Canvas would reject. |
+| `python .firecrawl/build_canvas.py [--image-map image_map.json]` | `HTML_Files_Canvas/` | One file per chapter, pasteable into a Canvas Page's `</>` editor. Inlines CSS, swaps the JS toggle for a CSS-only `<details>` equivalent, strips any `<script>` Canvas would reject. The optional `--image-map` flag rewrites every `<img src="…">` against a flat `{relative_path: canvas_url}` JSON so the same `.docx` source can ship to multiple Canvas instances without baking in course-specific file IDs. See `CANVAS_DEPLOYMENT.md` → *Images*. |
 | `python .firecrawl/build_imscc.py` | `CHEM_139_OER.imscc` | IMS Common Cartridge for one-shot import into Canvas (Settings → Import Course Content → Common Cartridge). This is the preferred deployment path; see `CANVAS_DEPLOYMENT.md`. |
 
 After any non-trivial editorial change, rebuild **all three** so they stay in sync. The IMSCC bundle is what gets imported to Canvas; the loose Canvas HTML is the fallback for one-off page edits; the standalone HTML is for local preview.
+
+### CI: GitHub Pages auto-publish
+
+`.github/workflows/pages.yml` runs `build_html.py` on every push to `main` and on manual dispatch, then deploys the result to <https://aelangovan-pcd.github.io/CHEM-139-OER-Text-2026/>. The deployed site is regenerated from the `.docx` sources each run; the committed `HTML_Files/` is just a convenience snapshot for in-repo review and is not the source of truth for what students see. Only `build_html.py` runs in CI — Canvas (`build_canvas.py`) and IMSCC (`build_imscc.py`) builds are still local-only because they're tied to a specific Canvas course's import workflow.
 
 ## Reading and editing `.docx` from Claude Code
 
