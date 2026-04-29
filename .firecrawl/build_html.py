@@ -702,7 +702,16 @@ _LABEL_PREFIX_RE = re.compile(
 
 def _split_label_and_math(s):
     """If s starts with an English-language label like 'Mass of solution =',
-    return (label_text, sep, rest); otherwise return ("", "", s)."""
+    return (label_text, sep, rest); otherwise return ("", "", s).
+
+    Reject candidates whose "label" actually contains math content (strike
+    markers, ``×``/``÷``/``→`` operators, or fraction-style ``(.../...)``).
+    A Worked Example "Step 3 — 75.0 ⌐ft¬ × (...) = 900. in" line ends with
+    ``=`` and looks superficially label-like, but emitting it as a label
+    drops the math content into ``\\text{...}`` *before* strike-sentinel
+    substitution runs -- so the ``\\x01...\\x02`` markers survive into
+    output and Canvas's /equation_images/ endpoint chokes on them.
+    """
     m = _LABEL_PREFIX_RE.match(s)
     if not m:
         return "", "", s
@@ -712,6 +721,14 @@ def _split_label_and_math(s):
     # "Student X". A bare single math-token like "T_K" or "V" or "ρ"
     # shouldn't be wrapped -- those are math variables.
     if " " not in label and not re.match(r"Student\s+[A-Z]", label):
+        return "", "", s
+    # Reject if the candidate label contains math content. Strike markers
+    # are the unambiguous signal; ``×``/``÷``/``→`` and ``(.../...)`` cover
+    # the rest. Without this guard, "Step N — 75.0 ⌐ft¬ × (...) =" would
+    # match as a 38-char "label" and bypass cancel-marker substitution.
+    if any(c in label for c in ("\x01", "\x02", "×", "÷", "→")):
+        return "", "", s
+    if re.search(r"\([^()]*?/[^()]*?\)", label):
         return "", "", s
     return label, sep, s[m.end():]
 
@@ -726,6 +743,22 @@ def _math_text_to_latex(s):
     # 0. Pull off any leading English-language label so it renders as text.
     label, sep, body = _split_label_and_math(s)
     s = body
+    # 0b. Peel a trailing English parenthetical off the math expression so
+    #     it renders upright via \text{...} instead of in italic math mode.
+    #     Example: "... = 900. in (the period denotes the exact 3-sig-fig
+    #     result)." -> math part is "... = 900. in", trailing is
+    #     "(the period denotes the exact 3-sig-fig result)." rendered upright.
+    trailing = ""
+    m_trail = re.search(r"\s*(\([^()]{6,}\)\.?)\s*$", s)
+    if m_trail:
+        cand = m_trail.group(1)
+        # English parentheticals contain spaces and lowercase letters and
+        # don't look like a fraction (no slash splitting two units).
+        if (" " in cand
+                and re.search(r"[a-z]", cand)
+                and not re.search(r"^\([^()]*?/[^()]*?\)\.?$", cand)):
+            trailing = cand
+            s = s[:m_trail.start()]
     # 1. Fractions: (X / Y) -> \dfrac{X}{Y}. Iterate to handle nested chains.
     for _ in range(4):
         new_s = re.sub(
@@ -765,7 +798,9 @@ def _math_text_to_latex(s):
     s = re.sub(r" +", " ", s)
     s = s.strip()
     if label:
-        return r"\text{" + label + " " + sep + r"}\ " + s
+        s = r"\text{" + label + " " + sep + r"}\ " + s
+    if trailing:
+        s = s + r"\ \text{" + trailing + "}"
     return s
 
 
@@ -829,7 +864,7 @@ def build_index(files):
     for outname, _src, label in files:
         items.append(f'  <li><a href="{outname}">{label}</a></li>')
     body = (
-        "<h1>CHEM 139 — Introduction to Chemical Principles</h1>\n"
+        "<h1>CHEM 139 — General Chemistry Prep</h1>\n"
         "<p><em>Open Educational Resource (2026 ed.) — CC BY 4.0</em></p>\n"
         "<p>HTML edition. Solutions to practice problems are hidden by default — click "
         "the <strong>Show solution</strong> pill to reveal an answer.</p>\n"

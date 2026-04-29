@@ -31,10 +31,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import html as html_module
 import io
 import json
 import re
 import sys
+import urllib.parse
 from pathlib import Path
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -77,8 +79,9 @@ INLINE_RULES = [
            "vertical-align:top;"),
     ("a", "color:#0b5cad;"),
     ("strong", "color:#000;"),
-    ("img", "max-width:100%;height:auto;display:block;margin:1rem auto;"
-            "border-radius:4px;"),
+    ("img:not(.equation_image)",
+        "max-width:100%;height:auto;display:block;margin:1rem auto;"
+        "border-radius:4px;"),
     ("figure", "margin:1.2rem 0;text-align:center;"),
     ("figcaption", "font-size:0.9rem;color:#555;margin-top:0.4rem;font-style:italic;"),
     ("aside.figure-description",
@@ -173,6 +176,107 @@ def strip_scripts(soup: BeautifulSoup) -> int:
     return n
 
 
+def latex_to_canvas_img(latex: str, display: bool) -> str:
+    """Render a LaTeX expression as a Canvas-native equation_image <img>.
+
+    Canvas's Page sanitizer strips <script> tags, which kills any client-side
+    MathJax loader we might inline. The supported workaround is to use the
+    same markup Canvas's own equation editor produces: an <img> with
+    class="equation_image" pointing at the per-instance ``/equation_images/``
+    endpoint, which server-renders the LaTeX to a PNG. The LaTeX in the URL
+    path is DOUBLE URL-encoded (Canvas decodes once via Rails routing and
+    once in the controller); the raw LaTeX is also stashed in
+    ``data-equation-content`` so Canvas's New RCE round-trips it cleanly.
+
+    Display blocks render as a centered block image; inline expressions
+    render with vertical-align:middle so they sit on the text baseline.
+    """
+    encoded = urllib.parse.quote(
+        urllib.parse.quote(latex, safe=""), safe=""
+    )
+    escaped = html_module.escape(latex, quote=True)
+    style = (
+        "display:block;margin:0.6em auto;max-width:100%;"
+        if display
+        else "vertical-align:middle;display:inline-block;"
+    )
+    return (
+        f'<img class="equation_image" '
+        f'src="/equation_images/{encoded}?scale=1" '
+        f'alt="LaTeX: {escaped}" '
+        f'data-equation-content="{escaped}" '
+        f'style="{style}">'
+    )
+
+
+_DISPLAY_RE = re.compile(r"\\\[(.+?)\\\]", flags=re.DOTALL)
+_INLINE_RE = re.compile(r"\\\((.+?)\\\)", flags=re.DOTALL)
+
+
+def convert_latex_to_canvas_imgs(soup: BeautifulSoup) -> tuple[int, int]:
+    """Replace `\\[...\\]` and `\\(...\\)` LaTeX delimiters in the soup with
+    Canvas equation_image <img> tags. Returns (n_display, n_inline).
+
+    Display math is handled at the <p class="math-chain"> level: each such
+    paragraph contains exactly one `\\[...\\]` block, so we replace the
+    paragraph's contents with a single block <img>. Inline math is handled
+    by walking text nodes and splitting on `\\(...\\)` boundaries — a text
+    node that contains inline math is replaced with a fragment that
+    interleaves escaped text runs and inline <img> tags.
+    """
+    n_display = 0
+    n_inline = 0
+
+    # ---- display math: <p class="math-chain"> ---------------------------- #
+    for p in soup.select("p.math-chain"):
+        text = p.get_text()
+        m = _DISPLAY_RE.search(text)
+        if not m:
+            continue
+        latex = m.group(1).strip()
+        p.clear()
+        p.append(
+            BeautifulSoup(
+                latex_to_canvas_img(latex, display=True), "html.parser"
+            )
+        )
+        n_display += 1
+
+    # ---- inline math: any text node still containing `\(...\)` ----------- #
+    # Snapshot the list because we'll be mutating the tree.
+    for text_node in list(soup.find_all(string=True)):
+        if not text_node.parent or text_node.parent.name in (
+            "script",
+            "style",
+        ):
+            continue
+        s = str(text_node)
+        if "\\(" not in s:
+            continue
+        parts = _INLINE_RE.split(s)
+        if len(parts) == 1:
+            continue
+        # parts is [text, latex, text, latex, ..., text]
+        chunks: list[str] = []
+        for i, part in enumerate(parts):
+            if i % 2 == 0:
+                if part:
+                    chunks.append(html_module.escape(part))
+            else:
+                chunks.append(latex_to_canvas_img(part, display=False))
+                n_inline += 1
+        # Build a temporary span, append parsed chunks, then unwrap so the
+        # children land in the original parent without an extra wrapper.
+        wrapper = soup.new_tag("span")
+        parsed = BeautifulSoup("".join(chunks), "html.parser")
+        for child in list(parsed.children):
+            wrapper.append(child)
+        text_node.replace_with(wrapper)
+        wrapper.unwrap()
+
+    return n_display, n_inline
+
+
 def apply_image_map(soup: BeautifulSoup, image_map: dict) -> int:
     if not image_map:
         return 0
@@ -201,6 +305,7 @@ def transform_one(src: Path, image_map: dict) -> tuple[str, dict]:
 
     n_scripts = strip_scripts(inner)
     n_summaries = swap_solution_summary(inner)
+    n_display, n_inline_math = convert_latex_to_canvas_imgs(inner)
     n_imgs = apply_image_map(inner, image_map)
     inline_static_css(inner)
 
@@ -219,6 +324,8 @@ def transform_one(src: Path, image_map: dict) -> tuple[str, dict]:
         "scripts_stripped": n_scripts,
         "summaries_swapped": n_summaries,
         "images_remapped": n_imgs,
+        "display_math": n_display,
+        "inline_math": n_inline_math,
     }
 
 
@@ -250,7 +357,13 @@ def main() -> None:
         sys.exit(f"No HTML files found in {SRC_DIR}")
 
     print(f"Building {len(files)} Canvas page(s) -> {OUT_DIR}/")
-    totals = {"scripts_stripped": 0, "summaries_swapped": 0, "images_remapped": 0}
+    totals = {
+        "scripts_stripped": 0,
+        "summaries_swapped": 0,
+        "images_remapped": 0,
+        "display_math": 0,
+        "inline_math": 0,
+    }
     for src in files:
         if src.name in {"index.html"}:
             # The contents page is local-only navigation; skip it for Canvas.
@@ -263,11 +376,14 @@ def main() -> None:
         print(
             f"  {src.name:40s} -> {out_path.name}   "
             f"summaries: {stats['summaries_swapped']:3d}, "
+            f"math: {stats['display_math']:3d}d/{stats['inline_math']:3d}i, "
             f"images: {stats['images_remapped']:3d}"
         )
 
     print(
         f"\nTotal: {totals['summaries_swapped']} solution toggles, "
+        f"{totals['display_math']} display + {totals['inline_math']} inline "
+        f"equations converted to Canvas equation_images, "
         f"{totals['images_remapped']} images remapped, "
         f"{totals['scripts_stripped']} scripts stripped."
     )

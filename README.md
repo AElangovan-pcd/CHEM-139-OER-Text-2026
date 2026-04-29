@@ -1,4 +1,4 @@
-# CHEM 139 — Introduction to Chemical Principles (2026 ed.)
+# CHEM 139 — General Chemistry Prep (2026 ed.)
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
@@ -66,17 +66,18 @@ For Canvas deployment, see the **Images** section of `CANVAS_DEPLOYMENT.md` — 
 
 ## Status of the dimensional-analysis rewrite
 
-A multi-pass effort to render every numerical Solution in factor-label form, with cancelled units shown by Word strikethrough and an italic explanatory paragraph naming what cancels and why the answer has the sig figs it has.
+A multi-pass effort to render every numerical Solution in factor-label form, with cancelled units shown by Word strikethrough and an italic explanatory paragraph naming what cancels and why the answer has the sig figs it has. **The sweep is now complete across all 10 chapters.**
 
 | Chapter | Status | Notes |
 |---|---|---|
+| Ch 1 — Science & Measurement | ✅ Complete | Numerical Solutions converted in the Ch 1 + 3-7 sweep (commit `25c9e7b`). |
 | Ch 2 — Unit Systems & Dimensional Analysis | ✅ Complete | 62 Solutions rewritten; 55 LaTeX math chains in HTML. |
+| Ch 3, 4, 5, 6, 7 | ✅ Complete | Numerical Solutions converted where applicable (commit `25c9e7b`). |
 | Ch 8 — Mole Concept | ✅ Complete | 56 Solutions rewritten; 107 LaTeX math chains in HTML. |
-| Ch 9 — Chemical Calculations / Stoichiometry | ⏳ Pending | Math-heavy — next priority. |
-| Ch 10 — States of Matter / Gas Laws | ⏳ Pending | Math-heavy — second priority. |
-| Ch 1 — Science & Measurement | ⏳ Pending | Mostly conceptual; ~15 numerical Solutions. |
-| Ch 3, 4, 5, 6, 7 | ⏳ Light pass pending | Mostly qualitative Solutions; a small number of numerical ones to convert. |
-| Worked Examples in chapter prose (all chapters) | ⏳ Pending | "Step N — …" lines need the same treatment as the labelled Solutions. |
+| Ch 9 — Chemical Calculations / Stoichiometry | ✅ Complete | Solutions + Worked Examples (commit `7f03f74`). |
+| Ch 10 — States of Matter / Gas Laws | ✅ Complete | 9 numerical Solutions rewritten (commit `53d7b95`). |
+| Worked Examples in chapter prose | ✅ Ch 2, 8, 9 done | Ch 2 (`fc246ee`), Ch 8 + Ch 9 (`7f03f74`) — "Step N — …" math chains use the same strike-through + italic-explanation format as labelled Solutions. |
+| MC Practice Test answer-key worked rationales (all 10 chapters) | ✅ Complete | 110 entries added by `rewrite_mc_keys.py` (commit `3a814da`). Each chapter's MC test now has both the terse `Answer Key: 1-B 2-C …` line and an "Answer Key with Worked Rationales" sub-section. |
 
 ## Numerical-data sources
 

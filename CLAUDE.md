@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-CHEM 139 — *Introduction to Chemical Principles*, an Open Educational Resource (OER) textbook for one-quarter / one-semester community-college introductory chemistry (2026 edition). It is **content, not code** — every source file is a Microsoft Word `.docx` document. There is no build system, test suite, package manager, lockfile, or CI. Tasks here are editorial: revising prose, fixing chemistry, adjusting figure descriptions, updating manifests.
+CHEM 139 — *General Chemistry Prep*, an Open Educational Resource (OER) textbook for one-quarter / one-semester community-college introductory chemistry (2026 edition). It is **content first, with a small build pipeline** — the source of truth is one Microsoft Word `.docx` per chapter, and a handful of Python scripts in `.firecrawl/` regenerate three publication artefacts (standalone HTML preview, Canvas Page-ready HTML, IMSCC Common Cartridge). There is no test suite, lockfile, or CI. Tasks here are mostly editorial — revising prose, fixing chemistry, adjusting figure descriptions, updating manifests — with occasional rebuilds of the artefacts.
 
 License: **CC BY 4.0**. Anything added must remain compatible (see "License compatibility" below).
 
@@ -26,6 +26,18 @@ These directories hold scaffolding for editing the chapters; their contents are 
 - **`.firecrawl/`** — automation scratch space. Contains `python-docx` scripts the user has actually run against these chapters (`a11y_fix.py`, `a11y_pass.py`, `a11y_sublists.py`, `insert_practice.py`, `insert_ch1_images.py`, `move_practice_above_mixed.py`, `additional_problems.py`, `build_periodic_table.py`, …), Firecrawl-scraped OpenStax source material (`os-N-N.md`, `cat-*.md`, `file-*.md`), per-section JSON briefs (`s-N-N.json`), and a `backups/` directory. Before writing a new automation script, check here — there is probably a precedent that already handles styles, numbering, and the chapter template correctly.
 - **Root-level reference PDFs** (e.g. `acs-periodic-table-poster_download.pdf`) — downloaded source material for figure sourcing. Not authored content.
 
+## Build pipeline
+
+Three Python scripts in `.firecrawl/` turn the `.docx` chapters into the three publication artefacts. They depend on `python-docx`, `mammoth`, and `beautifulsoup4`.
+
+| Command | Output | Use |
+|---|---|---|
+| `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes. |
+| `python .firecrawl/build_canvas.py` | `HTML_Files_Canvas/` | One file per chapter, pasteable into a Canvas Page's `</>` editor. Inlines CSS, swaps the JS toggle for a CSS-only `<details>` equivalent, strips any `<script>` Canvas would reject. |
+| `python .firecrawl/build_imscc.py` | `CHEM_139_OER.imscc` | IMS Common Cartridge for one-shot import into Canvas (Settings → Import Course Content → Common Cartridge). This is the preferred deployment path; see `CANVAS_DEPLOYMENT.md`. |
+
+After any non-trivial editorial change, rebuild **all three** so they stay in sync. The IMSCC bundle is what gets imported to Canvas; the loose Canvas HTML is the fallback for one-off page edits; the standalone HTML is for local preview.
+
 ## Reading and editing `.docx` from Claude Code
 
 `.docx` is a ZIP. To read text without Word:
@@ -42,11 +54,13 @@ Use this for inspection, search, quoting passages, and fact-checking. **Do not**
 
 When in doubt, ask before writing to a `.docx`. Never write to a file while its `.~lock.…#` sibling exists.
 
+**Gotcha — Worked Examples live inside Word tables.** Many Worked Example boxes in the chapter prose are implemented as single-cell shaded tables, not flowing paragraphs. `doc.paragraphs` walks only top-level paragraphs and silently skips them. Any script that scans or rewrites Worked Examples must recurse into `doc.tables` → `cell.paragraphs` (and into nested tables, if any). The Solution paragraphs that live in the body prose between Practice Problems are *not* in tables — only the boxed Worked Examples are.
+
 ## Chapter document structure (load-bearing conventions)
 
 Every chapter follows the **same template**, and instructor/student instructions in the front matter promise this consistency. Preserve it when editing or regenerating:
 
-1. Heading 1 chapter title → `Chapter N: <Title>` plus the standard subtitle line `CHEM 139 — Introduction to Chemical Principles · Open Educational Resource (2026 ed.)` and the CC BY 4.0 license line.
+1. Heading 1 chapter title → `Chapter N: <Title>` plus the standard subtitle line `CHEM 139 — General Chemistry Prep · Open Educational Resource (2026 ed.)` and the CC BY 4.0 license line.
 2. **Chapter Opener** — a real-world scenario hooking the topic.
 3. **Chapter Learning Outcomes** — bulleted list, "After completing this chapter, you should be able to: …".
 4. **Sectional prose** organized into Parts (e.g. Part A, Part B) with numbered subsections (`1.1`, `1.2`, …). Worked examples are embedded inline in the prose.
@@ -92,3 +106,25 @@ If a number disagrees with these references, treat the references as authoritati
 - **No color-only information**: anything conveyed by color must also be conveyed by label, pattern, or position (WCAG 2.2).
 - **Math** is rendered in plain text where possible, for accessibility. Don't switch to images of equations.
 - **Cross-references** between chapters (e.g. "see Section 5.3") are by section number; if you renumber, grep all chapters for stale references.
+- **Multiple-choice practice tests carry two answer keys** — the terse line (`Answer Key: 1-B 2-C 3-A …`) at the top, and an "Answer Key with Worked Rationales" sub-section directly underneath that explains each correct answer in one sentence (math questions get a one-line factor-label calculation; conceptual ones get a "why this answer" sentence). When you edit MC questions, update **both**. The rationales were added by `.firecrawl/rewrite_mc_keys.py`, which is idempotent and safe to re-run.
+
+## Dimensional-analysis (factor-label) Solutions format
+
+Numerical Solutions and Worked Examples render the factor-label calculation in a specific dual-format ("Option C") so the docx, HTML, and Canvas/IMSCC builds stay aligned:
+
+- **In `.docx`** — plain-text equation with **Word strikethrough on cancelled units** (`run.font.strike = True`). No symbol fonts, no special characters.
+- **In built HTML / Canvas / IMSCC** — the same equation rendered with MathJax, with `\cancel{}` around cancelled units. `build_html.py` performs the docx → MathJax conversion.
+- **Followed by an italic explanatory paragraph** that names which units cancel and why the answer carries the sig figs it does.
+
+When rewriting Solutions to this format, prefer the per-chapter `rewrite_*` scripts in `.firecrawl/` (e.g. `rewrite_solutions_ch02.py`, `rewrite_ch08.py`, `rewrite_examples_ch09.py`) over hand-editing — they preserve the strikethrough runs that hand edits in Word commonly drop. The sweep is essentially complete across all 10 chapters as of commit `3a814da` (Apr 2026), including Worked Examples in Ch 8 and Ch 9; see `git log -- '*.docx'` for chapter-by-chapter history.
+
+## Scripts you might reach for
+
+Beyond the rewrite scripts noted above, two general-purpose helpers in `.firecrawl/` are worth knowing about before writing a new one:
+
+| Script | What it does |
+|---|---|
+| `rewrite_engine_examples.py` | Worked-Example analogue of `rewrite_engine.py`. Anchors on "Step N — …" string matches inside boxed examples (which live in single-cell tables) rather than walking Solution paragraphs in document order. Use this when rewriting math chains inside Worked Example boxes. |
+| `audit_problem_solution_pairs.py` | Content-QA scanner. Flags problems whose displayed solution doesn't echo any decimal number from the stem — surfaces mis-paired Problem/Solution rows. Low-recall, high-precision (skips purely conceptual stems). Re-run after large rewrites or content reshuffles. |
+| `rewrite_mc_keys.py` | Appends the "Answer Key with Worked Rationales" sub-section after each chapter's terse MC answer key line. Idempotent. |
+| `rename_course_title.py` | Run-level title rename across the .docx files (used to swap "Introduction to Chemical Principles" → "General Chemistry Prep"); a precedent for any future title-style rename that lives inside a single Word run. |
