@@ -1,0 +1,56 @@
+# Build the standalone HTML preview from .docx sources and publish it
+# to GitHub Pages. Triggered on every push to main and on demand via
+# the Actions tab. The deployed site at
+# https://aelangovan-pcd.github.io/CHEM-139-OER-Text-2026/ is regenerated
+# from scratch each run, so committed HTML_Files/ stays in sync as a
+# byproduct rather than a source of truth.
+
+name: Deploy OER preview to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages deployments serialize per environment; cancel in-progress runs
+# when a newer push lands so we don't queue up stale deploys.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: pip install "python-docx>=1.1" "mammoth>=1.7" "beautifulsoup4>=4.12"
+
+      - name: Build HTML preview from .docx sources
+        run: python .firecrawl/build_html.py
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: HTML_Files
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
