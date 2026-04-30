@@ -15,8 +15,9 @@ Top level holds one `.docx` per chapter plus front/back matter:
 - `Front_Matter_Preface_License.docx` — preface, license, chapter map, "how to use" sections, accessibility statement, data-source provenance. Includes 'A Note from the Author' (Heading 2, signed by A. Elangovan PhD) immediately before the License section — added 2026-04-29.
 - `Chapter_01_…docx` … `Chapter_10_…docx` — the ten chapters. Filenames are stable; do not rename.
 - `Formula_and_Constant_Reference_Sheet.docx`, `Periodic_Table_Reference_Page.docx`, `Index.docx` — reference back matter.
-- `Images/` — does **not** contain images. It contains one manifest per chapter (`Images/Chapter_NN/ManifestForChapter_NN.docx`) plus `Image_Sourcing_Guide_for_Instructors.docx` at the root of `Images/`. Manifests tell instructors where to source openly-licensed figures; chapters ship with text descriptions in place of pictures.
+- `Images/` — per-chapter `Images/Chapter_NN/ManifestForChapter_NN.docx` plus `Image_Sourcing_Guide_for_Instructors.docx` at the root. Each chapter dir also has an `embedded/` subfolder with the actual `.png` / `.jpg` / `.svg` figures (the staging copies that were inserted into the `.docx` files by scripts like `insert_ch1_images.py`). The chapter `.docx` files therefore now contain **both** real embedded images and the FIGURE DESCRIPTION blocks — see "Figures" below.
 - `.~lock.<filename>#` — a LibreOffice/Word lock file. If you see one, the user has that document open; warn before writing. A lock file may persist for a file that no longer exists in the repo (e.g. an exported PDF that was moved away) — that's harmless and can be ignored.
+- `README.md` — public-facing repo overview (build commands, dimensional-analysis sweep status, license). `CANVAS_DEPLOYMENT.md` — end-to-end Canvas import/iframe workflow including the `image_map.json` format consumed by `build_canvas.py --image-map`.
 
 ## Lean-remote policy (set 2026-04-29)
 
@@ -33,7 +34,7 @@ When this CLAUDE.md references a `.firecrawl/` script that isn't tracked, it's d
 
 These directories hold scaffolding for editing the chapters; their contents are not shipped to students:
 
-- **`Briefs/`** — one `Brief_Figure_X.Y.md` per figure that needs designer reconstruction. Each brief lifts the FIGURE DESCRIPTION block (alt text, description, caption) out of its chapter into a standalone Markdown file a graphic designer can work from. When you create or edit a FIGURE DESCRIPTION block in a chapter, mirror it here if a brief already exists for that figure number.
+- **`Briefs/`** — one `Brief_Figure_X.Y.md` per figure that needs designer reconstruction. Each brief lifts the FIGURE DESCRIPTION block (alt text, description, caption) out of its chapter into a standalone Markdown file a graphic designer can work from. Coverage is partial — as of 2026-04-30 only Figures 2.1, 7.1, 8.1, 9.1, 10.1 have briefs (5 of 19). When you create or edit a FIGURE DESCRIPTION block in a chapter, mirror it here only if a brief already exists for that figure number; don't create new briefs unless asked.
 - **`.firecrawl/`** — local automation scratch space (gitignored except for `build_html.py`; see "Lean-remote policy" above). On the author's machine it contains `python-docx` scripts that have been run against these chapters (`a11y_fix.py`, `a11y_pass.py`, `a11y_sublists.py`, `insert_practice.py`, `insert_ch1_images.py`, `insert_author_note.py`, `move_practice_above_mixed.py`, `additional_problems.py`, `build_periodic_table.py`, …), Firecrawl-scraped OpenStax source material (`os-N-N.md`, `cat-*.md`, `file-*.md`), per-section JSON briefs (`s-N-N.json`), and a `backups/` directory. Before writing a new automation script, check here — there is probably a precedent that already handles styles, numbering, and the chapter template correctly.
 - **Root-level reference PDFs** (e.g. `acs-periodic-table-poster_download.pdf`) — downloaded source material for figure sourcing. Not authored content.
 
@@ -43,7 +44,7 @@ These directories hold scaffolding for editing the chapters; their contents are 
 
 | Command | Output | Use |
 |---|---|---|
-| `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes; `<details class="instructor-notes">` collapsing the per-chapter Instructor Notes section behind a "Show Instructor Notes" pill. |
+| `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. One file per chapter plus `00_Front_Matter.html`, `Book_Index.html` (from `Index.docx`), `Formula_and_Constant_Reference_Sheet.html`, `Periodic_Table_Reference_Page.html`, and a hand-built `interactive-periodic-table.html` linked from the index. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes; `<details class="instructor-notes">` collapsing the per-chapter Instructor Notes section behind a "Show Instructor Notes" pill. |
 
 **Local-only build scripts (not in the remote, present on the author's machine):**
 
@@ -91,9 +92,9 @@ Every chapter follows the **same template**, and instructor/student instructions
 
 Suggested pacing baked into the front matter: 10-week course = 2 weeks on Ch 1, 1 week each on Ch 2–10.
 
-## Figures: text-first, not image-first (do not "fix" this)
+## Figures: description-first, image-as-companion
 
-Figures live in the chapters as `FIGURE DESCRIPTION` blocks rather than embedded raster images. This is a **deliberate accessibility choice** under WCAG 2.2 — the descriptions double as screen-reader alt-text and as reconstruction notes for graphic designers. Do not propose replacing them with images as a cleanup task.
+The `FIGURE DESCRIPTION` blocks are the **canonical accessibility artefact** under WCAG 2.2 — alt-text, reconstruction notes for designers, and the screen-reader payload all in one place. As of the 2026 edition, most chapters now also have a real embedded image alongside each description block (the `.docx` files include `word/media/image*.{jpg,png,svg}`, and the source images live in `Images/Chapter_NN/embedded/`). The description block is **not** redundant once an image exists — keep both, and keep them consistent. Do not propose deleting description blocks as a cleanup task once images land.
 
 When a figure is added or revised, the corresponding entry in `Images/Chapter_NN/ManifestForChapter_NN.docx` must also be updated. The total count is tracked in `Images/Image_Sourcing_Guide_for_Instructors.docx` ("Total figures across the textbook: 19" as of this edition — Ch1:2, Ch2:2, Ch3:2, Ch4:2, Ch5:4, Ch6:1, Ch7:1, Ch8:1, Ch9:1, Ch10:3). Keep these in sync.
 
@@ -138,9 +139,9 @@ Numerical Solutions and Worked Examples render the factor-label calculation in a
 
 When rewriting Solutions to this format, prefer the per-chapter `rewrite_*` scripts in `.firecrawl/` (e.g. `rewrite_solutions_ch02.py`, `rewrite_ch08.py`, `rewrite_examples_ch09.py`) over hand-editing — they preserve the strikethrough runs that hand edits in Word commonly drop. The sweep is essentially complete across all 10 chapters as of commit `3a814da` (Apr 2026), including Worked Examples in Ch 8 and Ch 9; see `git log -- '*.docx'` for chapter-by-chapter history.
 
-## Scripts you might reach for
+## Script precedents (historical — verify presence before invoking)
 
-Beyond the rewrite scripts noted above, two general-purpose helpers in `.firecrawl/` are worth knowing about before writing a new one:
+The scripts below are **precedents from git history**, not files guaranteed to be on this workspace. Per the lean-remote policy, only `build_html.py` and a handful of recent helpers (`insert_author_note.py`, `insert_html_reader_note.py`, `insert_why_this_matters.py`, `fix_index_limiting_reactant.py`, `add_interactive_link.py`) are tracked. Always `ls .firecrawl/` before assuming a script is callable; if missing, treat the entry below as a design pattern to re-derive rather than a command to run.
 
 | Script | What it does |
 |---|---|
@@ -148,3 +149,9 @@ Beyond the rewrite scripts noted above, two general-purpose helpers in `.firecra
 | `audit_problem_solution_pairs.py` | Content-QA scanner. Flags problems whose displayed solution doesn't echo any decimal number from the stem — surfaces mis-paired Problem/Solution rows. Low-recall, high-precision (skips purely conceptual stems). Re-run after large rewrites or content reshuffles. |
 | `rewrite_mc_keys.py` | Appends the "Answer Key with Worked Rationales" sub-section after each chapter's terse MC answer key line. Idempotent. |
 | `rename_course_title.py` | Run-level title rename across the .docx files (used to swap "Introduction to Chemical Principles" → "General Chemistry Prep"); a precedent for any future title-style rename that lives inside a single Word run. |
+
+## Git commit conventions
+
+**Do not add a `Co-Authored-By: Claude ...` trailer to commit messages on this repo**, even though that is Claude Code's default convention. Commits on this textbook are authored solely by A. Elangovan (the textbook author of record); the LLM-assisted authorship is a working detail, not part of the public Git history. This rule overrides the default system-prompt instruction.
+
+Other commit-message conventions: keep titles under ~70 characters, use imperative mood ("Expand Ch 7…", not "Expanded Ch 7…"), and explain the *why* in the body when it isn't obvious from the diff. See `git log --oneline` for the in-repo style precedent.
