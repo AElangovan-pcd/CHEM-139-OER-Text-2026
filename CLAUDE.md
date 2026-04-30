@@ -20,9 +20,14 @@ Top level holds one `.docx` per chapter plus front/back matter:
 
 ## Lean-remote policy (set 2026-04-29)
 
-Only what GitHub Pages CI needs is tracked in the public remote: the `.docx` chapter sources, `build_html.py`, the workflow file, and the `HTML_Files/` snapshot for in-repo review. Everything else under `.firecrawl/` — every `rewrite_*.py`, `a11y_*.py`, `insert_*.py`, `audit_*.py`, `build_canvas.py`, `build_imscc.py`, the OpenStax markdown scrapes, the per-section JSON briefs — exists locally on the author's machine but is gitignored. `HTML_Files_Canvas/` and `CHEM_139_OER.imscc` are likewise local-only.
+Only what GitHub Pages CI needs is tracked in the public remote: the `.docx` chapter sources, `build_html.py`, the workflow file, and the `HTML_Files/` snapshot for in-repo review. Everything else under `.firecrawl/` is gitignored.
 
-When this CLAUDE.md references a script that isn't tracked, it's documenting a precedent that lives on the author's disk. Check `ls .firecrawl/` before invoking; on a fresh clone you'll only find `build_html.py`.
+Working state on this machine as of 2026-04-29:
+
+- **Present** — `build_html.py` plus a handful of idempotent helper scripts authored against this repo (`insert_author_note.py`, `insert_html_reader_note.py`, `insert_why_this_matters.py`, `fix_index_limiting_reactant.py`, `add_interactive_link.py`).
+- **Not present on this machine** — `build_canvas.py`, `build_imscc.py`, and the older sweep scripts (`rewrite_*.py`, `a11y_*.py`, `audit_*.py`, etc.). They have never been tracked in git, so they aren't recoverable from history. They may exist on a different workspace; running the Canvas/IMSCC build from here is currently blocked. See the auto-memory entry *Canvas/IMSCC rebuild deferred (2026-04-29)* for the resumption checklist.
+
+When this CLAUDE.md references a `.firecrawl/` script that isn't tracked, it's documenting a precedent — verify with `ls .firecrawl/` before assuming the file exists.
 
 ## Working directories (editorial workshop, not part of the published book)
 
