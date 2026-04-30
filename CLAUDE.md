@@ -12,31 +12,42 @@ License: **CC BY 4.0**. Anything added must remain compatible (see "License comp
 
 Top level holds one `.docx` per chapter plus front/back matter:
 
-- `Front_Matter_Preface_License.docx` — preface, license, chapter map, "how to use" sections, accessibility statement, data-source provenance.
+- `Front_Matter_Preface_License.docx` — preface, license, chapter map, "how to use" sections, accessibility statement, data-source provenance. Includes 'A Note from the Author' (Heading 2, signed by A. Elangovan PhD) immediately before the License section — added 2026-04-29.
 - `Chapter_01_…docx` … `Chapter_10_…docx` — the ten chapters. Filenames are stable; do not rename.
 - `Formula_and_Constant_Reference_Sheet.docx`, `Periodic_Table_Reference_Page.docx`, `Index.docx` — reference back matter.
 - `Images/` — does **not** contain images. It contains one manifest per chapter (`Images/Chapter_NN/ManifestForChapter_NN.docx`) plus `Image_Sourcing_Guide_for_Instructors.docx` at the root of `Images/`. Manifests tell instructors where to source openly-licensed figures; chapters ship with text descriptions in place of pictures.
 - `.~lock.<filename>#` — a LibreOffice/Word lock file. If you see one, the user has that document open; warn before writing. A lock file may persist for a file that no longer exists in the repo (e.g. an exported PDF that was moved away) — that's harmless and can be ignored.
+
+## Lean-remote policy (set 2026-04-29)
+
+Only what GitHub Pages CI needs is tracked in the public remote: the `.docx` chapter sources, `build_html.py`, the workflow file, and the `HTML_Files/` snapshot for in-repo review. Everything else under `.firecrawl/` — every `rewrite_*.py`, `a11y_*.py`, `insert_*.py`, `audit_*.py`, `build_canvas.py`, `build_imscc.py`, the OpenStax markdown scrapes, the per-section JSON briefs — exists locally on the author's machine but is gitignored. `HTML_Files_Canvas/` and `CHEM_139_OER.imscc` are likewise local-only.
+
+When this CLAUDE.md references a script that isn't tracked, it's documenting a precedent that lives on the author's disk. Check `ls .firecrawl/` before invoking; on a fresh clone you'll only find `build_html.py`.
 
 ## Working directories (editorial workshop, not part of the published book)
 
 These directories hold scaffolding for editing the chapters; their contents are not shipped to students:
 
 - **`Briefs/`** — one `Brief_Figure_X.Y.md` per figure that needs designer reconstruction. Each brief lifts the FIGURE DESCRIPTION block (alt text, description, caption) out of its chapter into a standalone Markdown file a graphic designer can work from. When you create or edit a FIGURE DESCRIPTION block in a chapter, mirror it here if a brief already exists for that figure number.
-- **`.firecrawl/`** — automation scratch space. Contains `python-docx` scripts the user has actually run against these chapters (`a11y_fix.py`, `a11y_pass.py`, `a11y_sublists.py`, `insert_practice.py`, `insert_ch1_images.py`, `move_practice_above_mixed.py`, `additional_problems.py`, `build_periodic_table.py`, …), Firecrawl-scraped OpenStax source material (`os-N-N.md`, `cat-*.md`, `file-*.md`), per-section JSON briefs (`s-N-N.json`), and a `backups/` directory. Before writing a new automation script, check here — there is probably a precedent that already handles styles, numbering, and the chapter template correctly.
+- **`.firecrawl/`** — local automation scratch space (gitignored except for `build_html.py`; see "Lean-remote policy" above). On the author's machine it contains `python-docx` scripts that have been run against these chapters (`a11y_fix.py`, `a11y_pass.py`, `a11y_sublists.py`, `insert_practice.py`, `insert_ch1_images.py`, `insert_author_note.py`, `move_practice_above_mixed.py`, `additional_problems.py`, `build_periodic_table.py`, …), Firecrawl-scraped OpenStax source material (`os-N-N.md`, `cat-*.md`, `file-*.md`), per-section JSON briefs (`s-N-N.json`), and a `backups/` directory. Before writing a new automation script, check here — there is probably a precedent that already handles styles, numbering, and the chapter template correctly.
 - **Root-level reference PDFs** (e.g. `acs-periodic-table-poster_download.pdf`) — downloaded source material for figure sourcing. Not authored content.
 
 ## Build pipeline
 
-Three Python scripts in `.firecrawl/` turn the `.docx` chapters into the three publication artefacts. They depend on `python-docx`, `mammoth`, and `beautifulsoup4`.
+`build_html.py` (in `.firecrawl/`) is the only build script tracked in the public remote. It depends on `python-docx`, `mammoth`, and `beautifulsoup4`.
 
 | Command | Output | Use |
 |---|---|---|
-| `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes. |
-| `python .firecrawl/build_canvas.py [--image-map image_map.json]` | `HTML_Files_Canvas/` | One file per chapter, pasteable into a Canvas Page's `</>` editor. Inlines CSS, swaps the JS toggle for a CSS-only `<details>` equivalent, strips any `<script>` Canvas would reject. The optional `--image-map` flag rewrites every `<img src="…">` against a flat `{relative_path: canvas_url}` JSON so the same `.docx` source can ship to multiple Canvas instances without baking in course-specific file IDs. See `CANVAS_DEPLOYMENT.md` → *Images*. |
-| `python .firecrawl/build_imscc.py` | `CHEM_139_OER.imscc` | IMS Common Cartridge for one-shot import into Canvas (Settings → Import Course Content → Common Cartridge). This is the preferred deployment path; see `CANVAS_DEPLOYMENT.md`. |
+| `python .firecrawl/build_html.py` | `HTML_Files/` | Standalone preview — open `HTML_Files/index.html` in any browser. JS toggles for "Show solution / Hide solution"; MathJax for factor-label math with `\cancel{}` on cancelled units; shaded FIGURE DESCRIPTION boxes; `<details class="instructor-notes">` collapsing the per-chapter Instructor Notes section behind a "Show Instructor Notes" pill. |
 
-After any non-trivial editorial change, rebuild **all three** so they stay in sync. The IMSCC bundle is what gets imported to Canvas; the loose Canvas HTML is the fallback for one-off page edits; the standalone HTML is for local preview.
+**Local-only build scripts (not in the remote, present on the author's machine):**
+
+- `build_canvas.py [--image-map image_map.json]` → `HTML_Files_Canvas/`. One file per chapter, pasteable into a Canvas Page's `</>` editor. Inlines CSS, swaps the JS toggle for a CSS-only `<details>` equivalent, strips `<script>` tags. The `--image-map` flag rewrites every `<img src="…">` against a flat `{relative_path: canvas_url}` JSON. See `CANVAS_DEPLOYMENT.md` → *Images*.
+- `build_imscc.py` → `CHEM_139_OER.imscc`. IMS Common Cartridge for one-shot import (Settings → Import Course Content → Common Cartridge). Preferred deployment path; see `CANVAS_DEPLOYMENT.md`.
+
+If you're working in a fresh clone of the public remote, only `build_html.py` will be present. If you need the Canvas or IMSCC artefact, ask the author rather than reconstructing the script.
+
+After any non-trivial editorial change, rebuild **all three** artefacts so they stay in sync. The IMSCC bundle is what gets imported to Canvas; the loose Canvas HTML is the fallback for one-off page edits; the standalone HTML is for local preview.
 
 ### CI: GitHub Pages auto-publish
 
@@ -71,7 +82,7 @@ Every chapter follows the **same template**, and instructor/student instructions
 5. **NOTE:** callouts for etymology / historical context.
 6. **FIGURE DESCRIPTION blocks** — shaded boxes labeled `Figure X.Y — <title>` containing alt-text, reconstruction description, and caption. These are intentional and accessibility-critical (see below). Numbered `Figure 1.1`, `1.2`, etc.
 7. **Concepts to Remember** summary, **Key Terms** glossary, **Practice Problems with full solutions**, **Multi-concept problems**, and a **10-question multiple-choice practice test with answer key**.
-8. **Instructor Notes** section at the end (common student difficulties, in-class activities, lab connections).
+8. **Instructor Notes** section at the end (common student difficulties, in-class activities, lab connections). In the docx, this is a normal Heading 2 section; in the rendered HTML, `build_html.py` wraps it in `<details class="instructor-notes">` so it's hidden behind a "Show Instructor Notes" pill by default.
 
 Suggested pacing baked into the front matter: 10-week course = 2 weeks on Ch 1, 1 week each on Ch 2–10.
 

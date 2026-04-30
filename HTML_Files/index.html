@@ -14,6 +14,8 @@
   --figure-border: #b9b9b9;
   --solution-bg: #eef7ee;
   --solution-border: #2e7d32;
+  --mc-bg: #fff7ed;
+  --mc-border: #b45309;
   --text: #1a1a1a;
 }
 * { box-sizing: border-box; }
@@ -214,6 +216,55 @@ details.instructor-notes > *:not(summary) { margin-top: 0.6rem; }
   details.instructor-notes { background: none; border: 1px dashed #888; }
   details.instructor-notes > summary { display: none; }
 }
+
+p.mc-instruction {
+  font-style: italic;
+  color: #555;
+  margin: 1rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+@media print { p.mc-instruction { display: none; } }
+
+details.mc-answer-key {
+  background: var(--mc-bg);
+  border-left: 4px solid var(--mc-border);
+  padding: 0.55rem 1rem;
+  margin: 0.4rem 0 1.4rem;
+  border-radius: 4px;
+}
+details.mc-answer-key[open] { padding-bottom: 0.9rem; }
+details.mc-answer-key > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--mc-border);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--mc-border);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.mc-answer-key > summary::-webkit-details-marker { display: none; }
+details.mc-answer-key > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.mc-answer-key[open] > summary::before { transform: rotate(90deg); }
+details.mc-answer-key > summary:hover {
+  background: var(--mc-border);
+  color: #fff;
+}
+details.mc-answer-key > *:not(summary) { margin-top: 0.6rem; }
+@media print {
+  details.mc-answer-key { background: none; border: 1px dashed #888; }
+  details.mc-answer-key > summary { display: none; }
+}
 </style>
 <script>
 window.MathJax = {
@@ -240,7 +291,6 @@ window.MathJax = {
 <main class="container">
 <h1>CHEM 139 — General Chemistry Prep</h1>
 <p><em>Open Educational Resource (2026 ed.) — CC BY 4.0</em></p>
-<p>HTML edition. Solutions to practice problems are hidden by default — click the <strong>Show solution</strong> pill to reveal an answer.</p>
 <h2>Contents</h2>
 <ol class="toc">
   <li><a href="00_Front_Matter.html">Front Matter — Preface, License, Map</a></li>
@@ -258,6 +308,10 @@ window.MathJax = {
   <li><a href="Periodic_Table_Reference_Page.html">Periodic Table Reference Page</a></li>
   <li><a href="Book_Index.html">Index</a></li>
 </ol>
+<h2>Supplementary Tools</h2>
+<ul class="toc">
+  <li><a href="interactive-periodic-table.html">Interactive Periodic Table</a> — explore all 118 elements with hoverable Pauling electronegativity values.</li>
+</ul>
 
 </main>
 <footer class="site"><nav>
@@ -267,13 +321,13 @@ window.MathJax = {
 </nav></footer>
 <script>
 window.addEventListener("beforeprint", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
+  document.querySelectorAll("details.solution, details.mc-answer-key").forEach(d => {
     d.dataset.wasOpen = d.open ? "1" : "0";
     d.open = true;
   });
 });
 window.addEventListener("afterprint", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
+  document.querySelectorAll("details.solution, details.mc-answer-key").forEach(d => {
     d.open = d.dataset.wasOpen === "1";
   });
 });
@@ -294,6 +348,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bind("details.solution", "Hide solution", "Show solution");
   bind("details.instructor-notes",
        "Hide Instructor Notes", "Show Instructor Notes");
+  bind("details.mc-answer-key",
+       "Hide Answer Key and Rationales", "Show Answer Key and Rationales");
 });
 </script>
 </body>

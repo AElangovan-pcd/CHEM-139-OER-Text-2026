@@ -72,6 +72,8 @@ CSS = r"""
   --figure-border: #b9b9b9;
   --solution-bg: #eef7ee;
   --solution-border: #2e7d32;
+  --mc-bg: #fff7ed;
+  --mc-border: #b45309;
   --text: #1a1a1a;
 }
 * { box-sizing: border-box; }
@@ -272,17 +274,66 @@ details.instructor-notes > *:not(summary) { margin-top: 0.6rem; }
   details.instructor-notes { background: none; border: 1px dashed #888; }
   details.instructor-notes > summary { display: none; }
 }
+
+p.mc-instruction {
+  font-style: italic;
+  color: #555;
+  margin: 1rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+@media print { p.mc-instruction { display: none; } }
+
+details.mc-answer-key {
+  background: var(--mc-bg);
+  border-left: 4px solid var(--mc-border);
+  padding: 0.55rem 1rem;
+  margin: 0.4rem 0 1.4rem;
+  border-radius: 4px;
+}
+details.mc-answer-key[open] { padding-bottom: 0.9rem; }
+details.mc-answer-key > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--mc-border);
+  font-family: -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: #fff;
+  border: 1px solid var(--mc-border);
+  border-radius: 999px;
+  user-select: none;
+  font-size: 0.9rem;
+}
+details.mc-answer-key > summary::-webkit-details-marker { display: none; }
+details.mc-answer-key > summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+details.mc-answer-key[open] > summary::before { transform: rotate(90deg); }
+details.mc-answer-key > summary:hover {
+  background: var(--mc-border);
+  color: #fff;
+}
+details.mc-answer-key > *:not(summary) { margin-top: 0.6rem; }
+@media print {
+  details.mc-answer-key { background: none; border: 1px dashed #888; }
+  details.mc-answer-key > summary { display: none; }
+}
 """
 
 JS_PRINT_OPEN = r"""
 window.addEventListener("beforeprint", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
+  document.querySelectorAll("details.solution, details.mc-answer-key").forEach(d => {
     d.dataset.wasOpen = d.open ? "1" : "0";
     d.open = true;
   });
 });
 window.addEventListener("afterprint", () => {
-  document.querySelectorAll("details.solution").forEach(d => {
+  document.querySelectorAll("details.solution, details.mc-answer-key").forEach(d => {
     d.open = d.dataset.wasOpen === "1";
   });
 });
@@ -303,6 +354,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bind("details.solution", "Hide solution", "Show solution");
   bind("details.instructor-notes",
        "Hide Instructor Notes", "Show Instructor Notes");
+  bind("details.mc-answer-key",
+       "Hide Answer Key and Rationales", "Show Answer Key and Rationales");
 });
 """
 
@@ -583,6 +636,151 @@ def wrap_instructor_notes(soup):
     for s in siblings:
         details.append(s.extract())
     return 1
+
+
+def wrap_mc_answer_key(soup):
+    """Collapse the MC Answer Key + Worked Rationales behind a closed pill.
+
+    Anchor: the first <p> whose text starts with 'Answer Key:' inside div.doc.
+    In Ch 1 this is a standalone bold label; in Ch 2-10 the same paragraph
+    carries the terse 'Answer Key: 1-B 2-B …' line. Either form is wrapped.
+
+    The wrap span runs from the anchor itself through subsequent siblings up
+    to (but not including) the next h1/h2/h3 — matching wrap_instructor_notes.
+    A short scaffolding line is inserted before the pill so a student knows to
+    attempt all questions before opening the key.
+    """
+    doc = soup.find("div", class_="doc")
+    if doc is None:
+        return 0
+
+    target = None
+    for p in doc.find_all("p"):
+        text = p.get_text(" ", strip=True)
+        if text.startswith("Answer Key:"):
+            target = p
+            break
+    if target is None:
+        return 0
+
+    members = [target]
+    nxt = target.next_sibling
+    while nxt is not None:
+        nxt_after = nxt.next_sibling
+        if isinstance(nxt, NavigableString):
+            if str(nxt).strip() == "":
+                nxt = nxt_after
+                continue
+            members.append(nxt)
+            nxt = nxt_after
+            continue
+        if nxt.name in ("h1", "h2", "h3"):
+            break
+        members.append(nxt)
+        nxt = nxt_after
+
+    instruction = soup.new_tag("p", **{"class": "mc-instruction"})
+    instruction.string = (
+        "Attempt all questions before opening the answer key."
+    )
+    target.insert_before(instruction)
+
+    details = soup.new_tag("details", **{"class": "mc-answer-key"})
+    summary = soup.new_tag("summary")
+    summary.string = "Show Answer Key and Rationales"
+    details.append(summary)
+    target.insert_before(details)
+    for m in members:
+        details.append(m.extract())
+    return 1
+
+
+CHAPTER_FILENAMES = {n: f"Chapter_{n:02d}.html" for n in range(1, 11)}
+SECTION_REF_RE = re.compile(r"(\d+)\.(\d+)")
+
+
+def add_section_anchors(soup, chapter_num):
+    """Emit id='sec-X-Y' on every h2 whose text begins with '<chapter_num>.<digit>'.
+
+    Targets only the chapter currently being rendered, so cross-chapter
+    references (e.g. a chapter-2 paragraph mentioning '5.3') do not create
+    ghost anchors. Idempotent: if a heading already carries an id, skip it.
+
+    Handles merged-range headings like '9.8–9.9 Title' by setting the heading's
+    canonical id to the start of the range AND inserting an empty <span id>
+    before the heading for every other number in the range (inclusive). Picks
+    up en-dash, em-dash, and ASCII hyphen as range separators.
+    """
+    if chapter_num is None:
+        return 0
+    leader = re.compile(
+        rf"^\s*{chapter_num}\.(\d+)\s*[–—\-]\s*{chapter_num}\.(\d+)\b"
+    )
+    single = re.compile(rf"^\s*{chapter_num}\.(\d+)\b")
+    count = 0
+    for h in soup.find_all("h2"):
+        text = h.get_text(" ", strip=True)
+        if h.get("id"):
+            continue
+        m_range = leader.match(text)
+        if m_range:
+            start, end = int(m_range.group(1)), int(m_range.group(2))
+            h["id"] = f"sec-{chapter_num}-{start}"
+            count += 1
+            for n in range(start + 1, end + 1):
+                anchor_span = soup.new_tag(
+                    "span", id=f"sec-{chapter_num}-{n}"
+                )
+                h.insert_before(anchor_span)
+                count += 1
+            continue
+        m = single.match(text)
+        if not m:
+            continue
+        h["id"] = f"sec-{chapter_num}-{m.group(1)}"
+        count += 1
+    return count
+
+
+def linkify_index(soup, chapter_filenames):
+    """Rewrite every X.Y section reference in the Index table as a hyperlink.
+
+    The Index ships as a 2-column table (Term | Section(s)); each Section(s)
+    cell holds one or more comma-separated refs like '2.11, 10.1, 10.11'.
+    Walk every text node inside <td>s, replace each X.Y match with an <a>
+    pointing at Chapter_NN.html#sec-X-Y. Refs to chapters outside 1-10 are
+    left as plain text so a stale entry doesn't 404.
+    """
+    count = 0
+    for td in soup.find_all("td"):
+        for ns in list(td.find_all(string=True)):
+            text = str(ns)
+            if not SECTION_REF_RE.search(text):
+                continue
+            new_nodes = []
+            last_end = 0
+            for m in SECTION_REF_RE.finditer(text):
+                if m.start() > last_end:
+                    new_nodes.append(NavigableString(text[last_end:m.start()]))
+                ch = int(m.group(1))
+                sec = int(m.group(2))
+                if ch in chapter_filenames:
+                    a = soup.new_tag(
+                        "a",
+                        href=f"{chapter_filenames[ch]}#sec-{ch}-{sec}",
+                    )
+                    a.string = m.group(0)
+                    new_nodes.append(a)
+                    count += 1
+                else:
+                    new_nodes.append(NavigableString(m.group(0)))
+                last_end = m.end()
+            if last_end < len(text):
+                new_nodes.append(NavigableString(text[last_end:]))
+            for node in new_nodes:
+                ns.insert_before(node)
+            ns.extract()
+    return count
 
 
 def style_figure_descriptions(soup):
@@ -954,9 +1152,21 @@ def convert_one(docx_path):
     n_renumbered = restructure_problem_sets(soup)
     n_math = mathjax_ify_solutions(soup)
     n_instructor = wrap_instructor_notes(soup)
+    n_mc_key = wrap_mc_answer_key(soup)
+    chap_match = re.match(r"Chapter_(\d{2})_", docx_path.name)
+    chapter_num = int(chap_match.group(1)) if chap_match else None
+    n_anchors = add_section_anchors(soup, chapter_num)
+    n_index_links = (
+        linkify_index(soup, CHAPTER_FILENAMES)
+        if docx_path.name == "Index.docx"
+        else 0
+    )
     for ol in soup.find_all("ol", attrs={"data-next-question": True}):
         del ol["data-next-question"]
-    return str(soup), n_solutions, n_splits, n_renumbered, n_math, n_instructor, result.messages
+    return (
+        str(soup), n_solutions, n_splits, n_renumbered, n_math,
+        n_instructor, n_mc_key, n_anchors, n_index_links, result.messages,
+    )
 
 
 def build_index(files):
@@ -966,10 +1176,14 @@ def build_index(files):
     body = (
         "<h1>CHEM 139 — General Chemistry Prep</h1>\n"
         "<p><em>Open Educational Resource (2026 ed.) — CC BY 4.0</em></p>\n"
-        "<p>HTML edition. Solutions to practice problems are hidden by default — click "
-        "the <strong>Show solution</strong> pill to reveal an answer.</p>\n"
         "<h2>Contents</h2>\n"
         "<ol class=\"toc\">\n" + "\n".join(items) + "\n</ol>\n"
+        "<h2>Supplementary Tools</h2>\n"
+        "<ul class=\"toc\">\n"
+        "  <li><a href=\"interactive-periodic-table.html\">"
+        "Interactive Periodic Table</a> — explore all 118 elements with "
+        "hoverable Pauling electronegativity values.</li>\n"
+        "</ul>\n"
     )
     return build_page("CHEM 139 — Contents", body, index_link=None)
 
@@ -983,14 +1197,26 @@ def main():
         next_link = files[i + 1][0] if i + 1 < len(files) else None
         print(f"  {src.name} -> {outname}")
         try:
-            body, n_sol, n_splits, n_renum, n_math, n_inst, _msgs = convert_one(src)
+            (body, n_sol, n_splits, n_renum, n_math,
+             n_inst, n_mc, n_anchors, n_idx_links, _msgs) = convert_one(src)
         except Exception as e:
             print(f"    ERROR: {e}")
             continue
         total_solutions += n_sol
         page = build_page(label, body, prev_link, next_link)
         (OUT / outname).write_text(page, encoding="utf-8")
-        print(f"    {n_sol} solutions wrapped, {n_splits} merged lists split, {n_renum} problems renumbered, {n_math} math chains -> LaTeX, {n_inst} instructor-notes collapsed")
+        extras = []
+        if n_anchors:
+            extras.append(f"{n_anchors} section anchors")
+        if n_idx_links:
+            extras.append(f"{n_idx_links} index links")
+        extras_str = (", " + ", ".join(extras)) if extras else ""
+        print(
+            f"    {n_sol} solutions wrapped, {n_splits} merged lists split, "
+            f"{n_renum} problems renumbered, {n_math} math chains -> LaTeX, "
+            f"{n_inst} instructor-notes collapsed, "
+            f"{n_mc} mc-answer-keys collapsed{extras_str}"
+        )
     (OUT / "index.html").write_text(build_index(files), encoding="utf-8")
     print(f"\nTotal: {total_solutions} solution blocks across {len(files)} files.")
     print(f"Open: {OUT / 'index.html'}")

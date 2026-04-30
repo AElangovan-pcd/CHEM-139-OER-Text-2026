@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive periodic table — Pauling electronegativity</title>
+<meta name="description" content="An accessible, interactive periodic table of the 118 elements with Pauling electronegativity values. Open educational resource for chemistry curricula.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #FAF8F3;
+  --bg-elev: #FFFFFF;
+  --bg-muted: #F1EEE6;
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.28);
+  --text: #1A1A1A;
+  --text-muted: #5A5A56;
+  --text-faint: #8A8A85;
+  --focus: #1A1A1A;
+  --focus-ring: #E36F3F;
+  --link: #8B3A1A;
+  --cat-alkali-metal-bg: #FCEBEB; --cat-alkali-metal-text: #501313;
+  --cat-alkaline-earth-bg: #FAECE7; --cat-alkaline-earth-text: #4A1B0C;
+  --cat-transition-metal-bg: #E6F1FB; --cat-transition-metal-text: #042C53;
+  --cat-post-transition-bg: #E1F5EE; --cat-post-transition-text: #04342C;
+  --cat-metalloid-bg: #EAF3DE; --cat-metalloid-text: #173404;
+  --cat-nonmetal-bg: #FAEEDA; --cat-nonmetal-text: #412402;
+  --cat-halogen-bg: #FBEAF0; --cat-halogen-text: #4B1528;
+  --cat-noble-gas-bg: #EEEDFE; --cat-noble-gas-text: #26215C;
+  --cat-rare-earth-bg: #F1EFE8; --cat-rare-earth-text: #2C2C2A;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161413;
+    --bg-elev: #1F1D1B;
+    --bg-muted: #2A2724;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.28);
+    --text: #F0EDE8;
+    --text-muted: #B0ADA7;
+    --text-faint: #7A7872;
+    --focus: #F0EDE8;
+    --focus-ring: #E89A6F;
+    --link: #E89A6F;
+    --cat-alkali-metal-bg: #791F1F; --cat-alkali-metal-text: #F7C1C1;
+    --cat-alkaline-earth-bg: #712B13; --cat-alkaline-earth-text: #F5C4B3;
+    --cat-transition-metal-bg: #0C447C; --cat-transition-metal-text: #B5D4F4;
+    --cat-post-transition-bg: #085041; --cat-post-transition-text: #9FE1CB;
+    --cat-metalloid-bg: #27500A; --cat-metalloid-text: #C0DD97;
+    --cat-nonmetal-bg: #633806; --cat-nonmetal-text: #FAC775;
+    --cat-halogen-bg: #72243E; --cat-halogen-text: #F4C0D1;
+    --cat-noble-gas-bg: #3C3489; --cat-noble-gas-text: #CECBF6;
+    --cat-rare-earth-bg: #3A3936; --cat-rare-earth-text: #D3D1C7;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #FAF8F3;
+  --bg-elev: #FFFFFF;
+  --bg-muted: #F1EEE6;
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.28);
+  --text: #1A1A1A;
+  --text-muted: #5A5A56;
+  --text-faint: #8A8A85;
+  --focus: #1A1A1A;
+  --focus-ring: #E36F3F;
+  --link: #8B3A1A;
+  --cat-alkali-metal-bg: #FCEBEB; --cat-alkali-metal-text: #501313;
+  --cat-alkaline-earth-bg: #FAECE7; --cat-alkaline-earth-text: #4A1B0C;
+  --cat-transition-metal-bg: #E6F1FB; --cat-transition-metal-text: #042C53;
+  --cat-post-transition-bg: #E1F5EE; --cat-post-transition-text: #04342C;
+  --cat-metalloid-bg: #EAF3DE; --cat-metalloid-text: #173404;
+  --cat-nonmetal-bg: #FAEEDA; --cat-nonmetal-text: #412402;
+  --cat-halogen-bg: #FBEAF0; --cat-halogen-text: #4B1528;
+  --cat-noble-gas-bg: #EEEDFE; --cat-noble-gas-text: #26215C;
+  --cat-rare-earth-bg: #F1EFE8; --cat-rare-earth-text: #2C2C2A;
+}
+:root[data-theme="dark"] {
+  --bg: #161413;
+  --bg-elev: #1F1D1B;
+  --bg-muted: #2A2724;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.28);
+  --text: #F0EDE8;
+  --text-muted: #B0ADA7;
+  --text-faint: #7A7872;
+  --focus: #F0EDE8;
+  --focus-ring: #E89A6F;
+  --link: #E89A6F;
+  --cat-alkali-metal-bg: #791F1F; --cat-alkali-metal-text: #F7C1C1;
+  --cat-alkaline-earth-bg: #712B13; --cat-alkaline-earth-text: #F5C4B3;
+  --cat-transition-metal-bg: #0C447C; --cat-transition-metal-text: #B5D4F4;
+  --cat-post-transition-bg: #085041; --cat-post-transition-text: #9FE1CB;
+  --cat-metalloid-bg: #27500A; --cat-metalloid-text: #C0DD97;
+  --cat-nonmetal-bg: #633806; --cat-nonmetal-text: #FAC775;
+  --cat-halogen-bg: #72243E; --cat-halogen-text: #F4C0D1;
+  --cat-noble-gas-bg: #3C3489; --cat-noble-gas-text: #CECBF6;
+  --cat-rare-earth-bg: #3A3936; --cat-rare-earth-text: #D3D1C7;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 1rem;
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  text-decoration: none;
+  z-index: 100;
+}
+.skip-link:focus { left: 1rem; outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); border: 0;
+}
+
+.container { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+
+header.page-header {
+  padding: 3.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  position: relative;
+}
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+h1.page-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.75rem;
+  color: var(--text);
+}
+.lede {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 64ch;
+}
+.theme-toggle {
+  position: absolute;
+  top: 3.5rem;
+  right: 1.5rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px;
+  display: inline-flex;
+  gap: 2px;
+}
+.theme-toggle button {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.theme-toggle button[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+}
+.theme-toggle button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+main { padding-bottom: 4rem; }
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.search-wrap { flex: 1; min-width: 240px; position: relative; }
+.search-input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 16px;
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn:hover { border-color: var(--border-strong); }
+.btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--border-strong); }
+.btn:active { transform: translateY(1px); }
+
+fieldset.legend {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  margin: 0 0 1.5rem;
+  background: var(--bg-elev);
+}
+fieldset.legend legend {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 8px;
+}
+.legend-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.legend-pill:hover { border-color: var(--border-strong); }
+.legend-pill:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.legend-pill[aria-pressed="true"] {
+  background: var(--bg-muted);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 8px;
+  border: 1px solid var(--border);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 4px 0;
+  margin-bottom: 1.5rem;
+}
+.pt-grid {
+  display: grid;
+  grid-template-columns: repeat(18, minmax(58px, 1fr));
+  gap: 3px;
+  min-width: 1080px;
+}
+.pt-fblock { margin-top: 8px; }
+
+.pt-cell {
+  aspect-ratio: 1;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  transition: transform 0.12s ease, opacity 0.15s ease, box-shadow 0.12s ease;
+  border: 1px solid transparent;
+  background: var(--cell-bg);
+  color: var(--cell-text);
+  min-width: 0;
+  padding: 3px 4px;
+  font-family: var(--font-body);
+  text-align: left;
+}
+.pt-cell:hover { transform: scale(1.18); z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.18); border-color: var(--border-strong); }
+.pt-cell:focus-visible {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+  z-index: 6;
+  transform: scale(1.12);
+}
+.pt-cell.dim { opacity: 0.16; }
+.pt-cell.selected {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px var(--focus);
+  z-index: 4;
+}
+.pt-cell .row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 400;
+}
+.pt-cell .num { opacity: 0.85; }
+.pt-cell .en { opacity: 0.85; font-variant-numeric: tabular-nums; }
+.pt-cell .sym {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  margin-top: 1px;
+}
+.pt-cell .name {
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.05;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pt-cell .mass {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-marker {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  border: 1px dashed var(--border);
+  border-radius: 5px;
+  background: var(--bg-muted);
+}
+
+.cat-alkali-metal { --cell-bg: var(--cat-alkali-metal-bg); --cell-text: var(--cat-alkali-metal-text); }
+.cat-alkaline-earth { --cell-bg: var(--cat-alkaline-earth-bg); --cell-text: var(--cat-alkaline-earth-text); }
+.cat-transition-metal { --cell-bg: var(--cat-transition-metal-bg); --cell-text: var(--cat-transition-metal-text); }
+.cat-post-transition { --cell-bg: var(--cat-post-transition-bg); --cell-text: var(--cat-post-transition-text); }
+.cat-metalloid { --cell-bg: var(--cat-metalloid-bg); --cell-text: var(--cat-metalloid-text); }
+.cat-nonmetal { --cell-bg: var(--cat-nonmetal-bg); --cell-text: var(--cat-nonmetal-text); }
+.cat-halogen { --cell-bg: var(--cat-halogen-bg); --cell-text: var(--cat-halogen-text); }
+.cat-noble-gas { --cell-bg: var(--cat-noble-gas-bg); --cell-text: var(--cat-noble-gas-text); }
+.cat-rare-earth { --cell-bg: var(--cat-rare-earth-bg); --cell-text: var(--cat-rare-earth-text); }
+
+.detail-panel {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+}
+.detail-head {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.detail-tile {
+  width: 132px;
+  height: 132px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background: var(--cell-bg);
+  color: var(--cell-text);
+  font-family: var(--font-body);
+}
+.detail-tile-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.detail-tile-sym {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+}
+.detail-tile-bottom {
+  font-size: 12px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.detail-body { flex: 1; min-width: 280px; }
+.detail-name {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  color: var(--text);
+}
+.detail-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px 24px;
+  font-size: 14px;
+}
+.detail-grid dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+}
+.detail-grid dd {
+  font-size: 16px;
+  margin: 2px 0 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.detail-grid dd.unavailable { color: var(--text-faint); }
+.detail-config {
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.detail-config dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+}
+.detail-config dd {
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+.ec-core { color: var(--text-muted); font-weight: 400; }
+.ec-valence { color: var(--text); font-weight: 700; }
+.detail-note {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+footer.page-footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0 3rem;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+footer.page-footer h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 0.5rem;
+}
+footer.page-footer p { margin: 0 0 0.75rem; max-width: 70ch; }
+footer.page-footer a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+footer.page-footer a:hover { text-decoration-thickness: 2px; }
+footer.page-footer a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  .pt-cell:hover, .pt-cell:focus-visible, .pt-cell.selected { transform: none; }
+}
+
+@media (max-width: 720px) {
+  .pt-grid {
+    grid-template-columns: repeat(18, minmax(46px, 1fr));
+    min-width: 870px;
+  }
+  .pt-cell .name { display: none; }
+  .pt-cell .sym { font-size: 14px; }
+  .pt-cell .mass { font-size: 9px; }
+  .detail-tile { width: 104px; height: 104px; }
+  .detail-tile-sym { font-size: 42px; }
+  .detail-name { font-size: 26px; }
+}
+
+@media print {
+  body { background: white; color: black; }
+  .controls, .legend-pills, .theme-toggle, .skip-link, .detail-actions { display: none !important; }
+  .pt-cell { box-shadow: none !important; transform: none !important; }
+  .detail-panel, fieldset.legend { border-color: #888; background: white; }
+  .table-wrap { overflow: visible; }
+  .pt-grid { gap: 1px; }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<p style="max-width:1100px;margin:0.6rem auto 0;padding:0 1rem;font-family:-apple-system,system-ui,'Segoe UI',sans-serif;font-size:0.9rem;">
+  <a href="Periodic_Table_Reference_Page.html">&larr; Back to Periodic Table Reference</a>
+  &nbsp;·&nbsp;
+  <a href="index.html">Contents</a>
+</p>
+
+<div class="container">
+  <header class="page-header">
+    <p class="eyebrow">Open educational resource</p>
+    <h1 class="page-title">The periodic table</h1>
+    <p class="lede">All 118 elements with Pauling electronegativity (χ). Click any element for details, search by name or symbol, or filter by chemical family.</p>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button type="button" data-theme="auto" aria-pressed="true">Auto</button>
+      <button type="button" data-theme="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="controls">
+      <div class="search-wrap">
+        <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <label class="sr-only" for="search">Search elements</label>
+        <input class="search-input" type="search" id="search" placeholder="Search by name, symbol, atomic number, or electronegativity (e.g. 'gold', 'Fe', '17')" aria-describedby="search-help">
+        <span class="sr-only" id="search-help">Type to filter elements. Non-matching elements will be dimmed.</span>
+      </div>
+      <button class="btn" type="button" id="reset-btn">Reset filters</button>
+    </div>
+
+    <fieldset class="legend">
+      <legend>Filter by family</legend>
+      <div class="legend-pills" id="legend-pills" role="group" aria-label="Toggle chemical families to filter the table"></div>
+    </fieldset>
+
+    <div class="table-wrap">
+      <div class="pt-grid" id="pt-main" role="grid" aria-label="Main periodic table, periods 1 through 7"></div>
+      <div class="pt-grid pt-fblock" id="pt-fblock" role="grid" aria-label="Lanthanide and actinide series, the f-block"></div>
+    </div>
+
+    <section class="detail-panel" id="detail-panel" aria-live="polite" aria-atomic="true">
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <h2>About this resource</h2>
+    <p>This interactive periodic table is provided as an open educational resource for chemistry curricula. Pauling electronegativity values (χ), first ionization energies, and electron affinities are based on standard references including the <a href="https://iupac.org/" rel="noopener">IUPAC</a> Periodic Table, the <a href="https://www.nist.gov/pml/atomic-spectra-database" rel="noopener">NIST Atomic Spectra Database</a>, and the CRC Handbook of Chemistry and Physics. Ground-state electron configurations follow IUPAC ground-state assignments; for elements 104 and beyond, configurations are theoretical predictions that have not been experimentally verified.</p>
+    <p>Some elements have no widely accepted value for one or more properties and are shown as <span aria-hidden="true">—</span><span class="sr-only">unavailable</span>. This applies to the lighter noble gases (He, Ne, Ar) for χ, to elements that do not form a stable mononegative anion for electron affinity (most noble gases, Be–Mg, Mn, Zn, Cd, Hg, and several lanthanides), and to most superheavy synthetic elements (Z ≥ 104), whose chemistry has not been studied in sufficient detail to assign reliable scale values.</p>
+    <p>Released under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International License</a>. You are free to share and adapt this resource for any purpose, including commercially, provided you give appropriate credit and license your derivative work under the same terms.</p>
+    <p><strong>Keyboard navigation:</strong> Use Tab to enter the table, arrow keys to move between adjacent elements, Enter or Space to view details, Home for hydrogen, End for oganesson, and Escape to clear search.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // [z, sym, name, mass, cat, period, group, phase, electronegativity_or_null]
+  // Pauling electronegativity values; null where no widely accepted value exists.
+  const E = [
+    [1, "H", "Hydrogen", 1.008, "NM", 1, 1, "g", 2.20],
+    [2, "He", "Helium", 4.0026, "NG", 1, 18, "g", null],
+    [3, "Li", "Lithium", 6.94, "AM", 2, 1, "s", 0.98],
+    [4, "Be", "Beryllium", 9.0122, "AE", 2, 2, "s", 1.57],
+    [5, "B", "Boron", 10.81, "ML", 2, 13, "s", 2.04],
+    [6, "C", "Carbon", 12.011, "NM", 2, 14, "s", 2.55],
+    [7, "N", "Nitrogen", 14.007, "NM", 2, 15, "g", 3.04],
+    [8, "O", "Oxygen", 15.999, "NM", 2, 16, "g", 3.44],
+    [9, "F", "Fluorine", 18.998, "HG", 2, 17, "g", 3.98],
+    [10, "Ne", "Neon", 20.180, "NG", 2, 18, "g", null],
+    [11, "Na", "Sodium", 22.990, "AM", 3, 1, "s", 0.93],
+    [12, "Mg", "Magnesium", 24.305, "AE", 3, 2, "s", 1.31],
+    [13, "Al", "Aluminium", 26.982, "PT", 3, 13, "s", 1.61],
+    [14, "Si", "Silicon", 28.085, "ML", 3, 14, "s", 1.90],
+    [15, "P", "Phosphorus", 30.974, "NM", 3, 15, "s", 2.19],
+    [16, "S", "Sulfur", 32.06, "NM", 3, 16, "s", 2.58],
+    [17, "Cl", "Chlorine", 35.45, "HG", 3, 17, "g", 3.16],
+    [18, "Ar", "Argon", 39.95, "NG", 3, 18, "g", null],
+    [19, "K", "Potassium", 39.098, "AM", 4, 1, "s", 0.82],
+    [20, "Ca", "Calcium", 40.078, "AE", 4, 2, "s", 1.00],
+    [21, "Sc", "Scandium", 44.956, "TM", 4, 3, "s", 1.36],
+    [22, "Ti", "Titanium", 47.867, "TM", 4, 4, "s", 1.54],
+    [23, "V", "Vanadium", 50.942, "TM", 4, 5, "s", 1.63],
+    [24, "Cr", "Chromium", 51.996, "TM", 4, 6, "s", 1.66],
+    [25, "Mn", "Manganese", 54.938, "TM", 4, 7, "s", 1.55],
+    [26, "Fe", "Iron", 55.845, "TM", 4, 8, "s", 1.83],
+    [27, "Co", "Cobalt", 58.933, "TM", 4, 9, "s", 1.88],
+    [28, "Ni", "Nickel", 58.693, "TM", 4, 10, "s", 1.91],
+    [29, "Cu", "Copper", 63.546, "TM", 4, 11, "s", 1.90],
+    [30, "Zn", "Zinc", 65.38, "TM", 4, 12, "s", 1.65],
+    [31, "Ga", "Gallium", 69.723, "PT", 4, 13, "s", 1.81],
+    [32, "Ge", "Germanium", 72.630, "ML", 4, 14, "s", 2.01],
+    [33, "As", "Arsenic", 74.922, "ML", 4, 15, "s", 2.18],
+    [34, "Se", "Selenium", 78.971, "NM", 4, 16, "s", 2.55],
+    [35, "Br", "Bromine", 79.904, "HG", 4, 17, "l", 2.96],
+    [36, "Kr", "Krypton", 83.798, "NG", 4, 18, "g", 3.00],
+    [37, "Rb", "Rubidium", 85.468, "AM", 5, 1, "s", 0.82],
+    [38, "Sr", "Strontium", 87.62, "AE", 5, 2, "s", 0.95],
+    [39, "Y", "Yttrium", 88.906, "TM", 5, 3, "s", 1.22],
+    [40, "Zr", "Zirconium", 91.224, "TM", 5, 4, "s", 1.33],
+    [41, "Nb", "Niobium", 92.906, "TM", 5, 5, "s", 1.6],
+    [42, "Mo", "Molybdenum", 95.95, "TM", 5, 6, "s", 2.16],
+    [43, "Tc", "Technetium", 98, "TM", 5, 7, "s", 1.9],
+    [44, "Ru", "Ruthenium", 101.07, "TM", 5, 8, "s", 2.2],
+    [45, "Rh", "Rhodium", 102.91, "TM", 5, 9, "s", 2.28],
+    [46, "Pd", "Palladium", 106.42, "TM", 5, 10, "s", 2.20],
+    [47, "Ag", "Silver", 107.87, "TM", 5, 11, "s", 1.93],
+    [48, "Cd", "Cadmium", 112.41, "TM", 5, 12, "s", 1.69],
+    [49, "In", "Indium", 114.82, "PT", 5, 13, "s", 1.78],
+    [50, "Sn", "Tin", 118.71, "PT", 5, 14, "s", 1.96],
+    [51, "Sb", "Antimony", 121.76, "ML", 5, 15, "s", 2.05],
+    [52, "Te", "Tellurium", 127.60, "ML", 5, 16, "s", 2.1],
+    [53, "I", "Iodine", 126.90, "HG", 5, 17, "s", 2.66],
+    [54, "Xe", "Xenon", 131.29, "NG", 5, 18, "g", 2.60],
+    [55, "Cs", "Caesium", 132.91, "AM", 6, 1, "s", 0.79],
+    [56, "Ba", "Barium", 137.33, "AE", 6, 2, "s", 0.89],
+    [57, "La", "Lanthanum", 138.91, "RE", 6, 3, "s", 1.10],
+    [58, "Ce", "Cerium", 140.12, "RE", 6, 4, "s", 1.12],
+    [59, "Pr", "Praseodymium", 140.91, "RE", 6, 5, "s", 1.13],
+    [60, "Nd", "Neodymium", 144.24, "RE", 6, 6, "s", 1.14],
+    [61, "Pm", "Promethium", 145, "RE", 6, 7, "s", 1.13],
+    [62, "Sm", "Samarium", 150.36, "RE", 6, 8, "s", 1.17],
+    [63, "Eu", "Europium", 151.96, "RE", 6, 9, "s", 1.20],
+    [64, "Gd", "Gadolinium", 157.25, "RE", 6, 10, "s", 1.20],
+    [65, "Tb", "Terbium", 158.93, "RE", 6, 11, "s", 1.20],
+    [66, "Dy", "Dysprosium", 162.50, "RE", 6, 12, "s", 1.22],
+    [67, "Ho", "Holmium", 164.93, "RE", 6, 13, "s", 1.23],
+    [68, "Er", "Erbium", 167.26, "RE", 6, 14, "s", 1.24],
+    [69, "Tm", "Thulium", 168.93, "RE", 6, 15, "s", 1.25],
+    [70, "Yb", "Ytterbium", 173.05, "RE", 6, 16, "s", 1.10],
+    [71, "Lu", "Lutetium", 174.97, "RE", 6, 17, "s", 1.27],
+    [72, "Hf", "Hafnium", 178.49, "TM", 6, 4, "s", 1.3],
+    [73, "Ta", "Tantalum", 180.95, "TM", 6, 5, "s", 1.5],
+    [74, "W", "Tungsten", 183.84, "TM", 6, 6, "s", 2.36],
+    [75, "Re", "Rhenium", 186.21, "TM", 6, 7, "s", 1.9],
+    [76, "Os", "Osmium", 190.23, "TM", 6, 8, "s", 2.2],
+    [77, "Ir", "Iridium", 192.22, "TM", 6, 9, "s", 2.20],
+    [78, "Pt", "Platinum", 195.08, "TM", 6, 10, "s", 2.28],
+    [79, "Au", "Gold", 196.97, "TM", 6, 11, "s", 2.54],
+    [80, "Hg", "Mercury", 200.59, "TM", 6, 12, "l", 2.00],
+    [81, "Tl", "Thallium", 204.38, "PT", 6, 13, "s", 1.62],
+    [82, "Pb", "Lead", 207.2, "PT", 6, 14, "s", 2.33],
+    [83, "Bi", "Bismuth", 208.98, "PT", 6, 15, "s", 2.02],
+    [84, "Po", "Polonium", 209, "PT", 6, 16, "s", 2.0],
+    [85, "At", "Astatine", 210, "HG", 6, 17, "s", 2.2],
+    [86, "Rn", "Radon", 222, "NG", 6, 18, "g", 2.2],
+    [87, "Fr", "Francium", 223, "AM", 7, 1, "s", 0.7],
+    [88, "Ra", "Radium", 226, "AE", 7, 2, "s", 0.9],
+    [89, "Ac", "Actinium", 227, "RE", 7, 3, "s", 1.1],
+    [90, "Th", "Thorium", 232.04, "RE", 7, 4, "s", 1.3],
+    [91, "Pa", "Protactinium", 231.04, "RE", 7, 5, "s", 1.5],
+    [92, "U", "Uranium", 238.03, "RE", 7, 6, "s", 1.38],
+    [93, "Np", "Neptunium", 237, "RE", 7, 7, "s", 1.36],
+    [94, "Pu", "Plutonium", 244, "RE", 7, 8, "s", 1.28],
+    [95, "Am", "Americium", 243, "RE", 7, 9, "s", 1.3],
+    [96, "Cm", "Curium", 247, "RE", 7, 10, "s", 1.3],
+    [97, "Bk", "Berkelium", 247, "RE", 7, 11, "s", 1.3],
+    [98, "Cf", "Californium", 251, "RE", 7, 12, "s", 1.3],
+    [99, "Es", "Einsteinium", 252, "RE", 7, 13, "s", 1.3],
+    [100, "Fm", "Fermium", 257, "RE", 7, 14, "s", 1.3],
+    [101, "Md", "Mendelevium", 258, "RE", 7, 15, "s", 1.3],
+    [102, "No", "Nobelium", 259, "RE", 7, 16, "s", 1.3],
+    [103, "Lr", "Lawrencium", 266, "RE", 7, 17, "s", null],
+    [104, "Rf", "Rutherfordium", 267, "TM", 7, 4, "sy", null],
+    [105, "Db", "Dubnium", 270, "TM", 7, 5, "sy", null],
+    [106, "Sg", "Seaborgium", 271, "TM", 7, 6, "sy", null],
+    [107, "Bh", "Bohrium", 270, "TM", 7, 7, "sy", null],
+    [108, "Hs", "Hassium", 277, "TM", 7, 8, "sy", null],
+    [109, "Mt", "Meitnerium", 278, "TM", 7, 9, "sy", null],
+    [110, "Ds", "Darmstadtium", 281, "TM", 7, 10, "sy", null],
+    [111, "Rg", "Roentgenium", 282, "TM", 7, 11, "sy", null],
+    [112, "Cn", "Copernicium", 285, "TM", 7, 12, "sy", null],
+    [113, "Nh", "Nihonium", 286, "PT", 7, 13, "sy", null],
+    [114, "Fl", "Flerovium", 289, "PT", 7, 14, "sy", null],
+    [115, "Mc", "Moscovium", 290, "PT", 7, 15, "sy", null],
+    [116, "Lv", "Livermorium", 293, "PT", 7, 16, "sy", null],
+    [117, "Ts", "Tennessine", 294, "HG", 7, 17, "sy", null],
+    [118, "Og", "Oganesson", 294, "NG", 7, 18, "sy", null]
+  ];
+
+  // [first_ionization_energy_kJ_per_mol, electron_configuration, electron_affinity_kJ_per_mol]
+  // null = not measured / no stable anion / no widely accepted value
+  const PROPS = {
+    1:   [1312.0, "1s¹", 72.8],
+    2:   [2372.3, "1s²", null],
+    3:   [520.2, "[He] 2s¹", 59.6],
+    4:   [899.5, "[He] 2s²", null],
+    5:   [800.6, "[He] 2s² 2p¹", 26.7],
+    6:   [1086.5, "[He] 2s² 2p²", 121.8],
+    7:   [1402.3, "[He] 2s² 2p³", null],
+    8:   [1313.9, "[He] 2s² 2p⁴", 141.0],
+    9:   [1681.0, "[He] 2s² 2p⁵", 328.0],
+    10:  [2080.7, "[He] 2s² 2p⁶", null],
+    11:  [495.8, "[Ne] 3s¹", 52.8],
+    12:  [737.7, "[Ne] 3s²", null],
+    13:  [577.5, "[Ne] 3s² 3p¹", 41.8],
+    14:  [786.5, "[Ne] 3s² 3p²", 134.1],
+    15:  [1011.8, "[Ne] 3s² 3p³", 72.0],
+    16:  [999.6, "[Ne] 3s² 3p⁴", 200.4],
+    17:  [1251.2, "[Ne] 3s² 3p⁵", 349.0],
+    18:  [1520.6, "[Ne] 3s² 3p⁶", null],
+    19:  [418.8, "[Ar] 4s¹", 48.4],
+    20:  [589.8, "[Ar] 4s²", 2.4],
+    21:  [633.1, "[Ar] 3d¹ 4s²", 18.1],
+    22:  [658.8, "[Ar] 3d² 4s²", 7.6],
+    23:  [650.9, "[Ar] 3d³ 4s²", 50.9],
+    24:  [652.9, "[Ar] 3d⁵ 4s¹", 64.3],
+    25:  [717.3, "[Ar] 3d⁵ 4s²", null],
+    26:  [762.5, "[Ar] 3d⁶ 4s²", 14.6],
+    27:  [760.4, "[Ar] 3d⁷ 4s²", 63.7],
+    28:  [737.1, "[Ar] 3d⁸ 4s²", 111.7],
+    29:  [745.5, "[Ar] 3d¹⁰ 4s¹", 118.4],
+    30:  [906.4, "[Ar] 3d¹⁰ 4s²", null],
+    31:  [578.8, "[Ar] 3d¹⁰ 4s² 4p¹", 41.0],
+    32:  [762.0, "[Ar] 3d¹⁰ 4s² 4p²", 119.0],
+    33:  [944.5, "[Ar] 3d¹⁰ 4s² 4p³", 78.0],
+    34:  [941.0, "[Ar] 3d¹⁰ 4s² 4p⁴", 195.0],
+    35:  [1139.9, "[Ar] 3d¹⁰ 4s² 4p⁵", 324.6],
+    36:  [1350.8, "[Ar] 3d¹⁰ 4s² 4p⁶", null],
+    37:  [403.0, "[Kr] 5s¹", 46.9],
+    38:  [549.5, "[Kr] 5s²", 5.0],
+    39:  [600, "[Kr] 4d¹ 5s²", 29.6],
+    40:  [640.1, "[Kr] 4d² 5s²", 41.1],
+    41:  [652.1, "[Kr] 4d⁴ 5s¹", 86.1],
+    42:  [684.3, "[Kr] 4d⁵ 5s¹", 71.9],
+    43:  [702, "[Kr] 4d⁵ 5s²", 53.0],
+    44:  [710.2, "[Kr] 4d⁷ 5s¹", 101.3],
+    45:  [719.7, "[Kr] 4d⁸ 5s¹", 109.7],
+    46:  [804.4, "[Kr] 4d¹⁰", 53.7],
+    47:  [731.0, "[Kr] 4d¹⁰ 5s¹", 125.6],
+    48:  [867.8, "[Kr] 4d¹⁰ 5s²", null],
+    49:  [558.3, "[Kr] 4d¹⁰ 5s² 5p¹", 39.0],
+    50:  [708.6, "[Kr] 4d¹⁰ 5s² 5p²", 107.3],
+    51:  [834, "[Kr] 4d¹⁰ 5s² 5p³", 101.1],
+    52:  [869.3, "[Kr] 4d¹⁰ 5s² 5p⁴", 190.2],
+    53:  [1008.4, "[Kr] 4d¹⁰ 5s² 5p⁵", 295.2],
+    54:  [1170.4, "[Kr] 4d¹⁰ 5s² 5p⁶", null],
+    55:  [375.7, "[Xe] 6s¹", 45.5],
+    56:  [502.9, "[Xe] 6s²", 13.95],
+    57:  [538.1, "[Xe] 5d¹ 6s²", 53],
+    58:  [534.4, "[Xe] 4f¹ 5d¹ 6s²", 55],
+    59:  [527, "[Xe] 4f³ 6s²", 93],
+    60:  [533.1, "[Xe] 4f⁴ 6s²", 184.87],
+    61:  [540, "[Xe] 4f⁵ 6s²", null],
+    62:  [544.5, "[Xe] 4f⁶ 6s²", null],
+    63:  [547.1, "[Xe] 4f⁷ 6s²", 11],
+    64:  [593.4, "[Xe] 4f⁷ 5d¹ 6s²", null],
+    65:  [565.8, "[Xe] 4f⁹ 6s²", null],
+    66:  [573.0, "[Xe] 4f¹⁰ 6s²", null],
+    67:  [581.0, "[Xe] 4f¹¹ 6s²", null],
+    68:  [589.3, "[Xe] 4f¹² 6s²", null],
+    69:  [596.7, "[Xe] 4f¹³ 6s²", 99.0],
+    70:  [603.4, "[Xe] 4f¹⁴ 6s²", null],
+    71:  [523.5, "[Xe] 4f¹⁴ 5d¹ 6s²", 33],
+    72:  [658.5, "[Xe] 4f¹⁴ 5d² 6s²", 17.2],
+    73:  [761, "[Xe] 4f¹⁴ 5d³ 6s²", 31.0],
+    74:  [770, "[Xe] 4f¹⁴ 5d⁴ 6s²", 78.6],
+    75:  [760, "[Xe] 4f¹⁴ 5d⁵ 6s²", 14.5],
+    76:  [840, "[Xe] 4f¹⁴ 5d⁶ 6s²", 106.1],
+    77:  [880, "[Xe] 4f¹⁴ 5d⁷ 6s²", 150.9],
+    78:  [870, "[Xe] 4f¹⁴ 5d⁹ 6s¹", 205.3],
+    79:  [890.1, "[Xe] 4f¹⁴ 5d¹⁰ 6s¹", 222.8],
+    80:  [1007.1, "[Xe] 4f¹⁴ 5d¹⁰ 6s²", null],
+    81:  [589.4, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹", 36.4],
+    82:  [715.6, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²", 35.1],
+    83:  [703, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³", 91.3],
+    84:  [812.1, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴", 136.0],
+    85:  [899.0, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵", 233.0],
+    86:  [1037, "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶", null],
+    87:  [380, "[Rn] 7s¹", 47.2],
+    88:  [509.3, "[Rn] 7s²", null],
+    89:  [499, "[Rn] 6d¹ 7s²", 33.8],
+    90:  [587, "[Rn] 6d² 7s²", 60.0],
+    91:  [568, "[Rn] 5f² 6d¹ 7s²", null],
+    92:  [597.6, "[Rn] 5f³ 6d¹ 7s²", null],
+    93:  [604.5, "[Rn] 5f⁴ 6d¹ 7s²", null],
+    94:  [584.7, "[Rn] 5f⁶ 7s²", null],
+    95:  [578, "[Rn] 5f⁷ 7s²", null],
+    96:  [581, "[Rn] 5f⁷ 6d¹ 7s²", null],
+    97:  [601, "[Rn] 5f⁹ 7s²", null],
+    98:  [608, "[Rn] 5f¹⁰ 7s²", null],
+    99:  [619, "[Rn] 5f¹¹ 7s²", null],
+    100: [627, "[Rn] 5f¹² 7s²", null],
+    101: [635, "[Rn] 5f¹³ 7s²", null],
+    102: [642, "[Rn] 5f¹⁴ 7s²", null],
+    103: [478.6, "[Rn] 5f¹⁴ 7s² 7p¹", null],
+    104: [null, "[Rn] 5f¹⁴ 6d² 7s²", null],
+    105: [null, "[Rn] 5f¹⁴ 6d³ 7s²", null],
+    106: [null, "[Rn] 5f¹⁴ 6d⁴ 7s²", null],
+    107: [null, "[Rn] 5f¹⁴ 6d⁵ 7s²", null],
+    108: [null, "[Rn] 5f¹⁴ 6d⁶ 7s²", null],
+    109: [null, "[Rn] 5f¹⁴ 6d⁷ 7s²", null],
+    110: [null, "[Rn] 5f¹⁴ 6d⁸ 7s²", null],
+    111: [null, "[Rn] 5f¹⁴ 6d⁹ 7s²", null],
+    112: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s²", null],
+    113: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹", null],
+    114: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²", null],
+    115: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³", null],
+    116: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴", null],
+    117: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵", null],
+    118: [null, "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶", null]
+  };
+
+  const CAT_NAME = {
+    AM: "Alkali metal",
+    AE: "Alkaline earth metal",
+    TM: "Transition metal",
+    PT: "Post-transition metal",
+    ML: "Metalloid",
+    NM: "Reactive nonmetal",
+    HG: "Halogen",
+    NG: "Noble gas",
+    RE: "Rare earth (f-block)"
+  };
+  const CAT_CLASS = {
+    AM: "cat-alkali-metal",
+    AE: "cat-alkaline-earth",
+    TM: "cat-transition-metal",
+    PT: "cat-post-transition",
+    ML: "cat-metalloid",
+    NM: "cat-nonmetal",
+    HG: "cat-halogen",
+    NG: "cat-noble-gas",
+    RE: "cat-rare-earth"
+  };
+  const PHASE_NAME = {
+    g: "Gas at standard conditions",
+    l: "Liquid at standard conditions",
+    s: "Solid at standard conditions",
+    sy: "Synthetic, bulk phase undetermined"
+  };
+  const CAT_ORDER = ["AM", "AE", "TM", "PT", "ML", "NM", "HG", "NG", "RE"];
+
+  const elementByZ = Object.create(null);
+  E.forEach(function (e) { elementByZ[e[0]] = e; });
+
+  const cellByZ = Object.create(null);
+  const cellsByPosition = Object.create(null);
+  const activeCats = new Set();
+  let searchTerm = "";
+  let selectedZ = null;
+  let focusedZ = 6;
+
+  function formatMass(m) {
+    if (Number.isInteger(m)) return "(" + m + ")";
+    return m.toString();
+  }
+  function formatEN(en) {
+    if (en === null || en === undefined) return null;
+    return en.toFixed(2);
+  }
+  function rowFor(e) {
+    return e[4] === "RE" ? (e[5] === 6 ? 9 : 10) : e[5];
+  }
+  function colFor(e) { return e[6]; }
+  function gridContainerFor(e) {
+    return e[4] === "RE" ? document.getElementById("pt-fblock") : document.getElementById("pt-main");
+  }
+  function positionKey(r, c) { return r + "," + c; }
+
+  function buildLegend() {
+    const wrap = document.getElementById("legend-pills");
+    CAT_ORDER.forEach(function (k) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "legend-pill";
+      btn.dataset.cat = k;
+      btn.setAttribute("aria-pressed", "false");
+      btn.innerHTML = '<span class="legend-swatch" aria-hidden="true" style="background:var(--cat-' + CAT_CLASS[k].slice(4) + '-bg)"></span>' + CAT_NAME[k];
+      btn.addEventListener("click", function () {
+        if (activeCats.has(k)) {
+          activeCats.delete(k);
+          btn.setAttribute("aria-pressed", "false");
+        } else {
+          activeCats.add(k);
+          btn.setAttribute("aria-pressed", "true");
+        }
+        applyFilters();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function buildAriaLabel(e) {
+    const z = e[0], sym = e[1], name = e[2], mass = e[3], cat = e[4], phase = e[7], en = e[8];
+    let parts = [name + ", symbol " + sym + ", atomic number " + z];
+    parts.push("atomic mass " + formatMass(mass));
+    parts.push(CAT_NAME[cat]);
+    parts.push(PHASE_NAME[phase]);
+    if (en !== null) {
+      parts.push("Pauling electronegativity " + formatEN(en));
+    } else {
+      parts.push("Pauling electronegativity not available");
+    }
+    return parts.join(", ");
+  }
+
+  function buildCells() {
+    E.forEach(function (e) {
+      const z = e[0], sym = e[1], name = e[2], mass = e[3], cat = e[4];
+      const en = e[8];
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "pt-cell " + CAT_CLASS[cat];
+      cell.dataset.z = z;
+      cell.dataset.cat = cat;
+      cell.dataset.search = (sym + " " + name + " " + z + (en !== null ? " " + en : "")).toLowerCase();
+      cell.setAttribute("role", "gridcell");
+      cell.setAttribute("aria-label", buildAriaLabel(e));
+      cell.tabIndex = -1;
+
+      const enText = en !== null ? formatEN(en) : "—";
+      const massText = formatMass(mass);
+      cell.innerHTML =
+        '<div class="row-top"><span class="num">' + z + '</span><span class="en" aria-hidden="true">' + enText + '</span></div>' +
+        '<div class="sym">' + sym + '</div>' +
+        '<div class="name" aria-hidden="true">' + name + '</div>' +
+        '<div class="mass" aria-hidden="true">' + massText + '</div>';
+
+      const r = rowFor(e), c = colFor(e);
+      cell.style.gridRow = e[4] === "RE" ? (e[5] === 6 ? 1 : 2) : e[5];
+      cell.style.gridColumn = c;
+
+      cell.addEventListener("click", function () { selectElement(z); });
+      cell.addEventListener("focus", function () { focusedZ = z; });
+      cell.addEventListener("keydown", handleCellKeydown);
+
+      gridContainerFor(e).appendChild(cell);
+      cellByZ[z] = cell;
+      cellsByPosition[positionKey(r, c)] = cell;
+    });
+
+    addMarker(6, 3, "57–71", "lanthanides 57 to 71 — see f-block row below");
+    addMarker(7, 3, "89–103", "actinides 89 to 103 — see f-block row below");
+  }
+
+  function addMarker(row, col, label, ariaLabel) {
+    const m = document.createElement("div");
+    m.className = "pt-marker";
+    m.style.gridRow = row;
+    m.style.gridColumn = col;
+    m.setAttribute("role", "presentation");
+    m.setAttribute("aria-label", ariaLabel);
+    m.textContent = label;
+    document.getElementById("pt-main").appendChild(m);
+  }
+
+  function handleCellKeydown(ev) {
+    const z = parseInt(ev.currentTarget.dataset.z, 10);
+    const e = elementByZ[z];
+    const r = rowFor(e), c = colFor(e);
+    let target = null;
+
+    switch (ev.key) {
+      case "ArrowRight":
+        target = scanForCell(r, c, 0, 1);
+        break;
+      case "ArrowLeft":
+        target = scanForCell(r, c, 0, -1);
+        break;
+      case "ArrowDown":
+        target = scanForCell(r, c, 1, 0);
+        break;
+      case "ArrowUp":
+        target = scanForCell(r, c, -1, 0);
+        break;
+      case "Home":
+        target = cellByZ[1];
+        break;
+      case "End":
+        target = cellByZ[118];
+        break;
+      case "Escape":
+        document.getElementById("search").value = "";
+        searchTerm = "";
+        applyFilters();
+        return;
+      default:
+        return;
+    }
+    if (target) {
+      ev.preventDefault();
+      moveFocusTo(target);
+    }
+  }
+
+  function scanForCell(r, c, dr, dc) {
+    let nr = r + dr, nc = c + dc;
+    while (nr >= 1 && nr <= 10 && nc >= 1 && nc <= 18) {
+      const cell = cellsByPosition[positionKey(nr, nc)];
+      if (cell) return cell;
+      nr += dr; nc += dc;
+    }
+    return null;
+  }
+
+  function moveFocusTo(cell) {
+    document.querySelectorAll(".pt-cell").forEach(function (c) { c.tabIndex = -1; });
+    cell.tabIndex = 0;
+    cell.focus();
+  }
+
+  function selectElement(z) {
+    selectedZ = z;
+    document.querySelectorAll(".pt-cell.selected").forEach(function (c) { c.classList.remove("selected"); });
+    if (cellByZ[z]) {
+      cellByZ[z].classList.add("selected");
+      moveFocusTo(cellByZ[z]);
+    }
+    renderDetail(z);
+  }
+
+  function applyFilters() {
+    document.querySelectorAll(".pt-cell").forEach(function (c) {
+      const matchCat = activeCats.size === 0 || activeCats.has(c.dataset.cat);
+      const matchSearch = !searchTerm || c.dataset.search.includes(searchTerm);
+      c.classList.toggle("dim", !(matchCat && matchSearch));
+    });
+  }
+
+  function formatEC(ec) {
+    const m = ec.match(/^(\[[A-Za-z]+\])\s*(.*)$/);
+    if (m && m[2]) {
+      return '<span class="ec-core">' + m[1] + '</span> <span class="ec-valence">' + m[2] + '</span>';
+    }
+    if (m) {
+      return '<span class="ec-core">' + m[1] + '</span>';
+    }
+    return '<span class="ec-valence">' + ec + '</span>';
+  }
+
+  function formatNumber(n) {
+    if (n === null || n === undefined) return null;
+    return n.toString();
+  }
+
+  function renderDetail(z) {
+    const e = elementByZ[z];
+    const sym = e[1], name = e[2], mass = e[3], cat = e[4], period = e[5], group = e[6], phase = e[7], en = e[8];
+    const props = PROPS[z] || [null, null, null];
+    const ie1 = props[0], ec = props[1], ea = props[2];
+    let subcat = CAT_NAME[cat];
+    if (cat === "RE") subcat = z >= 89 ? "Actinide" : "Lanthanide";
+    const massStr = formatMass(mass);
+    const enStr = formatEN(en);
+    const ie1Str = formatNumber(ie1);
+    const eaStr = formatNumber(ea);
+    const groupDisplay = cat === "RE" ? "f-block" : String(group);
+    const phaseLabel = PHASE_NAME[phase];
+    const phaseDisplay = phase === "sy" ? "Synthetic" : phase === "g" ? "Gas" : phase === "l" ? "Liquid" : "Solid";
+    const enUnavailableNote = en === null
+      ? '<p class="detail-note">No widely accepted Pauling electronegativity value is available for ' + name + '. ' + (z >= 104 ? 'Superheavy elements have not been studied chemically in sufficient detail.' : 'For the lighter noble gases, Pauling did not assign a value because no stable compounds were known at the time.') + '</p>'
+      : '';
+
+    document.getElementById("detail-panel").innerHTML =
+      '<div class="detail-head">' +
+        '<div class="detail-tile ' + CAT_CLASS[cat] + '" aria-hidden="true">' +
+          '<div class="detail-tile-top"><span>' + z + '</span><span>' + (enStr || "—") + '</span></div>' +
+          '<div class="detail-tile-sym">' + sym + '</div>' +
+          '<div class="detail-tile-bottom">' + massStr + '</div>' +
+        '</div>' +
+        '<div class="detail-body">' +
+          '<h2 class="detail-name">' + name + ' <span style="font-family:var(--font-body);font-size:18px;color:var(--text-muted);font-weight:400">(' + sym + ')</span></h2>' +
+          '<p class="detail-sub">' + subcat + ' · ' + phaseLabel + '</p>' +
+          '<dl class="detail-grid">' +
+            '<div><dt>Atomic number</dt><dd>' + z + '</dd></div>' +
+            '<div><dt>Atomic mass</dt><dd>' + massStr + ' u</dd></div>' +
+            '<div><dt>Phase</dt><dd>' + phaseDisplay + '</dd></div>' +
+            '<div><dt>Period</dt><dd>' + period + '</dd></div>' +
+            '<div><dt>Group</dt><dd>' + groupDisplay + '</dd></div>' +
+            '<div><dt>Pauling χ</dt><dd' + (enStr ? '' : ' class="unavailable"') + '>' + (enStr || "—") + '</dd></div>' +
+            '<div><dt>Ionization energy (1st)</dt><dd' + (ie1Str ? '' : ' class="unavailable"') + '>' + (ie1Str ? ie1Str + ' kJ/mol' : '—') + '</dd></div>' +
+            '<div><dt>Electron affinity</dt><dd' + (eaStr ? '' : ' class="unavailable"') + '>' + (eaStr ? eaStr + ' kJ/mol' : '—') + '</dd></div>' +
+          '</dl>' +
+          (ec
+            ? '<dl class="detail-config"><dt>Electron configuration</dt><dd>' + formatEC(ec) + '</dd></dl>'
+            : '') +
+          enUnavailableNote +
+        '</div>' +
+      '</div>';
+  }
+
+  function setupSearch() {
+    const input = document.getElementById("search");
+    input.addEventListener("input", function (ev) {
+      searchTerm = ev.target.value.trim().toLowerCase();
+      applyFilters();
+    });
+  }
+
+  function setupReset() {
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      searchTerm = "";
+      activeCats.clear();
+      document.getElementById("search").value = "";
+      document.querySelectorAll(".legend-pill").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      applyFilters();
+    });
+  }
+
+  function setupTheme() {
+    const buttons = document.querySelectorAll(".theme-toggle button");
+    const stored = localStorage.getItem("pt-theme") || "auto";
+    applyTheme(stored);
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const theme = btn.dataset.theme;
+        localStorage.setItem("pt-theme", theme);
+        applyTheme(theme);
+      });
+    });
+  }
+  function applyTheme(theme) {
+    if (theme === "auto") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+    document.querySelectorAll(".theme-toggle button").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.theme === theme ? "true" : "false");
+    });
+  }
+
+  function init() {
+    buildLegend();
+    buildCells();
+    setupSearch();
+    setupReset();
+    setupTheme();
+    selectElement(6);
+    if (cellByZ[6]) cellByZ[6].tabIndex = 0;
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
