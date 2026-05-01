@@ -93,7 +93,7 @@ If a number disagrees with these references, the references win and the discrepa
 
 This work is licensed under a [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
-You are free to share and adapt the material, including for commercial use, as long as you give appropriate credit. Anything you contribute back must remain CC BY 4.0-compatible — see the *License compatibility* section of [`CLAUDE.md`](CLAUDE.md) for the rules around incorporating third-party material (CC BY-SA, CC BY-NC, CC BY-ND, etc.).
+You are free to share and adapt the material, including for commercial use, as long as you give appropriate credit. Anything you contribute back must remain CC BY 4.0-compatible.
 
 ## Contact
 
