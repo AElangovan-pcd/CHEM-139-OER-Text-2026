@@ -10,7 +10,7 @@ An Open Educational Resource (OER) introductory chemistry textbook for one-quart
 
 | Path | What |
 |---|---|
-| `Chapter_NN_*.docx` | Ten chapter source files. Each follows a common template (see [`CLAUDE.md`](CLAUDE.md)). |
+| `Chapter_NN_*.docx` | Ten chapter source files. Each follows a common template. |
 | `Front_Matter_Preface_License.docx` | Preface, license, chapter map, accessibility statement, data-source provenance. |
 | `Index.docx`, `Formula_and_Constant_Reference_Sheet.docx`, `Periodic_Table_Reference_Page.docx` | Reference back matter. |
 | `Images/Chapter_NN/ManifestForChapter_NN.docx` | Per-chapter image manifests for instructors / graphic designers. The chapters themselves ship with **text descriptions** (FIGURE DESCRIPTION blocks) in place of pictures — see "Why text-first" below. |
@@ -18,7 +18,6 @@ An Open Educational Resource (OER) introductory chemistry textbook for one-quart
 | `HTML_Files/` | Generated standalone HTML preview (one page per chapter + `index.html`). Open `HTML_Files/index.html` in any browser. |
 | `HTML_Files_Canvas/` | Generated Canvas Page-ready body markup. See [`CANVAS_DEPLOYMENT.md`](CANVAS_DEPLOYMENT.md) for the workflow. |
 | `.firecrawl/` | Editorial scaffolding: build scripts (`build_html.py`, `build_canvas.py`, `rewrite_engine.py`, `rewrite_ch08.py`, …) and Firecrawl-scraped OpenStax source material used during authoring. |
-| [`CLAUDE.md`](CLAUDE.md) | Project conventions for future editorial collaborators (human or LLM). |
 | [`CANVAS_DEPLOYMENT.md`](CANVAS_DEPLOYMENT.md) | End-to-end guide for publishing chapters into Instructure Canvas. |
 
 ## Build the HTML
@@ -39,7 +38,7 @@ The standalone build produces collapsible "Show solution / Hide solution" toggle
 
 ## Editing the chapters
 
-Source of truth is the `.docx` files — open in Word or LibreOffice. The chapter template (Heading 1 title, Chapter Opener, Learning Outcomes, numbered Parts → Sections, FIGURE DESCRIPTION blocks, Concepts to Remember, Key Terms, Practice Problems, Multi-Concept Problems, Multiple-Choice Practice Test, Instructor Notes) is load-bearing — instructor- and student-facing front matter promises this consistency. Don't break it; see `CLAUDE.md` for the full set of conventions.
+Source of truth is the `.docx` files — open in Word or LibreOffice. The chapter template (Heading 1 title, Chapter Opener, Learning Outcomes, numbered Parts → Sections, FIGURE DESCRIPTION blocks, Concepts to Remember, Key Terms, Practice Problems, Multi-Concept Problems, Multiple-Choice Practice Test, Instructor Notes) is load-bearing — instructor- and student-facing front matter promises this consistency. Don't break it.
 
 After editing a `.docx`, rerun the two build commands above to refresh the HTML.
 
