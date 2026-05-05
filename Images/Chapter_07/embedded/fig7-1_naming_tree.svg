@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- (c) 2026 CHEM 139 OER. CC BY 4.0. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1100" width="1080" height="1100" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+<svg viewBox="-150 -9 1250 1103" width="1250" height="1103" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
   <title id="t">Figure 7.1 — Naming decision tree</title>
   <desc id="d">A flowchart that takes a chemical formula and routes it through Yes/No decisions to the correct naming rule. Branches by whether the formula starts with H, then by whether a metal is present, then by whether the metal has variable charge or whether a polyatomic ion is present. Acids branch into oxyacids and binary acids based on whether oxygen is in the formula.</desc>
 
