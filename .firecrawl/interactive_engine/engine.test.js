@@ -101,3 +101,17 @@ test('decimalToSciNotation: cross-decade coefficient overflow', () => {
   assert.equal(r3.coefficient, '-1.0');
   assert.equal(r3.exponent, 1);
 });
+
+import { sciNotationToDecimal } from './engine.js';
+
+test('sciNotationToDecimal: positive integer exponent', () => {
+  assert.equal(sciNotationToDecimal({ coefficient: '9.20', exponent: 5 }), '920000');
+});
+
+test('sciNotationToDecimal: negative exponent', () => {
+  assert.equal(sciNotationToDecimal({ coefficient: '4.56', exponent: -5 }), '0.0000456');
+});
+
+test('sciNotationToDecimal: small positive exponent preserves trailing zeros', () => {
+  assert.equal(sciNotationToDecimal({ coefficient: '4.20', exponent: 2 }), '420');
+});

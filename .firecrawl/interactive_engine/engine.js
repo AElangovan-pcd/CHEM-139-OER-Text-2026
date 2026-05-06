@@ -113,3 +113,25 @@ export function decimalToSciNotation(value, sigFigs) {
   const latex = sign + coefficient + ' \\times 10^{' + exponent + '}';
   return { coefficient: sign + coefficient, exponent, latex };
 }
+
+/**
+ * Convert {coefficient, exponent} back to decimal form.
+ * Preserves trailing-zero significance.
+ */
+export function sciNotationToDecimal({ coefficient, exponent }) {
+  const sign = coefficient.startsWith('-') ? '-' : '';
+  const absCoeff = coefficient.replace(/^[+-]/, '');
+  const [intPart, decPart = ''] = absCoeff.split('.');
+  const allDigits = intPart + decPart;
+  const decimalPos = intPart.length + exponent;
+
+  if (decimalPos >= allDigits.length) {
+    // Pad with zeros on the right
+    return sign + allDigits + '0'.repeat(decimalPos - allDigits.length);
+  } else if (decimalPos <= 0) {
+    // Pad with zeros on the left after "0."
+    return sign + '0.' + '0'.repeat(-decimalPos) + allDigits;
+  } else {
+    return sign + allDigits.slice(0, decimalPos) + '.' + allDigits.slice(decimalPos);
+  }
+}
