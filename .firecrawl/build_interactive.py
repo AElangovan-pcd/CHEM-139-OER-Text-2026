@@ -118,6 +118,27 @@ OUTPUT_HTML = OUTPUT_DIR / "Chapter_01.html"
 ASSETS_DIR = OUTPUT_DIR / "assets"
 
 
+def discover_chapters() -> list[dict]:
+    """Find every chapter_NN.yaml spec in interactive_specs/ and return
+    a list of dicts with the chapter number and its associated paths.
+    """
+    spec_dir = REPO / ".firecrawl" / "interactive_specs"
+    chapters = []
+    for spec_path in sorted(spec_dir.glob("chapter_*.yaml")):
+        # Extract NN from filename like "chapter_02.yaml"
+        stem = spec_path.stem  # e.g., "chapter_02"
+        if not stem.startswith("chapter_"):
+            continue
+        number = stem[len("chapter_"):]
+        chapters.append({
+            "number": number,
+            "spec_path": spec_path,
+            "input_html": REPO / "HTML_Files" / f"Chapter_{number}.html",
+            "output_html": REPO / "HTML_Files" / "interactive" / f"Chapter_{number}.html",
+        })
+    return chapters
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--validate", action="store_true",
