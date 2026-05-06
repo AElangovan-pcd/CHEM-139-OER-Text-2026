@@ -44,3 +44,30 @@ problems:
     explanation_template: |
       "lb" cancels in step 1; "g" cancels in step 2. {limitingSigFigs} sig figs
       from "{mass} lb" yield {finalResult} kg.
+
+  - id: "2.8.density_chain"
+    match_text: "volume of 1.50 kg of mercury"
+    question: "What is the volume of {mass} kg of mercury (d = 13.546 g/mL)?"
+    variables:
+      mass: { range: [0.50, 5.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: kg
+      chain:
+        - num_value: 1000
+          num_unit: g
+          den_value: 1
+          den_unit: kg
+          exact: true
+        - num_value: 1
+          num_unit: mL
+          den_value: 13.546
+          den_unit: g
+          sig_figs: 5
+      target_unit: mL
+    constraints:
+      result_must_be_positive: true
+    explanation_template: |
+      "kg" cancels in step 1; "g" cancels in step 2 via density.
+      {limitingSigFigs} sig figs from "{mass} kg" yield {finalResult} mL.
