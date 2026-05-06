@@ -111,11 +111,8 @@ def inline_spec_json(html: str, spec: dict) -> str:
 
 
 REPO = Path(__file__).resolve().parents[1]
-SPEC_FILE = REPO / ".firecrawl" / "interactive_specs" / "chapter_01.yaml"
 ENGINE_DIR = REPO / ".firecrawl" / "interactive_engine"
-INPUT_HTML = REPO / "HTML_Files" / "Chapter_01.html"
 OUTPUT_DIR = REPO / "HTML_Files" / "interactive"
-OUTPUT_HTML = OUTPUT_DIR / "Chapter_01.html"
 ASSETS_DIR = OUTPUT_DIR / "assets"
 
 
@@ -143,20 +140,22 @@ def discover_chapters() -> list[dict]:
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--validate", action="store_true",
-                   help="parse and verify spec without writing output")
+                   help="parse and verify all chapter specs without writing output")
     p.add_argument("--show-samples", type=int, metavar="N",
-                   help="print N sampled variants per problem (does not write output)")
+                   help="print N sampled variants per problem")
     p.add_argument("--fuzz", type=int, metavar="N",
                    help="generate N variants per problem and assert all pass guardrails")
+    p.add_argument("--chapter", type=str, metavar="NN",
+                   help="limit to a single chapter (e.g. '02'); default is all discovered")
     args = p.parse_args()
 
     if args.validate:
-        return cmd_validate()
+        return cmd_validate(args.chapter)
     if args.show_samples is not None:
-        return cmd_show_samples(args.show_samples)
+        return cmd_show_samples(args.show_samples, args.chapter)
     if args.fuzz is not None:
-        return cmd_fuzz(args.fuzz)
-    return cmd_build()
+        return cmd_fuzz(args.fuzz, args.chapter)
+    return cmd_build(args.chapter)
 
 
 def cmd_build(filter_chapter: str | None = None) -> int:

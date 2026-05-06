@@ -155,5 +155,29 @@ class TestDiscoverChapters(unittest.TestCase):
             self.assertTrue(c['input_html'].exists(), msg=f"input HTML missing: {c['input_html']}")
 
 
+class TestChapterFlag(unittest.TestCase):
+    def test_chapter_flag_in_help(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--help"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("--chapter", r.stdout)
+
+    def test_validate_chapter_01_explicit(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--validate", "--chapter", "01"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertEqual(r.returncode, 0, msg=r.stderr)
+
+    def test_validate_unknown_chapter_fails(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--validate", "--chapter", "99"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertNotEqual(r.returncode, 0)
+
+
 if __name__ == "__main__":
     unittest.main()
