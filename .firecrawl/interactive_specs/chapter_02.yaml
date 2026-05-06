@@ -111,3 +111,28 @@ problems:
     explanation_template: |
       "g alloy" cancels via the 35.0% mass-percent factor.
       {limitingSigFigs} sig figs from "{mass} g alloy" yield {finalResult} g Ag.
+
+  - id: "2.9.cost_chain"
+    match_text: "car gets 32.0 mi/gal"
+    question: "A car gets 32.0 mi/gal and the gas is $3.99/gal. What does it cost to drive {distance} mi?"
+    variables:
+      distance: { range: [50, 500], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: distance
+      input_unit: mi
+      chain:
+        - num_value: 1
+          num_unit: gal
+          den_value: 32.0
+          den_unit: mi
+          sig_figs: 3
+        - num_value: 3.99
+          num_unit: dollar
+          den_value: 1
+          den_unit: gal
+          sig_figs: 3
+      target_unit: dollar
+    explanation_template: |
+      "mi" cancels in step 1; "gal" cancels in step 2. {limitingSigFigs} sig figs
+      from "{distance} mi" yield ${finalResult}.
