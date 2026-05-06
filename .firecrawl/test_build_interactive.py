@@ -120,5 +120,14 @@ class TestAttachVariantAttrs(unittest.TestCase):
             attach_variant_attrs(html, spec)
 
 
+class TestValidateFlag(unittest.TestCase):
+    def test_validate_returns_zero_on_clean_spec(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--validate"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertEqual(r.returncode, 0, msg=r.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

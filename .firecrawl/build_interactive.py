@@ -146,7 +146,23 @@ def cmd_build() -> int:
 
 
 def cmd_validate() -> int:
-    raise NotImplementedError("cmd_validate will be implemented in task E5")
+    try:
+        spec = load_spec(SPEC_FILE)
+    except ValidationError as e:
+        print(f"VALIDATE FAIL: {e}", file=sys.stderr)
+        return 1
+    if not INPUT_HTML.exists():
+        print(f"VALIDATE FAIL: {INPUT_HTML} not found.", file=sys.stderr)
+        return 1
+    html = INPUT_HTML.read_text(encoding="utf-8")
+    try:
+        attach_variant_attrs(html, spec)
+    except ValidationError as e:
+        print(f"VALIDATE FAIL: {e}", file=sys.stderr)
+        return 1
+    n = len(spec.get("problems", []))
+    print(f"VALIDATE OK: {n} problems, all match_text resolve to unique HTML elements.")
+    return 0
 
 
 def cmd_show_samples(n: int) -> int:
