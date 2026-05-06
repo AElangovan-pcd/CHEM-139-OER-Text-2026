@@ -155,3 +155,18 @@ export function addPreservingDecimalPlaces(values) {
   const finalSum = sumNum.toFixed(minPlaces);
   return { rawSum, finalSum, limitingDecimalPlaces: minPlaces, limitingValue };
 }
+
+/**
+ * Multiply a list of numeric strings; round to fewest sig figs per sig-fig rule.
+ */
+export function multiplyPreservingSigFigs(values) {
+  const sigFigsOf = (s) => countSigFigs(s).count;
+  const sigs = values.map(sigFigsOf);
+  const minSigs = Math.min(...sigs);
+  const limitingIdx = sigs.indexOf(minSigs);
+  const limitingValue = values[limitingIdx];
+  const product = values.reduce((acc, v) => acc * parseFloat(v), 1);
+  const rawProduct = product.toString();
+  const finalProduct = formatWithSigFigs(product, minSigs);
+  return { rawProduct, finalProduct, limitingSigFigs: minSigs, limitingValue };
+}

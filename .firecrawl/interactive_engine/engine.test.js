@@ -137,3 +137,19 @@ test('addPreservingDecimalPlaces: integer + decimal', () => {
   const r = addPreservingDecimalPlaces(['100', '0.5']);
   assert.equal(r.limitingDecimalPlaces, 0);
 });
+
+import { multiplyPreservingSigFigs } from './engine.js';
+
+test('multiplyPreservingSigFigs: textbook example', () => {
+  const r = multiplyPreservingSigFigs(['7.20', '3.0']);
+  // 7.20 × 3.0 = 21.6; limit to 2 sig figs by 3.0 → 22
+  assert.equal(r.limitingSigFigs, 2);
+  assert.equal(r.limitingValue, '3.0');
+});
+
+test('multiplyPreservingSigFigs: three-factor product', () => {
+  const r = multiplyPreservingSigFigs(['3.75', '2.0', '4.50']);
+  assert.equal(r.limitingSigFigs, 2);
+  assert.equal(r.limitingValue, '2.0');
+  assert.equal(r.finalProduct, '34');  // 33.75 → 34 with 2 sig figs
+});
