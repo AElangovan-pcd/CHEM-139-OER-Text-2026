@@ -43,3 +43,14 @@ problems:
     explanation_template: |
       Product = {rawProduct}; limit to {limitingSigFigs} sig figs
       ({limitingValue} is the limit) -> {finalProduct} cm^3.
+  - id: "1.13.to_sci_notation"
+    match_text: "Express 0.000 045 6 in scientific notation"
+    question: "Express {value} in scientific notation."
+    variables:
+      value:
+        range: [0.000001, 0.001]
+        sig_figs: 3
+    answer:
+      operation: to_sci_notation
+    explanation_template: |
+      {value} = {coefficient} x 10^{exponent}.
