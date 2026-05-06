@@ -440,6 +440,21 @@ export function factorLabelChain(value, valueSigFigs, valueUnit, steps) {
   };
 }
 
+/**
+ * Render a factor-label chain as MathJax LaTeX with \cancel{} on cancelled units.
+ * Output format matches the textbook's Option-C convention exactly:
+ *   value\,\cancel{\text{unit}} \times \frac{num\,\text{numUnit}}{den\,\cancel{\text{denUnit}}} ... = result\,\text{finalUnit}
+ */
+export function renderFactorLabelLatex(value, valueUnit, steps, finalResult, finalUnit) {
+  let latex = value + '\\,\\cancel{\\text{' + valueUnit + '}}';
+  for (const s of steps) {
+    latex += ' \\times \\frac{' + s.num_value + '\\,\\text{' + s.num_unit + '}}'
+           + '{' + s.den_value + '\\,\\cancel{\\text{' + s.den_unit + '}}}';
+  }
+  latex += ' = ' + finalResult + '\\,\\text{' + finalUnit + '}';
+  return latex;
+}
+
 // ---- Browser bootstrap (runs only when DOM is available) ----
 
 const VARIANT_BUTTON_LABEL = 'Try a different version';

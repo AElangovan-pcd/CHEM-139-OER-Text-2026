@@ -341,3 +341,58 @@ test('factorLabelChain: dosage equivalence (mg per kg)', () => {
   assert.equal(r.finalUnit, 'mg');
   assert.equal(r.limitingSigFigs, 3);
 });
+
+import { renderFactorLabelLatex } from './engine.js';
+
+test('renderFactorLabelLatex: single-step exact metric', () => {
+  const latex = renderFactorLabelLatex(
+    '0.025', 'g',
+    [{ num_value: 1000, num_unit: 'mg', den_value: 1, den_unit: 'g', exact: true }],
+    '25', 'mg'
+  );
+  // 0.025\,\cancel{\text{g}} \times \frac{1000\,\text{mg}}{1\,\cancel{\text{g}}} = 25\,\text{mg}
+  assert.match(latex, /0\.025\\,\\cancel\{\\text\{g\}\}/);
+  assert.match(latex, /\\frac\{1000\\,\\text\{mg\}\}\{1\\,\\cancel\{\\text\{g\}\}\}/);
+  assert.match(latex, /=\s*25\\,\\text\{mg\}/);
+});
+
+test('renderFactorLabelLatex: two-step chain has both \\cancel{} segments', () => {
+  const latex = renderFactorLabelLatex(
+    '5.00', 'lb',
+    [
+      { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+      { num_value: 1,      num_unit: 'kg', den_value: 1000, den_unit: 'g', exact: true },
+    ],
+    '2.27', 'kg'
+  );
+  assert.match(latex, /5\.00\\,\\cancel\{\\text\{lb\}\}/);
+  assert.match(latex, /\\cancel\{\\text\{lb\}\}\}/);  // lb cancellation in step 0 denominator
+  assert.match(latex, /\\cancel\{\\text\{g\}\}/);     // g cancellation in step 1 denominator
+  assert.match(latex, /=\s*2\.27\\,\\text\{kg\}/);
+});
+
+test('renderFactorLabelLatex: unit names with spaces', () => {
+  // mass-percent style: g alloy → g Ag
+  const latex = renderFactorLabelLatex(
+    '50.0', 'g alloy',
+    [{ num_value: 35.0, num_unit: 'g Ag', den_value: 100, den_unit: 'g alloy', sig_figs: 3 }],
+    '17.5', 'g Ag'
+  );
+  assert.match(latex, /\\cancel\{\\text\{g alloy\}\}/);  // works with spaces
+  assert.match(latex, /\\text\{g Ag\}/);                 // numerator unit
+  assert.match(latex, /=\s*17\.5\\,\\text\{g Ag\}/);
+});
+
+test('renderFactorLabelLatex: chain has explicit \\times separators between steps', () => {
+  const latex = renderFactorLabelLatex(
+    '5.00', 'lb',
+    [
+      { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+      { num_value: 1,      num_unit: 'kg', den_value: 1000, den_unit: 'g', exact: true },
+    ],
+    '2.27', 'kg'
+  );
+  // Should be value\,\cancel{\text{...}} \times \frac{...}{...} \times \frac{...}{...} = result\,\text{...}
+  const timesMatches = latex.match(/\\times/g) || [];
+  assert.equal(timesMatches.length, 2);
+});
