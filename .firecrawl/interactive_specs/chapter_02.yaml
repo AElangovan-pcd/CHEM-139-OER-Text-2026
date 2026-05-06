@@ -91,3 +91,23 @@ problems:
     explanation_template: |
       "kg" cancels via the 5.00 mg/kg dosage factor. {limitingSigFigs} sig figs from
       "{weight} kg" yield {finalResult} mg.
+
+  - id: "2.9.alloy_mass_percent"
+    match_text: "alloy is 35.0% silver"
+    question: "An alloy is 35.0% silver. How much silver is in {mass} g of alloy?"
+    variables:
+      mass: { range: [10.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g alloy
+      chain:
+        - num_value: 35.0
+          num_unit: g Ag
+          den_value: 100
+          den_unit: g alloy
+          sig_figs: 3
+      target_unit: g Ag
+    explanation_template: |
+      "g alloy" cancels via the 35.0% mass-percent factor.
+      {limitingSigFigs} sig figs from "{mass} g alloy" yield {finalResult} g Ag.
