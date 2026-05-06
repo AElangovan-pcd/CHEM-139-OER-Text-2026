@@ -1,3 +1,19 @@
 # Variable-problem specs for Chapter 1.
 # Schema reference: docs/superpowers/plans/2026-05-05-variable-problems-pilot.md
-problems: []
+problems:
+  - id: "1.11.counting"
+    match_text: "How many sig figs in 0.0030?"
+    question: "How many sig figs in {value}?"
+    variables:
+      value:
+        generator: random_decimal_with_features
+        sig_figs: [2, 3, 4, 5]
+        patterns:
+          - leading_zeros
+          - captive_zero
+          - trailing_zero_with_decimal
+          - mixed
+    answer:
+      operation: count_sig_figs
+    explanation_template: |
+      {count} sig figs. {ruleExplanation}

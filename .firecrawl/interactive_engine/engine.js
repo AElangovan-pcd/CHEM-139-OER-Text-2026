@@ -211,6 +211,11 @@ export function mulberry32(seed) {
  * Sample a single variable per its spec. Returns a numeric string formatted to declared precision.
  */
 export function sampleValue(spec, rng) {
+  if (spec.generator === 'random_decimal_with_features') {
+    const sigFigs = spec.sig_figs[Math.floor(rng() * spec.sig_figs.length)];
+    const pattern = spec.patterns[Math.floor(rng() * spec.patterns.length)];
+    return generateFeaturePattern(sigFigs, pattern, rng);
+  }
   if (spec.range) {
     const [low, high] = spec.range;
     const raw = low + rng() * (high - low);
@@ -219,6 +224,47 @@ export function sampleValue(spec, rng) {
     return raw.toString();
   }
   throw new Error('sampleValue: unsupported spec shape: ' + JSON.stringify(spec));
+}
+
+function generateFeaturePattern(sigFigs, pattern, rng) {
+  const digits = () => Math.floor(rng() * 9) + 1;  // 1-9
+  const captive = () => '0';
+  switch (pattern) {
+    case 'leading_zeros': {
+      // "0.00<sig digits>"
+      const leading = '0.' + '0'.repeat(2 + Math.floor(rng() * 3));
+      let body = '';
+      for (let i = 0; i < sigFigs; i++) body += i === 0 ? digits() : Math.floor(rng() * 10);
+      return leading + body;
+    }
+    case 'captive_zero': {
+      // "<d><0><d><d>..." with at least one captive zero
+      let body = String(digits());
+      for (let i = 1; i < sigFigs; i++) {
+        body += (i === 1 || i === 2) ? captive() : digits();
+      }
+      // Add a decimal point partway through
+      const dot = 1 + Math.floor(rng() * (sigFigs - 1));
+      return body.slice(0, dot) + '.' + body.slice(dot);
+    }
+    case 'trailing_zero_with_decimal': {
+      // "<digits>.<digits>0" where final 0 is significant
+      let body = '';
+      for (let i = 0; i < sigFigs - 1; i++) body += i === 0 ? digits() : Math.floor(rng() * 10);
+      body += '0';
+      // Insert a decimal point partway
+      const dot = 1 + Math.floor(rng() * (body.length - 1));
+      return body.slice(0, dot) + '.' + body.slice(dot);
+    }
+    case 'mixed':
+    default: {
+      // Random number with N sig figs and a decimal somewhere
+      let body = String(digits());
+      for (let i = 1; i < sigFigs; i++) body += Math.floor(rng() * 10);
+      const dot = 1 + Math.floor(rng() * (sigFigs - 1));
+      return body.slice(0, dot) + '.' + body.slice(dot);
+    }
+  }
 }
 
 const MAX_RETRIES = 50;
