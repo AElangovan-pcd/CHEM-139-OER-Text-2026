@@ -71,3 +71,23 @@ problems:
     explanation_template: |
       "kg" cancels in step 1; "g" cancels in step 2 via density.
       {limitingSigFigs} sig figs from "{mass} kg" yield {finalResult} mL.
+
+  - id: "2.9.dosage"
+    match_text: "5.00 mg per kg of body mass"
+    question: "A drug is dosed at 5.00 mg per kg of body mass. What dose is needed for a {weight} kg adult?"
+    variables:
+      weight: { range: [40.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: weight
+      input_unit: kg
+      chain:
+        - num_value: 5.00
+          num_unit: mg
+          den_value: 1
+          den_unit: kg
+          sig_figs: 3
+      target_unit: mg
+    explanation_template: |
+      "kg" cancels via the 5.00 mg/kg dosage factor. {limitingSigFigs} sig figs from
+      "{weight} kg" yield {finalResult} mg.
