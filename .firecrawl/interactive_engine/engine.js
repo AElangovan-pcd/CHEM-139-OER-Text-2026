@@ -44,6 +44,14 @@ export function countSigFigs(s) {
   if (intStripped === '') {
     // 0.xxx — leading zeros in decimal part don't count
     const decStripped = decPart.replace(/^0+/, '');
+    if (decStripped === '') {
+      // Pure-zero input like '0.0', '0.00', '0.' — treat as 1 sig fig
+      // (the explicit decimal point makes the zero significant per Rule 4a).
+      return {
+        count: 1,
+        ruleExplanation: 'Pure zero with explicit decimal point — treated as one significant figure.',
+      };
+    }
     return {
       count: decStripped.length,
       ruleExplanation: 'Leading zeros do not count; remaining digits (including trailing zeros after the decimal point) all count.',

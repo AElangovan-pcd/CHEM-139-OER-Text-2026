@@ -34,3 +34,8 @@ test('countSigFigs: 100. with decimal point', () => {
 test('countSigFigs: 0.020080', () => {
   assert.equal(countSigFigs('0.020080').count, 5);
 });
+
+test('countSigFigs: pure zero with decimal point', () => {
+  assert.equal(countSigFigs('0.0').count, 1);
+  assert.equal(countSigFigs('0.').count, 1);
+});
