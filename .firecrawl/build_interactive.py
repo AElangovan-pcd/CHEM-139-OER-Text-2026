@@ -1,11 +1,13 @@
-"""Build the interactive variant of HTML_Files/Chapter_01.html.
+"""Build the interactive variants of every Chapter_*.html the canonical
+build produced.
 
-Reads `interactive_specs/chapter_01.yaml`, postprocesses
-`HTML_Files/Chapter_01.html`, copies the engine assets, and writes
-`HTML_Files/interactive/Chapter_01.html`.
+Auto-discovers every `interactive_specs/chapter_NN.yaml` spec, postprocesses
+the matching `HTML_Files/Chapter_NN.html`, copies the engine assets, and
+writes `HTML_Files/interactive/Chapter_NN.html` per chapter. Use
+`--chapter NN` to limit a run to a single chapter.
 
 Does NOT read or write any .docx file. Does NOT modify the canonical
-`HTML_Files/Chapter_01.html` (only writes into the `interactive/`
+`HTML_Files/Chapter_*.html` (only writes into the `interactive/`
 subdirectory).
 """
 from __future__ import annotations
