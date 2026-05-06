@@ -159,20 +159,28 @@ def main() -> int:
     return cmd_build()
 
 
-def cmd_build() -> int:
-    spec = load_spec(SPEC_FILE)
-    if not INPUT_HTML.exists():
-        print(f"ERROR: {INPUT_HTML} not found. Run build_html.py first.", file=sys.stderr)
-        return 2
-    html = INPUT_HTML.read_text(encoding="utf-8")
-    html = attach_variant_attrs(html, spec)
-    html = inline_spec_json(html, spec)
+def cmd_build(filter_chapter: str | None = None) -> int:
+    chapters = discover_chapters()
+    if filter_chapter:
+        chapters = [c for c in chapters if c['number'] == filter_chapter]
+        if not chapters:
+            print(f"ERROR: no chapter '{filter_chapter}' found.", file=sys.stderr)
+            return 2
     OUTPUT_DIR.mkdir(exist_ok=True)
     ASSETS_DIR.mkdir(exist_ok=True)
-    OUTPUT_HTML.write_text(html, encoding="utf-8")
+    # Copy engine assets once (shared across chapters)
     shutil.copy2(ENGINE_DIR / "engine.js", ASSETS_DIR / "engine.js")
     shutil.copy2(ENGINE_DIR / "engine.css", ASSETS_DIR / "engine.css")
-    print(f"Wrote {OUTPUT_HTML} and assets.")
+    for c in chapters:
+        spec = load_spec(c['spec_path'])
+        if not c['input_html'].exists():
+            print(f"ERROR: {c['input_html']} not found. Run build_html.py first.", file=sys.stderr)
+            return 2
+        html = c['input_html'].read_text(encoding="utf-8")
+        html = attach_variant_attrs(html, spec)
+        html = inline_spec_json(html, spec)
+        c['output_html'].write_text(html, encoding="utf-8")
+        print(f"Wrote {c['output_html']}")
     return 0
 
 
