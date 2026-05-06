@@ -338,3 +338,132 @@ export function renderLatexForOperation(op, variant, answerSpec) {
       throw new Error('renderLatexForOperation: unknown op ' + op);
   }
 }
+
+// ---- Browser bootstrap (runs only when DOM is available) ----
+
+const VARIANT_BUTTON_LABEL = 'Try a different version';
+
+/**
+ * Find all problems flagged with [data-variant-spec], wire up buttons, render initial variants.
+ */
+export function bootstrap() {
+  const specsEl = document.getElementById('variant-specs');
+  if (!specsEl) {
+    console.warn('[interactive-engine] No #variant-specs JSON found on page; nothing to do.');
+    return;
+  }
+  let specs;
+  try {
+    specs = JSON.parse(specsEl.textContent).problems || [];
+  } catch (e) {
+    console.error('[interactive-engine] Could not parse #variant-specs JSON:', e);
+    return;
+  }
+  // ARIA-live region for variant-change announcements
+  ensureAriaLiveRegion();
+  for (const spec of specs) {
+    const stem = document.querySelector('[data-variant-spec="' + spec.id + '"]');
+    if (!stem) {
+      console.warn('[interactive-engine] No DOM node for spec ' + spec.id);
+      continue;
+    }
+    wireProblem(stem, spec);
+  }
+}
+
+function ensureAriaLiveRegion() {
+  if (document.getElementById('variant-aria-live')) return;
+  const r = document.createElement('div');
+  r.id = 'variant-aria-live';
+  r.setAttribute('aria-live', 'polite');
+  r.setAttribute('aria-atomic', 'true');
+  r.style.position = 'absolute';
+  r.style.left = '-9999px';
+  r.style.width = '1px';
+  r.style.height = '1px';
+  r.style.overflow = 'hidden';
+  document.body.appendChild(r);
+}
+
+function announce(msg) {
+  const r = document.getElementById('variant-aria-live');
+  if (r) r.textContent = msg;
+}
+
+function wireProblem(stemEl, spec) {
+  const solutionEl = stemEl.nextElementSibling;
+  if (!solutionEl || !solutionEl.classList.contains('solution')) {
+    console.warn('[interactive-engine] No sibling .solution for spec ' + spec.id);
+    return;
+  }
+  // Insert button between stem and solution
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'try-variant';
+  btn.textContent = VARIANT_BUTTON_LABEL;
+  btn.setAttribute('aria-label', VARIANT_BUTTON_LABEL + ' for this problem');
+  stemEl.insertAdjacentElement('afterend', btn);
+
+  // Capture original prose for fallback
+  const originalStemHTML = stemEl.innerHTML;
+  const originalSolutionHTML = solutionEl.innerHTML;
+
+  const state = { rng: mulberry32(Date.now() & 0xffffffff), spec, stemEl, solutionEl, originalStemHTML, originalSolutionHTML };
+  cycleVariant(state, /*announceChange=*/ false);
+  btn.addEventListener('click', () => cycleVariant(state, /*announceChange=*/ true));
+}
+
+function cycleVariant(state, announceChange) {
+  let variant;
+  try {
+    variant = generateVariant(state.spec, state.rng);
+  } catch (e) {
+    console.warn('[interactive-engine] Falling back to original values for ' + state.spec.id, e);
+    state.stemEl.innerHTML = state.originalStemHTML;
+    state.solutionEl.innerHTML = state.originalSolutionHTML;
+    return;
+  }
+  // Render question with parameter substitution
+  const questionHTML = substituteTemplate(state.spec.question, variant.params);
+  state.stemEl.innerHTML = questionHTML;
+
+  // Render solution
+  const op = state.spec.answer.operation;
+  const latex = renderLatexForOperation(op, variant, state.spec.answer);
+  const explanationTokens = { ...variant.params, ...flattenComputed(variant.computed) };
+  const explanation = state.spec.explanation_template
+    ? substituteTemplate(state.spec.explanation_template, explanationTokens)
+    : '';
+  state.solutionEl.innerHTML = '<div class="math-chain">\\[' + latex + '\\]</div><p><em>' + explanation + '</em></p>';
+
+  // Close pill if open
+  const details = state.solutionEl.closest('details');
+  if (details && details.open) details.open = false;
+
+  // MathJax retypeset (if loaded)
+  if (typeof MathJax !== 'undefined' && MathJax.startup) {
+    MathJax.startup.promise.then(() => {
+      return MathJax.typesetPromise([state.solutionEl, state.stemEl]);
+    }).catch((e) => console.error('[interactive-engine] MathJax typeset error:', e));
+  }
+
+  if (announceChange) announce('Problem updated with new values.');
+}
+
+function flattenComputed(computed) {
+  // Spread computed result fields as tokens; rename ambiguous keys for templates.
+  const out = {};
+  for (const [k, v] of Object.entries(computed)) {
+    out[k] = v;
+  }
+  return out;
+}
+
+// Auto-bootstrap when running in a browser
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrap);
+  } else {
+    bootstrap();
+  }
+}
