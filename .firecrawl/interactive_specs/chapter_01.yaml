@@ -30,3 +30,16 @@ problems:
     explanation_template: |
       Sum = {rawSum}; round to {limitingDecimalPlaces} decimal place(s)
       ({limitingValue} has fewest decimal places) → {finalSum} g.
+  - id: "1.12.multiply"
+    match_text: "(3.75 cm)(2.0 cm)(4.50 cm)"
+    question: "({a} cm)({b} cm)({c} cm) = ?"
+    variables:
+      a: { range: [1.0, 10.0], sig_figs: 3 }
+      b: { range: [1.0, 5.0], sig_figs: 2 }
+      c: { range: [1.0, 10.0], sig_figs: 3 }
+    answer:
+      operation: multiply
+      unit: cm^3
+    explanation_template: |
+      Product = {rawProduct}; limit to {limitingSigFigs} sig figs
+      ({limitingValue} is the limit) -> {finalProduct} cm^3.
