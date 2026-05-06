@@ -219,7 +219,11 @@ export function sampleValue(spec, rng) {
   if (spec.range) {
     const [low, high] = spec.range;
     const raw = low + rng() * (high - low);
-    if (spec.decimal_places !== undefined) return raw.toFixed(spec.decimal_places);
+    if (spec.decimal_places !== undefined) {
+      const formatted = raw.toFixed(spec.decimal_places);
+      // Strip a leading '-' for negative zero (e.g. (-0.4).toFixed(0) → "-0")
+      return parseFloat(formatted) === 0 ? formatted.replace(/^-/, '') : formatted;
+    }
     if (spec.sig_figs !== undefined) return formatWithSigFigs(raw, spec.sig_figs);
     return raw.toString();
   }
@@ -413,7 +417,12 @@ export function bootstrap() {
       console.warn('[interactive-engine] No DOM node for spec ' + spec.id);
       continue;
     }
-    wireProblem(stem, spec);
+    try {
+      wireProblem(stem, spec);
+    } catch (e) {
+      console.error('[interactive-engine] Failed to wire spec ' + spec.id + ':', e);
+      // Don't bail — keep wiring the remaining problems.
+    }
   }
 }
 
@@ -442,7 +451,35 @@ function wireProblem(stemEl, spec) {
     console.warn('[interactive-engine] No sibling .solution for spec ' + spec.id);
     return;
   }
-  // Insert button between stem and solution
+
+  // Preserve <summary> as a direct child of <details> and wrap the rest of the
+  // solution content in a stable body div, so we can re-render only the body
+  // on each variant cycle without wiping the summary.
+  const summary = solutionEl.querySelector(':scope > summary');
+  let bodyEl = solutionEl.querySelector(':scope > .variant-solution-body');
+  if (!bodyEl) {
+    bodyEl = document.createElement('div');
+    bodyEl.className = 'variant-solution-body';
+    const childrenToMove = Array.from(solutionEl.childNodes).filter(n => n !== summary);
+    for (const c of childrenToMove) bodyEl.appendChild(c);
+    solutionEl.appendChild(bodyEl);
+  }
+
+  // Capture any leading <strong>NN.</strong> serial number prefix from the stem.
+  // Re-prepended on each variant render so the problem numbering stays visible.
+  let serialPrefix = '';
+  const firstChild = stemEl.firstElementChild;
+  if (firstChild && firstChild.tagName.toLowerCase() === 'strong') {
+    serialPrefix = firstChild.outerHTML;
+    const nextNode = firstChild.nextSibling;
+    if (nextNode && nextNode.nodeType === Node.TEXT_NODE) {
+      const m = nextNode.nodeValue.match(/^\s+/);
+      if (m) serialPrefix += m[0];
+    }
+  }
+
+  // Insert the variant button BETWEEN the stem and the pill (outside the pill,
+  // matching the textbook author's preferred layout).
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'try-variant';
@@ -450,13 +487,22 @@ function wireProblem(stemEl, spec) {
   btn.setAttribute('aria-label', VARIANT_BUTTON_LABEL + ' for this problem');
   stemEl.insertAdjacentElement('afterend', btn);
 
-  // Capture original prose for fallback
+  // Capture originals for guardrail-cap-hit fallback
   const originalStemHTML = stemEl.innerHTML;
-  const originalSolutionHTML = solutionEl.innerHTML;
+  const originalBodyHTML = bodyEl.innerHTML;
 
-  const state = { rng: mulberry32(Date.now() & 0xffffffff), spec, stemEl, solutionEl, originalStemHTML, originalSolutionHTML };
+  const state = {
+    rng: mulberry32(Date.now() & 0xffffffff),
+    spec, stemEl, solutionEl, bodyEl,
+    serialPrefix,
+    originalStemHTML, originalBodyHTML,
+  };
+
   cycleVariant(state, /*announceChange=*/ false);
-  btn.addEventListener('click', () => cycleVariant(state, /*announceChange=*/ true));
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    cycleVariant(state, /*announceChange=*/ true);
+  });
 }
 
 function cycleVariant(state, announceChange) {
@@ -466,34 +512,37 @@ function cycleVariant(state, announceChange) {
   } catch (e) {
     console.warn('[interactive-engine] Falling back to original values for ' + state.spec.id, e);
     state.stemEl.innerHTML = state.originalStemHTML;
-    state.solutionEl.innerHTML = state.originalSolutionHTML;
+    state.bodyEl.innerHTML = state.originalBodyHTML;
     return;
   }
-  // Render question with parameter substitution
-  const questionHTML = substituteTemplate(state.spec.question, variant.params);
-  state.stemEl.innerHTML = questionHTML;
 
-  // Render solution
+  // Update the question stem (re-prepend the captured serial prefix)
+  state.stemEl.innerHTML = state.serialPrefix + substituteTemplate(state.spec.question, variant.params);
+
+  // Update only the solution body — preserves <summary> and the variant button
   const op = state.spec.answer.operation;
   const latex = renderLatexForOperation(op, variant, state.spec.answer);
   const explanationTokens = { ...variant.params, ...flattenComputed(variant.computed) };
   const explanation = state.spec.explanation_template
     ? substituteTemplate(state.spec.explanation_template, explanationTokens)
     : '';
-  state.solutionEl.innerHTML = '<div class="math-chain">\\[' + latex + '\\]</div><p><em>' + explanation + '</em></p>';
+  state.bodyEl.innerHTML = '<div class="math-chain">\\[' + latex + '\\]</div><p><em>' + explanation + '</em></p>';
 
-  // Close pill if open
-  const details = state.solutionEl.closest('details');
-  if (details && details.open) details.open = false;
-
-  // MathJax retypeset (if loaded)
-  if (typeof MathJax !== 'undefined' && MathJax.startup) {
-    MathJax.startup.promise.then(() => {
-      return MathJax.typesetPromise([state.solutionEl, state.stemEl]);
-    }).catch((e) => console.error('[interactive-engine] MathJax typeset error:', e));
+  // On user click, close the pill so the student must re-open to check the
+  // recomputed solution — enforces "try first" before peeking. On initial
+  // bootstrap, leave the pill in whatever state the page started in.
+  if (announceChange) {
+    if (state.solutionEl.tagName.toLowerCase() === 'details' && state.solutionEl.open) {
+      state.solutionEl.open = false;
+    }
   }
 
-  if (announceChange) announce('Problem updated with new values.');
+  // MathJax retypeset (works on hidden details content).
+  // Guard against the async-load race: MathJax.startup may exist before
+  // MathJax.startup.promise is created. Skip cleanly if MathJax isn't ready.
+  maybeTypeset([state.bodyEl, state.stemEl]);
+
+  if (announceChange) announce('Problem updated with new values. Open the solution pill to check your work.');
 }
 
 function flattenComputed(computed) {
@@ -503,6 +552,24 @@ function flattenComputed(computed) {
     out[k] = v;
   }
   return out;
+}
+
+/**
+ * Defensively call MathJax.typesetPromise on the given elements.
+ * Handles three cases without throwing:
+ *   1. MathJax not loaded yet — skip (the initial typeset pass will handle).
+ *   2. MathJax loaded but startup.promise not yet created — typeset immediately.
+ *   3. MathJax fully ready — wait for startup, then typeset.
+ */
+function maybeTypeset(elements) {
+  if (typeof MathJax === 'undefined') return;
+  if (typeof MathJax.typesetPromise !== 'function') return;
+  const ready = (MathJax.startup && MathJax.startup.promise)
+    ? MathJax.startup.promise
+    : Promise.resolve();
+  ready
+    .then(() => MathJax.typesetPromise(elements))
+    .catch((e) => console.error('[interactive-engine] MathJax typeset error:', e));
 }
 
 // Auto-bootstrap when running in a browser
