@@ -67,6 +67,8 @@ export function countSigFigs(s) {
 /**
  * Format a number to exactly N significant figures.
  * Preserves trailing zeros (e.g., formatWithSigFigs(2.5, 3) → "2.50").
+ * Recomputes magnitude after rounding to handle cross-decade boundaries
+ * (e.g., 0.9999 at n=1 rounds to 1, not "1.0").
  */
 export function formatWithSigFigs(value, n) {
   if (value === 0) return n === 1 ? '0' : '0.' + '0'.repeat(n - 1);
@@ -75,10 +77,11 @@ export function formatWithSigFigs(value, n) {
   const magnitude = Math.floor(Math.log10(abs));
   const factor = Math.pow(10, n - 1 - magnitude);
   const rounded = Math.round(abs * factor) / factor;
-  // Determine decimals to keep
-  const decimals = Math.max(0, n - 1 - magnitude);
+  // Recompute magnitude from the rounded value: rounding can push us across
+  // a power-of-10 boundary (e.g., 0.9999 → 1.0), invalidating the original.
+  const finalMagnitude = Math.floor(Math.log10(rounded));
+  const decimals = Math.max(0, n - 1 - finalMagnitude);
   if (decimals === 0) {
-    // Integer-style — may need trailing zeros via scaling
     return sign + Math.round(rounded).toString();
   }
   return sign + rounded.toFixed(decimals);

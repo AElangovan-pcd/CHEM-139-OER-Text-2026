@@ -60,3 +60,9 @@ test('formatWithSigFigs: handles negative', () => {
 test('formatWithSigFigs: integer with N=2 from N=4', () => {
   assert.equal(formatWithSigFigs(1234, 2), '1200');
 });
+
+test('formatWithSigFigs: cross-decade rounding', () => {
+  assert.equal(formatWithSigFigs(0.099999, 1), '0.1');
+  assert.equal(formatWithSigFigs(0.9999, 1), '1');
+  assert.equal(formatWithSigFigs(9.95, 2), '10');
+});
