@@ -1,0 +1,10 @@
+{
+  "name": "interactive-engine",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Hand-rolled ES-module engine for variable-problem pilot. No runtime deps.",
+  "scripts": {
+    "test": "node --test engine.test.js"
+  }
+}
