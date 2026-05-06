@@ -298,3 +298,43 @@ function passesGuardrails(constraints, params, computed) {
   }
   return true;
 }
+
+/**
+ * Substitute {token} placeholders in a string with values from a map.
+ */
+export function substituteTemplate(template, tokens) {
+  return template.replace(/\{(\w+)\}/g, (_, key) => {
+    if (key in tokens) return String(tokens[key]);
+    return '{' + key + '}';
+  });
+}
+
+/**
+ * Render LaTeX for a given operation type. Returns a LaTeX string for MathJax.
+ */
+export function renderLatexForOperation(op, variant, answerSpec) {
+  const u = answerSpec.unit ? '\\,\\text{' + answerSpec.unit + '}' : '';
+  const p = variant.params;
+  const c = variant.computed;
+  switch (op) {
+    case 'subtract':
+      return p.a + u + ' - ' + p.b + u + ' = ' + c.finalSum + u;
+    case 'add':
+      return Object.values(p).join(u + ' + ') + u + ' = ' + c.finalSum + u;
+    case 'multiply':
+      return Object.values(p).join(u + ' \\times ') + u + ' = ' + c.finalProduct + u;
+    case 'count_sig_figs':
+      return p[Object.keys(p)[0]];
+    case 'to_sci_notation':
+      return p[Object.keys(p)[0]] + ' = ' + c.latex;
+    case 'sci_notation_arithmetic': {
+      const aLatex = p.a_coefficient + ' \\times 10^{' + p.a_exponent + '}';
+      const bLatex = p.b_coefficient + ' \\times 10^{' + p.b_exponent + '}';
+      return '(' + aLatex + ')(' + bLatex + ') = ' + c.latex;
+    }
+    case 'linear_function':
+      return c.latex + u;
+    default:
+      throw new Error('renderLatexForOperation: unknown op ' + op);
+  }
+}

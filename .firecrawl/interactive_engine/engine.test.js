@@ -237,3 +237,24 @@ test('generateVariant: throws on guardrail cap (deviation from plan)', () => {
   const rng = mulberry32(123);
   assert.throws(() => generateVariant(impossibleSpec, rng), /guardrail/i);
 });
+
+import { renderLatexForOperation, substituteTemplate } from './engine.js';
+
+test('renderLatexForOperation: subtract', () => {
+  const latex = renderLatexForOperation('subtract',
+    { params: { a: '8.42', b: '6.1' }, computed: { finalSum: '2.3' } },
+    { unit: 'm' }
+  );
+  assert.match(latex, /8\.42/);
+  assert.match(latex, /6\.1/);
+  assert.match(latex, /2\.3/);
+  assert.match(latex, /\\,\\text\{m\}/);
+});
+
+test('substituteTemplate: fills tokens', () => {
+  const out = substituteTemplate(
+    'Sum is {finalSum}; limited by {limitingValue} ({limitingDecimalPlaces} dp).',
+    { finalSum: '14.9', limitingValue: '12.1', limitingDecimalPlaces: 1 }
+  );
+  assert.equal(out, 'Sum is 14.9; limited by 12.1 (1 dp).');
+});
