@@ -220,3 +220,81 @@ export function sampleValue(spec, rng) {
   }
   throw new Error('sampleValue: unsupported spec shape: ' + JSON.stringify(spec));
 }
+
+const MAX_RETRIES = 50;
+
+/**
+ * Sample a full variant for a problem spec, running the declared operation
+ * and enforcing guardrails. Throws if cap hit; caller falls back to original.
+ */
+export function generateVariant(problemSpec, rng) {
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    const params = {};
+    for (const [name, varSpec] of Object.entries(problemSpec.variables || {})) {
+      params[name] = sampleValue(varSpec, rng);
+    }
+    const computed = computeAnswer(problemSpec.answer, params);
+    if (passesGuardrails(problemSpec.constraints || {}, params, computed)) {
+      return { params, computed };
+    }
+  }
+  throw new Error('Guardrail cap hit (' + MAX_RETRIES + ' retries) for spec: ' + problemSpec.id);
+}
+
+function computeAnswer(answerSpec, params) {
+  const op = answerSpec.operation;
+  const values = Object.values(params);
+  switch (op) {
+    case 'subtract': {
+      const [a, b] = values;
+      return addPreservingDecimalPlaces([a, '-' + b.replace(/^[+-]/, '')]);
+    }
+    case 'add':
+      return addPreservingDecimalPlaces(values);
+    case 'multiply':
+      return multiplyPreservingSigFigs(values);
+    case 'count_sig_figs':
+      return countSigFigs(values[0]);
+    case 'to_sci_notation':
+      return decimalToSciNotation(parseFloat(values[0]), countSigFigs(values[0]).count);
+    case 'sci_notation_arithmetic':
+      return computeSciNotationArith(answerSpec, params);
+    case 'linear_function':
+      return evaluateLinearFunction(params);
+    default:
+      throw new Error('Unknown operation: ' + op);
+  }
+}
+
+function computeSciNotationArith(answerSpec, params) {
+  // For Ch 1 pilot: support multiply on (coeff, exp) pairs
+  const a = parseFloat(params.a_coefficient) * Math.pow(10, parseInt(params.a_exponent, 10));
+  const b = parseFloat(params.b_coefficient) * Math.pow(10, parseInt(params.b_exponent, 10));
+  const product = a * b;
+  const sigFigs = Math.min(
+    countSigFigs(params.a_coefficient).count,
+    countSigFigs(params.b_coefficient).count
+  );
+  return decimalToSciNotation(product, sigFigs);
+}
+
+function passesGuardrails(constraints, params, computed) {
+  // result_must_be_positive
+  if (constraints.result_must_be_positive) {
+    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? '0');
+    if (final <= 0) return false;
+  }
+  // result_range
+  if (constraints.result_range) {
+    const [low, high] = constraints.result_range;
+    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? '0');
+    if (final < low || final > high) return false;
+  }
+  // avoid_round
+  if (constraints.avoid_round) {
+    for (const value of Object.values(params)) {
+      if (constraints.avoid_round.includes(parseFloat(value))) return false;
+    }
+  }
+  return true;
+}

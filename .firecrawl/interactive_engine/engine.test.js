@@ -203,3 +203,37 @@ test('sampleValue: range with sig_figs (deviation from plan)', () => {
   const num = parseFloat(v);
   assert.ok(num >= 10 && num <= 100, `value out of range: ${v}`);
 });
+
+import { generateVariant } from './engine.js';
+
+test('generateVariant: subtract operation', () => {
+  const spec = {
+    id: 'test.subtract',
+    variables: {
+      a: { range: [5.0, 50.0], decimal_places: 2 },
+      b: { range: [1.0, 5.0], decimal_places: 1 },
+    },
+    answer: { operation: 'subtract', unit: 'm' },
+    constraints: { result_must_be_positive: true },
+  };
+  const rng = mulberry32(123);
+  const v = generateVariant(spec, rng);
+  assert.ok('a' in v.params);
+  assert.ok('b' in v.params);
+  assert.ok(parseFloat(v.computed.finalSum) > 0);
+});
+
+test('generateVariant: throws on guardrail cap (deviation from plan)', () => {
+  // Both vars locked to 1.0; subtract → 0.0; result_range [100,200] never satisfied.
+  const impossibleSpec = {
+    id: 'test.impossible',
+    variables: {
+      a: { range: [1.0, 1.0], decimal_places: 1 },
+      b: { range: [1.0, 1.0], decimal_places: 1 },
+    },
+    answer: { operation: 'subtract' },
+    constraints: { result_range: [100, 200] },
+  };
+  const rng = mulberry32(123);
+  assert.throws(() => generateVariant(impossibleSpec, rng), /guardrail/i);
+});
