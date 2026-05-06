@@ -396,3 +396,72 @@ test('renderFactorLabelLatex: chain has explicit \\times separators between step
   const timesMatches = latex.match(/\\times/g) || [];
   assert.equal(timesMatches.length, 2);
 });
+
+test('generateVariant: factor_label end-to-end', () => {
+  const spec = {
+    id: 'test.factor_label',
+    variables: {
+      mass: { range: [1.0, 10.0], decimal_places: 2 },
+    },
+    answer: {
+      operation: 'factor_label',
+      value_param: 'mass',
+      input_unit: 'lb',
+      chain: [
+        { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+        { num_value: 1,      num_unit: 'kg', den_value: 1000, den_unit: 'g', exact: true },
+      ],
+      target_unit: 'kg',
+    },
+  };
+  const rng = mulberry32(42);
+  const v = generateVariant(spec, rng);
+  assert.ok('mass' in v.params);
+  assert.ok(parseFloat(v.computed.finalResult) > 0);
+  assert.equal(v.computed.finalUnit, 'kg');
+});
+
+test('renderLatexForOperation: factor_label dispatches correctly', () => {
+  const variant = {
+    params: { mass: '5.00' },
+    computed: {
+      rawResult: '2.26795',
+      finalResult: '2.27',
+      finalUnit: 'kg',
+      limitingSigFigs: 3,
+    },
+  };
+  const answerSpec = {
+    operation: 'factor_label',
+    value_param: 'mass',
+    input_unit: 'lb',
+    chain: [
+      { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+      { num_value: 1,      num_unit: 'kg', den_value: 1000, den_unit: 'g', exact: true },
+    ],
+  };
+  const latex = renderLatexForOperation('factor_label', variant, answerSpec);
+  assert.match(latex, /5\.00\\,\\cancel\{\\text\{lb\}\}/);
+  assert.match(latex, /=\s*2\.27\\,\\text\{kg\}/);
+});
+
+test('passesGuardrails: result_range works with factor_label finalResult', () => {
+  const spec = {
+    id: 'test.factor_label_constrained',
+    variables: {
+      mass: { range: [1.0, 1.0], decimal_places: 1 },  // always 1.0
+    },
+    answer: {
+      operation: 'factor_label',
+      value_param: 'mass',
+      input_unit: 'lb',
+      chain: [
+        { num_value: 1, num_unit: 'kg', den_value: 1, den_unit: 'lb', exact: true },
+      ],
+      target_unit: 'kg',
+    },
+    constraints: { result_range: [100, 200] },  // never satisfied (result is 1.0 kg)
+  };
+  const rng = mulberry32(42);
+  assert.throws(() => generateVariant(spec, rng), /guardrail/i);
+});

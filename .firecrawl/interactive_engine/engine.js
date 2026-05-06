@@ -311,6 +311,11 @@ function computeAnswer(answerSpec, params) {
       return computeSciNotationArith(answerSpec, params);
     case 'linear_function':
       return evaluateLinearFunction(params);
+    case 'factor_label': {
+      const value = params[answerSpec.value_param];
+      const valueSigFigs = countSigFigs(value).count;
+      return factorLabelChain(value, valueSigFigs, answerSpec.input_unit, answerSpec.chain);
+    }
     default:
       throw new Error('Unknown operation: ' + op);
   }
@@ -331,13 +336,13 @@ function computeSciNotationArith(answerSpec, params) {
 function passesGuardrails(constraints, params, computed) {
   // result_must_be_positive
   if (constraints.result_must_be_positive) {
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? '0');
+    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
     if (final <= 0) return false;
   }
   // result_range
   if (constraints.result_range) {
     const [low, high] = constraints.result_range;
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? '0');
+    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
     if (final < low || final > high) return false;
   }
   // avoid_round
@@ -384,6 +389,14 @@ export function renderLatexForOperation(op, variant, answerSpec) {
     }
     case 'linear_function':
       return c.latex + u;
+    case 'factor_label':
+      return renderFactorLabelLatex(
+        p[answerSpec.value_param],
+        answerSpec.input_unit,
+        answerSpec.chain,
+        c.finalResult,
+        c.finalUnit
+      );
     default:
       throw new Error('renderLatexForOperation: unknown op ' + op);
   }
