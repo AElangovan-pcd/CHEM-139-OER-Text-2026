@@ -39,3 +39,24 @@ test('countSigFigs: pure zero with decimal point', () => {
   assert.equal(countSigFigs('0.0').count, 1);
   assert.equal(countSigFigs('0.').count, 1);
 });
+
+import { formatWithSigFigs } from './engine.js';
+
+test('formatWithSigFigs: round to 3 sig figs', () => {
+  assert.equal(formatWithSigFigs(12.3456, 3), '12.3');
+  assert.equal(formatWithSigFigs(0.012345, 3), '0.0123');
+  assert.equal(formatWithSigFigs(123456, 3), '123000');
+});
+
+test('formatWithSigFigs: preserves trailing zeros', () => {
+  assert.equal(formatWithSigFigs(2.5, 3), '2.50');
+  assert.equal(formatWithSigFigs(40.7, 4), '40.70');
+});
+
+test('formatWithSigFigs: handles negative', () => {
+  assert.equal(formatWithSigFigs(-12.34, 3), '-12.3');
+});
+
+test('formatWithSigFigs: integer with N=2 from N=4', () => {
+  assert.equal(formatWithSigFigs(1234, 2), '1200');
+});

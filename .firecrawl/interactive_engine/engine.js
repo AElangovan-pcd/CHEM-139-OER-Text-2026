@@ -63,3 +63,23 @@ export function countSigFigs(s) {
     ruleExplanation: 'Captive zeros count; trailing zeros after the decimal point count.',
   };
 }
+
+/**
+ * Format a number to exactly N significant figures.
+ * Preserves trailing zeros (e.g., formatWithSigFigs(2.5, 3) → "2.50").
+ */
+export function formatWithSigFigs(value, n) {
+  if (value === 0) return n === 1 ? '0' : '0.' + '0'.repeat(n - 1);
+  const sign = value < 0 ? '-' : '';
+  const abs = Math.abs(value);
+  const magnitude = Math.floor(Math.log10(abs));
+  const factor = Math.pow(10, n - 1 - magnitude);
+  const rounded = Math.round(abs * factor) / factor;
+  // Determine decimals to keep
+  const decimals = Math.max(0, n - 1 - magnitude);
+  if (decimals === 0) {
+    // Integer-style — may need trailing zeros via scaling
+    return sign + Math.round(rounded).toString();
+  }
+  return sign + rounded.toFixed(decimals);
+}
