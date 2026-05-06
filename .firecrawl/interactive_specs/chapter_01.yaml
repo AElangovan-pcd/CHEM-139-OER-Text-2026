@@ -17,3 +17,16 @@ problems:
       operation: count_sig_figs
     explanation_template: |
       {count} sig figs. {ruleExplanation}
+  - id: "1.12.add"
+    match_text: "(2.45 g) + (12.1 g) + (0.378 g)"
+    question: "({a} g) + ({b} g) + ({c} g) = ?"
+    variables:
+      a: { range: [1.0, 10.0], decimal_places: 2 }
+      b: { range: [10.0, 50.0], decimal_places: 1 }
+      c: { range: [0.1, 1.0], decimal_places: 3 }
+    answer:
+      operation: add
+      unit: g
+    explanation_template: |
+      Sum = {rawSum}; round to {limitingDecimalPlaces} decimal place(s)
+      ({limitingValue} has fewest decimal places) → {finalSum} g.
