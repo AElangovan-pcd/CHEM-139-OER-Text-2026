@@ -63,7 +63,9 @@ def attach_variant_attrs(html: str, spec: dict) -> str:
     if a match_text doesn't resolve to exactly one element.
     """
     soup = BeautifulSoup(html, "html.parser")
-    stems = soup.find_all("div", class_="problem-stem")
+    # build_html.py renders problem stems as <p class="problem-stem">; tests use
+    # <div class="problem-stem"> fixtures. Match by class only so both work.
+    stems = soup.find_all(class_="problem-stem")
     for prob in spec.get("problems", []):
         match_text = prob["match_text"]
         matches = [s for s in stems if match_text in s.get_text()]
