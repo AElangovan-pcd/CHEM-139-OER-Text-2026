@@ -184,99 +184,117 @@ def cmd_build(filter_chapter: str | None = None) -> int:
     return 0
 
 
-def cmd_validate() -> int:
-    try:
-        spec = load_spec(SPEC_FILE)
-    except ValidationError as e:
-        print(f"VALIDATE FAIL: {e}", file=sys.stderr)
-        return 1
-    if not INPUT_HTML.exists():
-        print(f"VALIDATE FAIL: {INPUT_HTML} not found.", file=sys.stderr)
-        return 1
-    html = INPUT_HTML.read_text(encoding="utf-8")
-    try:
-        attach_variant_attrs(html, spec)
-    except ValidationError as e:
-        print(f"VALIDATE FAIL: {e}", file=sys.stderr)
-        return 1
-    n = len(spec.get("problems", []))
-    print(f"VALIDATE OK: {n} problems, all match_text resolve to unique HTML elements.")
+def cmd_validate(filter_chapter: str | None = None) -> int:
+    chapters = discover_chapters()
+    if filter_chapter:
+        chapters = [c for c in chapters if c['number'] == filter_chapter]
+        if not chapters:
+            print(f"VALIDATE FAIL: no chapter '{filter_chapter}' found.", file=sys.stderr)
+            return 1
+    total_problems = 0
+    for c in chapters:
+        try:
+            spec = load_spec(c['spec_path'])
+        except ValidationError as e:
+            print(f"VALIDATE FAIL: chapter {c['number']}: {e}", file=sys.stderr)
+            return 1
+        if not c['input_html'].exists():
+            print(f"VALIDATE FAIL: {c['input_html']} not found.", file=sys.stderr)
+            return 1
+        html = c['input_html'].read_text(encoding="utf-8")
+        try:
+            attach_variant_attrs(html, spec)
+        except ValidationError as e:
+            print(f"VALIDATE FAIL: chapter {c['number']}: {e}", file=sys.stderr)
+            return 1
+        n = len(spec.get("problems", []))
+        total_problems += n
+        print(f"VALIDATE OK: chapter {c['number']}: {n} problems.")
+    print(f"VALIDATE OK: {total_problems} problems across {len(chapters)} chapter(s).")
     return 0
 
 
-def cmd_show_samples(n: int) -> int:
-    spec = load_spec(SPEC_FILE)
+def cmd_show_samples(n: int, filter_chapter: str | None = None) -> int:
+    chapters = discover_chapters()
+    if filter_chapter:
+        chapters = [c for c in chapters if c['number'] == filter_chapter]
     import subprocess as sp
-    spec_json = json.dumps(spec)
-    spec_tmp = REPO / ".firecrawl" / "interactive_engine" / "_spec_for_driver.json"
-    spec_tmp.write_text(spec_json, encoding="utf-8")
-    try:
-        r = sp.run(
-            ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
-            capture_output=True, text=True,
-            cwd=str(ENGINE_DIR), check=False,
-        )
-    finally:
-        spec_tmp.unlink(missing_ok=True)
-    if r.returncode != 0:
-        print(f"SHOW-SAMPLES FAIL: {r.stderr}", file=sys.stderr)
-        return 1
-    payload = json.loads(r.stdout)
-    for prob in payload["samples"]:
-        print(f"\n=== {prob['id']} (failures: {prob['failures']}/{n}) ===")
-        for i, v in enumerate(prob["variants"]):
-            if "error" in v:
-                print(f"  [{i}] ERROR: {v['error']}")
-            else:
-                params = v.get("params", {})
-                computed = v.get("computed", {})
-                print(f"  [{i}] params={params}  ->  computed={computed}")
+    for c in chapters:
+        spec = load_spec(c['spec_path'])
+        spec_json = json.dumps(spec)
+        spec_tmp = REPO / ".firecrawl" / "interactive_engine" / f"_spec_for_driver_{c['number']}.json"
+        spec_tmp.write_text(spec_json, encoding="utf-8")
+        try:
+            r = sp.run(
+                ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
+                capture_output=True, text=True,
+                cwd=str(ENGINE_DIR), check=False,
+            )
+        finally:
+            spec_tmp.unlink(missing_ok=True)
+        if r.returncode != 0:
+            print(f"SHOW-SAMPLES FAIL (chapter {c['number']}): {r.stderr}", file=sys.stderr)
+            return 1
+        payload = json.loads(r.stdout)
+        for prob in payload["samples"]:
+            print(f"\n=== chapter {c['number']} :: {prob['id']} (failures: {prob['failures']}/{n}) ===")
+            for i, v in enumerate(prob["variants"]):
+                if "error" in v:
+                    print(f"  [{i}] ERROR: {v['error']}")
+                else:
+                    params = v.get("params", {})
+                    computed = v.get("computed", {})
+                    print(f"  [{i}] params={params}  ->  computed={computed}")
     return 0
 
 
-def cmd_fuzz(n: int) -> int:
-    spec = load_spec(SPEC_FILE)
+def cmd_fuzz(n: int, filter_chapter: str | None = None) -> int:
+    chapters = discover_chapters()
+    if filter_chapter:
+        chapters = [c for c in chapters if c['number'] == filter_chapter]
     import subprocess as sp
     import re
-    spec_json = json.dumps(spec)
-    spec_tmp = REPO / ".firecrawl" / "interactive_engine" / "_spec_for_driver.json"
-    spec_tmp.write_text(spec_json, encoding="utf-8")
-    try:
-        r = sp.run(
-            ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
-            capture_output=True, text=True,
-            cwd=str(ENGINE_DIR), check=False,
-        )
-    finally:
-        spec_tmp.unlink(missing_ok=True)
-    if r.returncode != 0:
-        print(f"FUZZ FAIL: {r.stderr}", file=sys.stderr)
-        return 1
-    payload = json.loads(r.stdout)
     placeholder_re = re.compile(r"\{[a-zA-Z_]\w*\}")
     failed = False
-    for prob in payload["samples"]:
-        if prob["failures"] > 0:
-            print(f"FUZZ FAIL: {prob['id']} had {prob['failures']}/{n} guardrail failures",
-                  file=sys.stderr)
+    for c in chapters:
+        spec = load_spec(c['spec_path'])
+        spec_json = json.dumps(spec)
+        spec_tmp = REPO / ".firecrawl" / "interactive_engine" / f"_spec_for_driver_{c['number']}.json"
+        spec_tmp.write_text(spec_json, encoding="utf-8")
+        try:
+            r = sp.run(
+                ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
+                capture_output=True, text=True,
+                cwd=str(ENGINE_DIR), check=False,
+            )
+        finally:
+            spec_tmp.unlink(missing_ok=True)
+        if r.returncode != 0:
+            print(f"FUZZ FAIL (chapter {c['number']}): {r.stderr}", file=sys.stderr)
             failed = True
             continue
-        # Spot-check: pick the first 5 variants, check no unfilled {token}s in the explanation.
-        spec_entry = next(p for p in spec["problems"] if p["id"] == prob["id"])
-        if "custom_js" in spec_entry:
-            continue
-        template = spec_entry["explanation_template"]
-        for i, v in enumerate(prob["variants"][:5]):
-            tokens = {**v["params"], **(v["computed"] if isinstance(v["computed"], dict) else {})}
-            substituted = template
-            for k, val in tokens.items():
-                substituted = substituted.replace("{" + k + "}", str(val))
-            leftover = placeholder_re.findall(substituted)
-            if leftover:
-                print(f"FUZZ FAIL: {prob['id']} variant {i} explanation has unfilled tokens: {leftover}",
+        payload = json.loads(r.stdout)
+        for prob in payload["samples"]:
+            if prob["failures"] > 0:
+                print(f"FUZZ FAIL: chapter {c['number']} :: {prob['id']} had {prob['failures']}/{n} guardrail failures",
                       file=sys.stderr)
                 failed = True
-        print(f"FUZZ OK: {prob['id']} {n}/{n} variants passed.")
+                continue
+            spec_entry = next(p for p in spec["problems"] if p["id"] == prob["id"])
+            if "custom_js" in spec_entry:
+                continue
+            template = spec_entry["explanation_template"]
+            for i, v in enumerate(prob["variants"][:5]):
+                tokens = {**v["params"], **(v["computed"] if isinstance(v["computed"], dict) else {})}
+                substituted = template
+                for k, val in tokens.items():
+                    substituted = substituted.replace("{" + k + "}", str(val))
+                leftover = placeholder_re.findall(substituted)
+                if leftover:
+                    print(f"FUZZ FAIL: chapter {c['number']} :: {prob['id']} variant {i} has unfilled tokens: {leftover}",
+                          file=sys.stderr)
+                    failed = True
+            print(f"FUZZ OK: chapter {c['number']} :: {prob['id']} {n}/{n} variants passed.")
     return 1 if failed else 0
 
 
