@@ -193,7 +193,7 @@ def cmd_show_samples(n: int) -> int:
             else:
                 params = v.get("params", {})
                 computed = v.get("computed", {})
-                print(f"  [{i}] params={params}  →  computed={computed}")
+                print(f"  [{i}] params={params}  ->  computed={computed}")
     return 0
 
 
