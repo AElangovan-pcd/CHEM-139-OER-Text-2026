@@ -42,7 +42,7 @@ problems:
       unit: cm^3
     explanation_template: |
       Product = {rawProduct}; limit to {limitingSigFigs} sig figs
-      ({limitingValue} is the limit) -> {finalProduct} cm^3.
+      ({limitingValue} is the limit) → {finalProduct} cm³.
   - id: "1.13.to_sci_notation"
     match_text: "Express 0.000 045 6 in scientific notation"
     question: "Express {value} in scientific notation."
@@ -53,10 +53,10 @@ problems:
     answer:
       operation: to_sci_notation
     explanation_template: |
-      {value} = {coefficient} x 10^{exponent}.
+      \({value} = {coefficient} \times 10^{{exponent}}\).
   - id: "1.14.sci_arith"
     match_text: "27. (2.4 "
-    question: "({a_coefficient} x 10^{a_exponent}) x ({b_coefficient} x 10^{b_exponent}) = ?"
+    question: "\\(({a_coefficient} \\times 10^{{a_exponent}}) \\times ({b_coefficient} \\times 10^{{b_exponent}}) = ?\\)"
     variables:
       a_coefficient: { range: [1.0, 9.9], sig_figs: 2 }
       a_exponent: { range: [3, 6], decimal_places: 0 }
@@ -64,9 +64,11 @@ problems:
       b_exponent: { range: [-2, 4], decimal_places: 0 }
     answer:
       operation: sci_notation_arithmetic
+    constraints:
+      avoid_round: [0]   # exclude variants where any exponent samples to 0 (10⁰ = 1 is uninteresting)
     explanation_template: |
-      Multiply coefficients ({a_coefficient} x {b_coefficient}); add exponents
-      ({a_exponent} + {b_exponent}). Result: {coefficient} x 10^{exponent}
+      Multiply coefficients (\({a_coefficient} \times {b_coefficient}\)); add exponents
+      (\({a_exponent} + {b_exponent}\)). Result: \({coefficient} \times 10^{{exponent}}\)
       (limited to fewest sig figs in coefficients).
   - id: "1.16.linear"
     match_text: "best-fit line through gas-pressure-vs-temperature data has slope 0.025"

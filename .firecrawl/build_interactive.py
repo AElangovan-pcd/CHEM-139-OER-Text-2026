@@ -84,7 +84,11 @@ def attach_variant_attrs(html: str, spec: dict) -> str:
 
 def inline_spec_json(html: str, spec: dict) -> str:
     """Insert <script type="application/json" id="variant-specs"> and
-    <link>/<script> for engine assets just before </head>."""
+    <link>/<script> for engine assets just before </head>.
+
+    Engine asset URLs include a ?v=<mtime> cache-buster so browsers always
+    fetch the latest build when the engine source changes.
+    """
     soup = BeautifulSoup(html, "html.parser")
     head = soup.find("head")
     if head is None:
@@ -93,11 +97,12 @@ def inline_spec_json(html: str, spec: dict) -> str:
     json_tag = soup.new_tag("script", id="variant-specs", type="application/json")
     json_tag.string = json.dumps(spec, separators=(",", ":"))
     head.append(json_tag)
-    # Engine CSS
-    css_tag = soup.new_tag("link", rel="stylesheet", href="assets/engine.css")
+    # Engine CSS + JS with cache-busting query parameters based on source mtime
+    css_v = int((ENGINE_DIR / "engine.css").stat().st_mtime)
+    js_v = int((ENGINE_DIR / "engine.js").stat().st_mtime)
+    css_tag = soup.new_tag("link", rel="stylesheet", href=f"assets/engine.css?v={css_v}")
     head.append(css_tag)
-    # Engine JS (ES module)
-    js_tag = soup.new_tag("script", type="module", src="assets/engine.js")
+    js_tag = soup.new_tag("script", type="module", src=f"assets/engine.js?v={js_v}")
     head.append(js_tag)
     return str(soup)
 
