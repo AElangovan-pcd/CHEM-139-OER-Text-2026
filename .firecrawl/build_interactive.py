@@ -80,6 +80,26 @@ def attach_variant_attrs(html: str, spec: dict) -> str:
     return str(soup)
 
 
+def inline_spec_json(html: str, spec: dict) -> str:
+    """Insert <script type="application/json" id="variant-specs"> and
+    <link>/<script> for engine assets just before </head>."""
+    soup = BeautifulSoup(html, "html.parser")
+    head = soup.find("head")
+    if head is None:
+        raise ValidationError("HTML has no <head>")
+    # Spec JSON
+    json_tag = soup.new_tag("script", id="variant-specs", type="application/json")
+    json_tag.string = json.dumps(spec, separators=(",", ":"))
+    head.append(json_tag)
+    # Engine CSS
+    css_tag = soup.new_tag("link", rel="stylesheet", href="assets/engine.css")
+    head.append(css_tag)
+    # Engine JS (ES module)
+    js_tag = soup.new_tag("script", type="module", src="assets/engine.js")
+    head.append(js_tag)
+    return str(soup)
+
+
 REPO = Path(__file__).resolve().parents[1]
 SPEC_FILE = REPO / ".firecrawl" / "interactive_specs" / "chapter_01.yaml"
 ENGINE_DIR = REPO / ".firecrawl" / "interactive_engine"
@@ -109,7 +129,20 @@ def main() -> int:
 
 
 def cmd_build() -> int:
-    raise NotImplementedError("cmd_build will be implemented in task E4")
+    spec = load_spec(SPEC_FILE)
+    if not INPUT_HTML.exists():
+        print(f"ERROR: {INPUT_HTML} not found. Run build_html.py first.", file=sys.stderr)
+        return 2
+    html = INPUT_HTML.read_text(encoding="utf-8")
+    html = attach_variant_attrs(html, spec)
+    html = inline_spec_json(html, spec)
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    ASSETS_DIR.mkdir(exist_ok=True)
+    OUTPUT_HTML.write_text(html, encoding="utf-8")
+    shutil.copy2(ENGINE_DIR / "engine.js", ASSETS_DIR / "engine.js")
+    shutil.copy2(ENGINE_DIR / "engine.css", ASSETS_DIR / "engine.css")
+    print(f"Wrote {OUTPUT_HTML} and assets.")
+    return 0
 
 
 def cmd_validate() -> int:
