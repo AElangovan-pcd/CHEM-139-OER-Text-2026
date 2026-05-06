@@ -32,7 +32,7 @@ class ValidationError(Exception):
 def load_spec(path: Path) -> dict:
     """Parse and validate the YAML spec. Raise ValidationError on schema violations."""
     try:
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             raw = yaml.safe_load(f) or {}
     except yaml.YAMLError as e:
         raise ValidationError(f"YAML parse error in {path}: {e}")
