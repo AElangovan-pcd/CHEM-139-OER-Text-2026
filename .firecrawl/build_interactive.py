@@ -196,7 +196,49 @@ def cmd_show_samples(n: int) -> int:
 
 
 def cmd_fuzz(n: int) -> int:
-    raise NotImplementedError("cmd_fuzz will be implemented in task E7")
+    spec = load_spec(SPEC_FILE)
+    import subprocess as sp
+    import re
+    spec_json = json.dumps(spec)
+    spec_tmp = REPO / ".firecrawl" / "interactive_engine" / "_spec_for_driver.json"
+    spec_tmp.write_text(spec_json, encoding="utf-8")
+    try:
+        r = sp.run(
+            ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
+            capture_output=True, text=True,
+            cwd=str(ENGINE_DIR), check=False,
+        )
+    finally:
+        spec_tmp.unlink(missing_ok=True)
+    if r.returncode != 0:
+        print(f"FUZZ FAIL: {r.stderr}", file=sys.stderr)
+        return 1
+    payload = json.loads(r.stdout)
+    placeholder_re = re.compile(r"\{[a-zA-Z_]\w*\}")
+    failed = False
+    for prob in payload["samples"]:
+        if prob["failures"] > 0:
+            print(f"FUZZ FAIL: {prob['id']} had {prob['failures']}/{n} guardrail failures",
+                  file=sys.stderr)
+            failed = True
+            continue
+        # Spot-check: pick the first 5 variants, check no unfilled {token}s in the explanation.
+        spec_entry = next(p for p in spec["problems"] if p["id"] == prob["id"])
+        if "custom_js" in spec_entry:
+            continue
+        template = spec_entry["explanation_template"]
+        for i, v in enumerate(prob["variants"][:5]):
+            tokens = {**v["params"], **(v["computed"] if isinstance(v["computed"], dict) else {})}
+            substituted = template
+            for k, val in tokens.items():
+                substituted = substituted.replace("{" + k + "}", str(val))
+            leftover = placeholder_re.findall(substituted)
+            if leftover:
+                print(f"FUZZ FAIL: {prob['id']} variant {i} explanation has unfilled tokens: {leftover}",
+                      file=sys.stderr)
+                failed = True
+        print(f"FUZZ OK: {prob['id']} {n}/{n} variants passed.")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
