@@ -17,6 +17,46 @@ from pathlib import Path
 import yaml
 from bs4 import BeautifulSoup
 
+SUPPORTED_OPERATIONS = {
+    "subtract", "add", "multiply", "count_sig_figs",
+    "to_sci_notation", "sci_notation_arithmetic", "linear_function",
+}
+
+REQUIRED_PROBLEM_FIELDS = {"id", "match_text", "question", "answer", "explanation_template"}
+
+
+class ValidationError(Exception):
+    pass
+
+
+def load_spec(path: Path) -> dict:
+    """Parse and validate the YAML spec. Raise ValidationError on schema violations."""
+    try:
+        with open(path) as f:
+            raw = yaml.safe_load(f) or {}
+    except yaml.YAMLError as e:
+        raise ValidationError(f"YAML parse error in {path}: {e}")
+    problems = raw.get("problems") or []
+    if not isinstance(problems, list):
+        raise ValidationError(f"`problems` must be a list, got {type(problems).__name__}")
+    for i, prob in enumerate(problems):
+        missing = REQUIRED_PROBLEM_FIELDS - set(prob.keys())
+        # custom_js entries skip most schema checks
+        if "custom_js" in prob:
+            if "id" not in prob or "match_text" not in prob:
+                raise ValidationError(f"problems[{i}]: custom_js entries still require id and match_text")
+            continue
+        if missing:
+            raise ValidationError(f"problems[{i}] (id={prob.get('id', '?')}): missing fields: {sorted(missing)}")
+        op = prob.get("answer", {}).get("operation")
+        if op not in SUPPORTED_OPERATIONS:
+            raise ValidationError(
+                f"problems[{i}] (id={prob.get('id')}): unsupported operation '{op}'. "
+                f"Supported: {sorted(SUPPORTED_OPERATIONS)}"
+            )
+    return raw
+
+
 REPO = Path(__file__).resolve().parents[1]
 SPEC_FILE = REPO / ".firecrawl" / "interactive_specs" / "chapter_01.yaml"
 ENGINE_DIR = REPO / ".firecrawl" / "interactive_engine"
