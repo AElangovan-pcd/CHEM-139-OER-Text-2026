@@ -57,6 +57,29 @@ def load_spec(path: Path) -> dict:
     return raw
 
 
+def attach_variant_attrs(html: str, spec: dict) -> str:
+    """For each spec problem, find the matching <div class="problem-stem"> by
+    text substring and add a data-variant-spec attribute. Raise ValidationError
+    if a match_text doesn't resolve to exactly one element.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    stems = soup.find_all("div", class_="problem-stem")
+    for prob in spec.get("problems", []):
+        match_text = prob["match_text"]
+        matches = [s for s in stems if match_text in s.get_text()]
+        if not matches:
+            raise ValidationError(
+                f"match_text {match_text!r} for spec {prob['id']!r} not found in HTML"
+            )
+        if len(matches) > 1:
+            raise ValidationError(
+                f"match_text {match_text!r} for spec {prob['id']!r} matched "
+                f"{len(matches)} problem-stem elements; make it unique"
+            )
+        matches[0]["data-variant-spec"] = prob["id"]
+    return str(soup)
+
+
 REPO = Path(__file__).resolve().parents[1]
 SPEC_FILE = REPO / ".firecrawl" / "interactive_specs" / "chapter_01.yaml"
 ENGINE_DIR = REPO / ".firecrawl" / "interactive_engine"

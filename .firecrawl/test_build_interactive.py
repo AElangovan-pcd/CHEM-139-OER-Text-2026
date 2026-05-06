@@ -77,5 +77,48 @@ problems:
             load_spec(path)
 
 
+from build_interactive import attach_variant_attrs
+
+
+class TestAttachVariantAttrs(unittest.TestCase):
+    def test_attaches_attribute_to_matching_stem(self):
+        html = '''
+        <div class="problem-stem">How many feet are in 12.4 meters?</div>
+        <div class="solution">40.7 ft</div>
+        <div class="problem-stem">Other problem.</div>
+        <div class="solution">x</div>
+        '''
+        spec = {"problems": [{
+            "id": "test.feet",
+            "match_text": "How many feet are in 12.4",
+            "question": "x", "answer": {"operation": "subtract"},
+            "explanation_template": "x", "variables": {},
+        }]}
+        result_html = attach_variant_attrs(html, spec)
+        self.assertIn('data-variant-spec="test.feet"', result_html)
+        self.assertIn('How many feet are in 12.4 meters?', result_html)
+
+    def test_raises_when_match_text_not_found(self):
+        html = '<div class="problem-stem">Hello</div><div class="solution">x</div>'
+        spec = {"problems": [{
+            "id": "missing", "match_text": "GoodbyeNotFound",
+            "question": "x", "answer": {"operation": "subtract"},
+            "explanation_template": "x", "variables": {},
+        }]}
+        with self.assertRaises(ValidationError):
+            attach_variant_attrs(html, spec)
+
+    def test_raises_when_match_text_ambiguous(self):
+        html = ('<div class="problem-stem">Convert X</div><div class="solution">x</div>'
+                '<div class="problem-stem">Convert X</div><div class="solution">y</div>')
+        spec = {"problems": [{
+            "id": "ambig", "match_text": "Convert X",
+            "question": "x", "answer": {"operation": "subtract"},
+            "explanation_template": "x", "variables": {},
+        }]}
+        with self.assertRaises(ValidationError):
+            attach_variant_attrs(html, spec)
+
+
 if __name__ == "__main__":
     unittest.main()
