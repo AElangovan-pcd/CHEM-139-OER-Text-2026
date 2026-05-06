@@ -86,3 +86,17 @@ export function formatWithSigFigs(value, n) {
   }
   return sign + rounded.toFixed(decimals);
 }
+
+/**
+ * Convert a decimal value to scientific notation form.
+ */
+export function decimalToSciNotation(value, sigFigs) {
+  if (value === 0) return { coefficient: '0', exponent: 0, latex: '0' };
+  const sign = value < 0 ? '-' : '';
+  const abs = Math.abs(value);
+  const exponent = Math.floor(Math.log10(abs));
+  const coefficientNum = abs / Math.pow(10, exponent);
+  const coefficient = formatWithSigFigs(coefficientNum, sigFigs);
+  const latex = sign + coefficient + ' \times 10^{' + exponent + '}';
+  return { coefficient: sign + coefficient, exponent, latex };
+}

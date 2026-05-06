@@ -66,3 +66,24 @@ test('formatWithSigFigs: cross-decade rounding', () => {
   assert.equal(formatWithSigFigs(0.9999, 1), '1');
   assert.equal(formatWithSigFigs(9.95, 2), '10');
 });
+
+import { decimalToSciNotation } from './engine.js';
+
+test('decimalToSciNotation: positive small', () => {
+  const r = decimalToSciNotation(0.00038, 2);
+  assert.equal(r.coefficient, '3.8');
+  assert.equal(r.exponent, -4);
+  assert.equal(r.latex, '3.8 \times 10^{-4}');
+});
+
+test('decimalToSciNotation: large with 3 sig figs', () => {
+  const r = decimalToSciNotation(420000, 3);
+  assert.equal(r.coefficient, '4.20');
+  assert.equal(r.exponent, 5);
+});
+
+test('decimalToSciNotation: between 1 and 10', () => {
+  const r = decimalToSciNotation(4.56, 3);
+  assert.equal(r.coefficient, '4.56');
+  assert.equal(r.exponent, 0);
+});
