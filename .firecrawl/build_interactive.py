@@ -2,9 +2,11 @@
 
 Reads `interactive_specs/chapter_01.yaml`, postprocesses
 `HTML_Files/Chapter_01.html`, copies the engine assets, and writes
-`HTML_Files_Interactive/Chapter_01.html`.
+`HTML_Files/interactive/Chapter_01.html`.
 
-Does NOT read or write any .docx file. Does NOT modify HTML_Files/.
+Does NOT read or write any .docx file. Does NOT modify the canonical
+`HTML_Files/Chapter_01.html` (only writes into the `interactive/`
+subdirectory).
 """
 from __future__ import annotations
 
@@ -111,7 +113,7 @@ REPO = Path(__file__).resolve().parents[1]
 SPEC_FILE = REPO / ".firecrawl" / "interactive_specs" / "chapter_01.yaml"
 ENGINE_DIR = REPO / ".firecrawl" / "interactive_engine"
 INPUT_HTML = REPO / "HTML_Files" / "Chapter_01.html"
-OUTPUT_DIR = REPO / "HTML_Files_Interactive"
+OUTPUT_DIR = REPO / "HTML_Files" / "interactive"
 OUTPUT_HTML = OUTPUT_DIR / "Chapter_01.html"
 ASSETS_DIR = OUTPUT_DIR / "assets"
 

@@ -51,8 +51,6 @@ jobs:
           python .firecrawl/build_interactive.py --validate
           python .firecrawl/build_interactive.py --fuzz 1000
           python .firecrawl/build_interactive.py
-          mkdir -p HTML_Files/interactive
-          cp -r HTML_Files_Interactive/. HTML_Files/interactive/
 
       - uses: actions/configure-pages@v5
 
