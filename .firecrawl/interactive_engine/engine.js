@@ -89,14 +89,27 @@ export function formatWithSigFigs(value, n) {
 
 /**
  * Convert a decimal value to scientific notation form.
+ * Output coefficient is always in [1, 10) (or [-10, -1] for negatives) —
+ * if rounding pushes the coefficient across the decade boundary,
+ * the exponent is bumped and the coefficient is renormalized.
+ *
+ * @param {number} value
+ * @param {number} sigFigs
+ * @returns {{coefficient: string, exponent: number, latex: string}}
  */
 export function decimalToSciNotation(value, sigFigs) {
   if (value === 0) return { coefficient: '0', exponent: 0, latex: '0' };
   const sign = value < 0 ? '-' : '';
   const abs = Math.abs(value);
-  const exponent = Math.floor(Math.log10(abs));
+  let exponent = Math.floor(Math.log10(abs));
   const coefficientNum = abs / Math.pow(10, exponent);
-  const coefficient = formatWithSigFigs(coefficientNum, sigFigs);
-  const latex = sign + coefficient + ' \times 10^{' + exponent + '}';
+  let coefficient = formatWithSigFigs(coefficientNum, sigFigs);
+  // Cross-decade guard: rounding may produce a coefficient ≥ 10 (e.g. 9.95→'10' at n=2).
+  // Renormalize by bumping the exponent and dividing the coefficient by 10.
+  if (parseFloat(coefficient) >= 10) {
+    exponent += 1;
+    coefficient = formatWithSigFigs(parseFloat(coefficient) / 10, sigFigs);
+  }
+  const latex = sign + coefficient + ' \\times 10^{' + exponent + '}';
   return { coefficient: sign + coefficient, exponent, latex };
 }

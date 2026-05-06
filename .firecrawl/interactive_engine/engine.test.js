@@ -73,7 +73,7 @@ test('decimalToSciNotation: positive small', () => {
   const r = decimalToSciNotation(0.00038, 2);
   assert.equal(r.coefficient, '3.8');
   assert.equal(r.exponent, -4);
-  assert.equal(r.latex, '3.8 \times 10^{-4}');
+  assert.equal(r.latex, '3.8 \\times 10^{-4}');
 });
 
 test('decimalToSciNotation: large with 3 sig figs', () => {
@@ -86,4 +86,18 @@ test('decimalToSciNotation: between 1 and 10', () => {
   const r = decimalToSciNotation(4.56, 3);
   assert.equal(r.coefficient, '4.56');
   assert.equal(r.exponent, 0);
+});
+
+test('decimalToSciNotation: cross-decade coefficient overflow', () => {
+  const r1 = decimalToSciNotation(9.95, 2);
+  assert.equal(r1.coefficient, '1.0');
+  assert.equal(r1.exponent, 1);
+
+  const r2 = decimalToSciNotation(0.0099, 1);
+  assert.equal(r2.coefficient, '1');
+  assert.equal(r2.exponent, -2);
+
+  const r3 = decimalToSciNotation(-9.95, 2);
+  assert.equal(r3.coefficient, '-1.0');
+  assert.equal(r3.exponent, 1);
 });
