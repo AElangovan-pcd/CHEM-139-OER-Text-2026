@@ -192,3 +192,31 @@ export function evaluateLinearFunction({ slope, intercept, x }) {
   const latex = slope + ' \\times ' + x + ' + ' + intercept + ' = ' + yFormatted;
   return { y: yFormatted, latex };
 }
+
+/**
+ * Tiny seedable RNG (mulberry32). Returns a function () → number in [0, 1).
+ */
+export function mulberry32(seed) {
+  let a = seed | 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Sample a single variable per its spec. Returns a numeric string formatted to declared precision.
+ */
+export function sampleValue(spec, rng) {
+  if (spec.range) {
+    const [low, high] = spec.range;
+    const raw = low + rng() * (high - low);
+    if (spec.decimal_places !== undefined) return raw.toFixed(spec.decimal_places);
+    if (spec.sig_figs !== undefined) return formatWithSigFigs(raw, spec.sig_figs);
+    return raw.toString();
+  }
+  throw new Error('sampleValue: unsupported spec shape: ' + JSON.stringify(spec));
+}

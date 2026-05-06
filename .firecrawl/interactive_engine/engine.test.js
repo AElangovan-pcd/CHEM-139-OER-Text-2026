@@ -168,3 +168,38 @@ test('evaluateLinearFunction: zero intercept', () => {
   const r = evaluateLinearFunction({ slope: '2.0', intercept: '0', x: '5.0' });
   assert.equal(r.y, '10');
 });
+
+import { mulberry32, sampleValue } from './engine.js';
+
+test('mulberry32: deterministic with seed', () => {
+  const a = mulberry32(42);
+  const b = mulberry32(42);
+  for (let i = 0; i < 100; i++) {
+    assert.equal(a(), b());
+  }
+});
+
+test('mulberry32: produces values in [0, 1)', () => {
+  const rng = mulberry32(123);
+  for (let i = 0; i < 1000; i++) {
+    const v = rng();
+    assert.ok(v >= 0 && v < 1, `value out of range: ${v}`);
+  }
+});
+
+test('sampleValue: range with decimal_places', () => {
+  const rng = mulberry32(7);
+  const v = sampleValue({ range: [1.0, 100.0], decimal_places: 2 }, rng);
+  assert.match(v, /^\d+\.\d{2}$/);
+  const num = parseFloat(v);
+  assert.ok(num >= 1.0 && num <= 100.0);
+});
+
+test('sampleValue: range with sig_figs (deviation from plan)', () => {
+  const rng = mulberry32(7);
+  const v = sampleValue({ range: [10, 100], sig_figs: 3 }, rng);
+  // 3 sig figs over [10, 100] formats as XX.X most of the time, possibly 100.
+  assert.match(v, /^\d+(?:\.\d+)?$/);
+  const num = parseFloat(v);
+  assert.ok(num >= 10 && num <= 100, `value out of range: ${v}`);
+});
