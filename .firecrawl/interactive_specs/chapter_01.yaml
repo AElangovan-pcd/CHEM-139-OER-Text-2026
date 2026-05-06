@@ -68,3 +68,19 @@ problems:
       Multiply coefficients ({a_coefficient} x {b_coefficient}); add exponents
       ({a_exponent} + {b_exponent}). Result: {coefficient} x 10^{exponent}
       (limited to fewest sig figs in coefficients).
+  - id: "1.16.linear"
+    match_text: "best-fit line through gas-pressure-vs-temperature data has slope 0.025"
+    question: |
+      A best-fit line has slope {slope} atm/°C and y-intercept {intercept} atm.
+      Predict the pressure at {x} °C.
+    variables:
+      slope: { range: [0.010, 0.050], sig_figs: 2 }
+      intercept: { range: [5.00, 8.00], sig_figs: 3 }
+      x: { range: [10, 100], sig_figs: 2 }
+    answer:
+      operation: linear_function
+      unit: atm
+    constraints:
+      result_range: [4.0, 20.0]
+    explanation_template: |
+      P = m*T + b = {slope}*{x} + {intercept} = {y} atm.
