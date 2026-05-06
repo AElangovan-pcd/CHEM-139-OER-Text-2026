@@ -1,3 +1,21 @@
 # Variable-problem specs for Chapter 2 (Unit Systems and Dimensional Analysis).
 # Schema reference: docs/superpowers/specs/2026-05-06-variable-problems-phase2-design.md
-problems: []
+problems:
+  - id: "2.4.metric_simple"
+    match_text: "A medication dosage is 250 µg"
+    question: "A medication dosage is {dose} µg. How many mg is this?"
+    variables:
+      dose: { range: [10, 990], decimal_places: 0 }
+    answer:
+      operation: factor_label
+      value_param: dose
+      input_unit: µg
+      chain:
+        - num_value: 1
+          num_unit: mg
+          den_value: 1000
+          den_unit: µg
+          exact: true
+      target_unit: mg
+    explanation_template: |
+      "µg" cancels, leaving "mg". {limitingSigFigs} sig figs from "{dose} µg" yield {finalResult} mg.
