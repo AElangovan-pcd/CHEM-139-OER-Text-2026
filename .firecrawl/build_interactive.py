@@ -166,7 +166,33 @@ def cmd_validate() -> int:
 
 
 def cmd_show_samples(n: int) -> int:
-    raise NotImplementedError("cmd_show_samples will be implemented in task E6")
+    spec = load_spec(SPEC_FILE)
+    import subprocess as sp
+    spec_json = json.dumps(spec)
+    spec_tmp = REPO / ".firecrawl" / "interactive_engine" / "_spec_for_driver.json"
+    spec_tmp.write_text(spec_json, encoding="utf-8")
+    try:
+        r = sp.run(
+            ["node", "sample_driver.js", str(spec_tmp.name), str(n)],
+            capture_output=True, text=True,
+            cwd=str(ENGINE_DIR), check=False,
+        )
+    finally:
+        spec_tmp.unlink(missing_ok=True)
+    if r.returncode != 0:
+        print(f"SHOW-SAMPLES FAIL: {r.stderr}", file=sys.stderr)
+        return 1
+    payload = json.loads(r.stdout)
+    for prob in payload["samples"]:
+        print(f"\n=== {prob['id']} (failures: {prob['failures']}/{n}) ===")
+        for i, v in enumerate(prob["variants"]):
+            if "error" in v:
+                print(f"  [{i}] ERROR: {v['error']}")
+            else:
+                params = v.get("params", {})
+                computed = v.get("computed", {})
+                print(f"  [{i}] params={params}  →  computed={computed}")
+    return 0
 
 
 def cmd_fuzz(n: int) -> int:
