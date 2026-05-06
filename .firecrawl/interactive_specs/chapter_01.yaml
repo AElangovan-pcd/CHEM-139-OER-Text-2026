@@ -54,3 +54,17 @@ problems:
       operation: to_sci_notation
     explanation_template: |
       {value} = {coefficient} x 10^{exponent}.
+  - id: "1.14.sci_arith"
+    match_text: "27. (2.4 "
+    question: "({a_coefficient} x 10^{a_exponent}) x ({b_coefficient} x 10^{b_exponent}) = ?"
+    variables:
+      a_coefficient: { range: [1.0, 9.9], sig_figs: 2 }
+      a_exponent: { range: [3, 6], decimal_places: 0 }
+      b_coefficient: { range: [1.0, 9.9], sig_figs: 2 }
+      b_exponent: { range: [-2, 4], decimal_places: 0 }
+    answer:
+      operation: sci_notation_arithmetic
+    explanation_template: |
+      Multiply coefficients ({a_coefficient} x {b_coefficient}); add exponents
+      ({a_exponent} + {b_exponent}). Result: {coefficient} x 10^{exponent}
+      (limited to fewest sig figs in coefficients).
