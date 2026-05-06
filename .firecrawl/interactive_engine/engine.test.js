@@ -115,3 +115,25 @@ test('sciNotationToDecimal: negative exponent', () => {
 test('sciNotationToDecimal: small positive exponent preserves trailing zeros', () => {
   assert.equal(sciNotationToDecimal({ coefficient: '4.20', exponent: 2 }), '420');
 });
+
+import { addPreservingDecimalPlaces } from './engine.js';
+
+test('addPreservingDecimalPlaces: textbook example', () => {
+  const r = addPreservingDecimalPlaces(['2.45', '12.1', '0.378']);
+  assert.equal(r.rawSum, '14.928');
+  assert.equal(r.finalSum, '14.9');
+  assert.equal(r.limitingDecimalPlaces, 1);
+  assert.equal(r.limitingValue, '12.1');
+});
+
+test('addPreservingDecimalPlaces: subtraction (negative)', () => {
+  const r = addPreservingDecimalPlaces(['8.42', '-6.1']);
+  assert.equal(r.finalSum, '2.3');
+  assert.equal(r.limitingDecimalPlaces, 1);
+  assert.equal(r.limitingValue, '-6.1');
+});
+
+test('addPreservingDecimalPlaces: integer + decimal', () => {
+  const r = addPreservingDecimalPlaces(['100', '0.5']);
+  assert.equal(r.limitingDecimalPlaces, 0);
+});

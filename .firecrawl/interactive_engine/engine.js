@@ -135,3 +135,23 @@ export function sciNotationToDecimal({ coefficient, exponent }) {
     return sign + allDigits.slice(0, decimalPos) + '.' + allDigits.slice(decimalPos);
   }
 }
+
+/**
+ * Add a list of numeric strings; round to least decimal places per sig-fig rule.
+ */
+export function addPreservingDecimalPlaces(values) {
+  const decimalPlacesOf = (s) => {
+    const stripped = s.replace(/^[+-]/, '');
+    if (!stripped.includes('.')) return 0;
+    return stripped.split('.')[1].length;
+  };
+  const places = values.map(decimalPlacesOf);
+  const minPlaces = Math.min(...places);
+  const limitingIdx = places.indexOf(minPlaces);
+  const limitingValue = values[limitingIdx];
+  const sumNum = values.reduce((acc, v) => acc + parseFloat(v), 0);
+  const maxPlaces = Math.max(...places);
+  const rawSum = sumNum.toFixed(maxPlaces);
+  const finalSum = sumNum.toFixed(minPlaces);
+  return { rawSum, finalSum, limitingDecimalPlaces: minPlaces, limitingValue };
+}
