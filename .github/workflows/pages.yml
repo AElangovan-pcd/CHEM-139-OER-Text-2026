@@ -41,10 +41,18 @@ jobs:
           python-version: "3.12"
 
       - name: Install build dependencies
-        run: pip install "python-docx>=1.1" "mammoth>=1.7" "beautifulsoup4>=4.12"
+        run: pip install "python-docx>=1.1" "mammoth>=1.7" "beautifulsoup4>=4.12" "pyyaml>=6.0"
 
       - name: Build HTML preview from .docx sources
         run: python .firecrawl/build_html.py
+
+      - name: Build interactive Chapter 1
+        run: |
+          python .firecrawl/build_interactive.py --validate
+          python .firecrawl/build_interactive.py --fuzz 1000
+          python .firecrawl/build_interactive.py
+          mkdir -p HTML_Files/interactive
+          cp -r HTML_Files_Interactive/. HTML_Files/interactive/
 
       - uses: actions/configure-pages@v5
 

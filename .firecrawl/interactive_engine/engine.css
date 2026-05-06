@@ -1,0 +1,31 @@
+/* Variable-problem pilot — engine styles. */
+
+button.try-variant {
+  display: inline-block;
+  margin: 0.5em 0;
+  padding: 0.35em 0.9em;
+  font: inherit;
+  font-size: 0.95em;
+  background: #e8f0fe;
+  border: 1px solid #4a72c4;
+  border-radius: 4px;
+  color: #1a3a78;
+  cursor: pointer;
+}
+
+button.try-variant:hover {
+  background: #d2e1fc;
+}
+
+button.try-variant:focus {
+  outline: 2px solid #1a3a78;
+  outline-offset: 2px;
+}
+
+[data-variant-spec] {
+  transition: opacity 0.15s ease-in-out;
+}
+
+[data-variant-spec].fading {
+  opacity: 0.4;
+}
