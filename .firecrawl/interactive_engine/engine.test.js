@@ -258,3 +258,86 @@ test('substituteTemplate: fills tokens', () => {
   );
   assert.equal(out, 'Sum is 14.9; limited by 12.1 (1 dp).');
 });
+
+import { factorLabelChain } from './engine.js';
+
+test('factorLabelChain: single-step exact metric', () => {
+  // 0.025 g × (1000 mg / 1 g) = 25 mg; sig figs = 2 (limited by 0.025)
+  const r = factorLabelChain('0.025', 2, 'g', [
+    { num_value: 1000, num_unit: 'mg', den_value: 1, den_unit: 'g', exact: true },
+  ]);
+  assert.equal(r.finalResult, '25');
+  assert.equal(r.finalUnit, 'mg');
+  assert.equal(r.limitingSigFigs, 2);
+});
+
+test('factorLabelChain: two-step English-metric mixed exact/inexact', () => {
+  // 5.00 lb × (453.59 g / 1 lb) × (1 kg / 1000 g) = 2.27 kg; sig figs = 3 (limited by 5.00)
+  const r = factorLabelChain('5.00', 3, 'lb', [
+    { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+    { num_value: 1,      num_unit: 'kg', den_value: 1000, den_unit: 'g', exact: true },
+  ]);
+  assert.equal(r.finalResult, '2.27');
+  assert.equal(r.finalUnit, 'kg');
+  assert.equal(r.limitingSigFigs, 3);
+  assert.equal(r.limitingSource, 'value');
+});
+
+test('factorLabelChain: limiting sig figs from a non-exact factor', () => {
+  // 100. yd × (0.91 m / 1 yd) where 0.91 has 2 sig figs
+  const r = factorLabelChain('100.', 3, 'yd', [
+    { num_value: 0.91, num_unit: 'm', den_value: 1, den_unit: 'yd', sig_figs: 2 },
+  ]);
+  assert.equal(r.finalResult, '91');  // limited by the 2-sig-fig factor
+  assert.equal(r.limitingSigFigs, 2);
+  assert.equal(r.limitingSource, 'step[0]');
+});
+
+test('factorLabelChain: density chain (kg → g → mL via density)', () => {
+  // 1.50 kg × (1000 g / 1 kg) × (1 mL / 13.546 g) = 110.74... → 111 mL (3 sig figs)
+  const r = factorLabelChain('1.50', 3, 'kg', [
+    { num_value: 1000, num_unit: 'g',  den_value: 1,      den_unit: 'kg', exact: true },
+    { num_value: 1,    num_unit: 'mL', den_value: 13.546, den_unit: 'g',  sig_figs: 5 },
+  ]);
+  assert.equal(r.finalResult, '111');
+  assert.equal(r.finalUnit, 'mL');
+  assert.equal(r.limitingSigFigs, 3);
+});
+
+test('factorLabelChain: throws on cancellation mismatch at step 0', () => {
+  assert.throws(
+    () => factorLabelChain('5.00', 3, 'lb', [
+      { num_value: 1, num_unit: 'kg', den_value: 1, den_unit: 'oz', exact: true },  // den should be lb
+    ]),
+    /cancellation mismatch at step 0/i,
+  );
+});
+
+test('factorLabelChain: throws on cancellation mismatch at step 1', () => {
+  assert.throws(
+    () => factorLabelChain('5.00', 3, 'lb', [
+      { num_value: 453.59, num_unit: 'g',  den_value: 1, den_unit: 'lb', sig_figs: 5 },
+      { num_value: 1,      num_unit: 'kg', den_value: 1, den_unit: 'mg', exact: true },  // should be g
+    ]),
+    /cancellation mismatch at step 1/i,
+  );
+});
+
+test('factorLabelChain: missing sig_figs on non-exact factor throws', () => {
+  assert.throws(
+    () => factorLabelChain('5.00', 3, 'lb', [
+      { num_value: 453.59, num_unit: 'g', den_value: 1, den_unit: 'lb' },  // neither exact nor sig_figs
+    ]),
+    /must declare sig_figs or set exact: true/i,
+  );
+});
+
+test('factorLabelChain: dosage equivalence (mg per kg)', () => {
+  // 70.0 kg × (5.00 mg / 1 kg) = 350. mg
+  const r = factorLabelChain('70.0', 3, 'kg', [
+    { num_value: 5.00, num_unit: 'mg', den_value: 1, den_unit: 'kg', sig_figs: 3 },
+  ]);
+  assert.equal(r.finalResult, '350');
+  assert.equal(r.finalUnit, 'mg');
+  assert.equal(r.limitingSigFigs, 3);
+});

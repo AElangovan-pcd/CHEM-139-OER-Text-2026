@@ -389,6 +389,57 @@ export function renderLatexForOperation(op, variant, answerSpec) {
   }
 }
 
+/**
+ * Apply a chain of conversion factors to a starting value.
+ * Validates that each step's denominator unit cancels with the previous numerator
+ * (or with valueUnit for step 0). Tracks sig-fig propagation across exact and
+ * inexact factors. Throws on cancellation mismatch or missing sig_figs.
+ */
+export function factorLabelChain(value, valueSigFigs, valueUnit, steps) {
+  // Validate cancellation chain and sig-fig declarations
+  let prevNumUnit = valueUnit;
+  for (let i = 0; i < steps.length; i++) {
+    const s = steps[i];
+    if (s.den_unit !== prevNumUnit) {
+      throw new Error(
+        'factorLabelChain: cancellation mismatch at step ' + i +
+        ': expected den_unit "' + prevNumUnit + '", got "' + s.den_unit + '"'
+      );
+    }
+    if (!s.exact && (s.sig_figs === undefined || s.sig_figs === null)) {
+      throw new Error(
+        'factorLabelChain: step ' + i + ' must declare sig_figs or set exact: true'
+      );
+    }
+    prevNumUnit = s.num_unit;
+  }
+
+  // Compute raw result
+  let result = parseFloat(value);
+  for (const s of steps) {
+    result = result * (s.num_value / s.den_value);
+  }
+
+  // Sig-fig propagation: input value + each non-exact factor's sig_figs
+  let limitingSigFigs = valueSigFigs;
+  let limitingSource = 'value';
+  for (let i = 0; i < steps.length; i++) {
+    const s = steps[i];
+    if (!s.exact && s.sig_figs !== undefined && s.sig_figs < limitingSigFigs) {
+      limitingSigFigs = s.sig_figs;
+      limitingSource = 'step[' + i + ']';
+    }
+  }
+
+  return {
+    rawResult: result.toString(),
+    finalResult: formatWithSigFigs(result, limitingSigFigs),
+    finalUnit: prevNumUnit,
+    limitingSigFigs,
+    limitingSource,
+  };
+}
+
 // ---- Browser bootstrap (runs only when DOM is available) ----
 
 const VARIANT_BUTTON_LABEL = 'Try a different version';
