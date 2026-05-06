@@ -19,3 +19,28 @@ problems:
       target_unit: mg
     explanation_template: |
       "µg" cancels, leaving "mg". {limitingSigFigs} sig figs from "{dose} µg" yield {finalResult} mg.
+
+  - id: "2.7.eng_metric_chain"
+    match_text: "Convert 5.00 lb to kg"
+    question: "Convert {mass} lb to kg."
+    variables:
+      mass: { range: [1.0, 20.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: lb
+      chain:
+        - num_value: 453.59
+          num_unit: g
+          den_value: 1
+          den_unit: lb
+          sig_figs: 5
+        - num_value: 1
+          num_unit: kg
+          den_value: 1000
+          den_unit: g
+          exact: true
+      target_unit: kg
+    explanation_template: |
+      "lb" cancels in step 1; "g" cancels in step 2. {limitingSigFigs} sig figs
+      from "{mass} lb" yield {finalResult} kg.
