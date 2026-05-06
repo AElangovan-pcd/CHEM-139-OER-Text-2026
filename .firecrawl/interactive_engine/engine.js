@@ -170,3 +170,25 @@ export function multiplyPreservingSigFigs(values) {
   const finalProduct = formatWithSigFigs(product, minSigs);
   return { rawProduct, finalProduct, limitingSigFigs: minSigs, limitingValue };
 }
+
+/**
+ * Evaluate y = slope*x + intercept. Format y to the intercept's decimal places —
+ * this matches the textbook convention for linear-extrapolation problems where
+ * inputs are treated as effectively exact and the answer's precision is anchored
+ * to the intercept's measured precision.
+ *
+ * @param {{slope: string, intercept: string, x: string}} args
+ * @returns {{y: string, latex: string}}
+ */
+export function evaluateLinearFunction({ slope, intercept, x }) {
+  const y = parseFloat(slope) * parseFloat(x) + parseFloat(intercept);
+  const decimalPlacesOf = (s) => {
+    const stripped = s.replace(/^[+-]/, '');
+    if (!stripped.includes('.')) return 0;
+    return stripped.split('.')[1].length;
+  };
+  const decimals = decimalPlacesOf(intercept);
+  const yFormatted = y.toFixed(decimals);
+  const latex = slope + ' \\times ' + x + ' + ' + intercept + ' = ' + yFormatted;
+  return { y: yFormatted, latex };
+}

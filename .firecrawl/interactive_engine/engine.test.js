@@ -153,3 +153,18 @@ test('multiplyPreservingSigFigs: three-factor product', () => {
   assert.equal(r.limitingValue, '2.0');
   assert.equal(r.finalProduct, '34');  // 33.75 → 34 with 2 sig figs
 });
+
+import { evaluateLinearFunction } from './engine.js';
+
+test('evaluateLinearFunction: textbook example', () => {
+  const r = evaluateLinearFunction({ slope: '0.025', intercept: '6.83', x: '50' });
+  // 0.025 × 50 + 6.83 = 1.25 + 6.83 = 8.08
+  assert.equal(r.y, '8.08');
+  assert.match(r.latex, /0\.025/);
+  assert.match(r.latex, /6\.83/);
+});
+
+test('evaluateLinearFunction: zero intercept', () => {
+  const r = evaluateLinearFunction({ slope: '2.0', intercept: '0', x: '5.0' });
+  assert.equal(r.y, '10');
+});
