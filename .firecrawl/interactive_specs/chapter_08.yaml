@@ -144,3 +144,48 @@ problems:
     explanation_template: |
       "g H₂O" cancels via molar mass; "mol H₂O" via subscript; "mol H" via Avogadro.
       {limitingSigFigs} sig figs from "{mass} g H₂O" yield \({finalResult}\) atoms.
+
+  - id: "8.4.mass_percent_compound_varies"
+    match_text: "Mass percent of N in N₂O"
+    question: "What is the mass percent of {compound_element} in {compound_formula}?"
+    variables:
+      compound:
+        generator: pick_one
+        options:
+          - {formula: "N₂O",      element: "N", partial: 28.02, total: 44.02}
+          - {formula: "NO",       element: "N", partial: 14.01, total: 30.01}
+          - {formula: "NO₂",      element: "N", partial: 14.01, total: 46.01}
+          - {formula: "NH₃",      element: "N", partial: 14.01, total: 17.03}
+          - {formula: "NH₄NO₃",   element: "N", partial: 28.02, total: 80.04}
+          - {formula: "Ca(NO₃)₂", element: "N", partial: 28.02, total: 164.10}
+    answer:
+      operation: mass_percent
+      partial_mass_param: compound_partial
+      total_mass_param: compound_total
+      element_label_param: compound_element
+      compound_label_param: compound_formula
+      decimal_places: 2
+    explanation_template: |
+      Mass of {compound_element} per mole of {compound_formula} is {compound_partial} g;
+      molar mass is {compound_total} g/mol.
+      {finalPercent}% {compound_element} by mass.
+
+  - id: "8.4.mass_percent_element_varies"
+    match_text: "Mass percent of O in CO₂"
+    question: "What is the mass percent of {element_symbol} in {element_formula}?"
+    variables:
+      element:
+        generator: pick_one
+        options:
+          - {symbol: "C", formula: "CO₂", partial: 12.01, total: 44.01}
+          - {symbol: "O", formula: "CO₂", partial: "32.00", total: 44.01}
+    answer:
+      operation: mass_percent
+      partial_mass_param: element_partial
+      total_mass_param: element_total
+      element_label_param: element_symbol
+      compound_label_param: element_formula
+      decimal_places: 2
+    explanation_template: |
+      {element_symbol} contributes {element_partial} g per mole of {element_formula}.
+      {finalPercent}% {element_symbol} by mass.
