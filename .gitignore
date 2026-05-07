@@ -43,7 +43,8 @@ CHEM_139_OER.imscc
 # Personal scratch notes (not part of the published OER)
 CanvasInstructions_AE.txt
 
-# Project conventions for LLM collaborators — backed up to
+# Project conventions for LLM collaborators — backed up to ~/Documents/CLAUDE_MD_Files/CHEM_139/
+CLAUDE.md
 
 # OS junk
 .DS_Store
@@ -53,6 +54,7 @@ desktop.ini
 # Editor / IDE
 .vscode/
 .idea/
+.claude/
 *.swp
 *~
 
@@ -68,3 +70,6 @@ acs-periodic-table-poster_download.pdf
 
 # Stray pre-rewrite docx left at .firecrawl root by an earlier scratch run
 .firecrawl/Chapter_*.before-*.docx
+
+# Backup SVGs created by .firecrawl/fix_svg_viewboxes.py before viewBox correction
+Images/Chapter_*/embedded/*.before-viewbox-fix.svg
