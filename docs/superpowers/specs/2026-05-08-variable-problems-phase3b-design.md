@@ -58,6 +58,24 @@ Phase 3b introduces **one new engine operation** (`mass_percent`) and **one new 
 
 **Deliberate divergence from select textbook values.** Where the textbook source uses 3-decimal-place atomic masses for light elements (e.g., H = 1.008, Cl = 35.45 was already 2-decimal), Phase 3b YAML adopts the 2-decimal value (H = 1.01, H₂ = 2.02, H₂O = 18.02 — the last already matches). This is editorial uniformity, not a math error. The variant problems still teach correct mass conservation and the displayed answers stay within textbook tolerance.
 
+### 3.1 Convention applies to textbook prose as well
+
+The convention is not only an authoring rule for variant-problem YAML — it applies to **all calculations throughout the textbook prose**, including worked examples, in-line examples, practice problems, and step-by-step solutions across Chapters 1–10.
+
+**Important scope clarification:**
+- **Calculations:** atomic masses used in any calculation (worked example, solution, or computed answer) follow the 2-decimal / 1-decimal convention.
+- **Tables:** the periodic table reference page (`Periodic_Table_Reference_Page.docx`) and any in-chapter atomic-mass reference tables **retain their full-precision values for lookup**. Tables are not edited.
+
+**Documentation in the textbook prose:** a one-sentence statement of the convention is added to the chapters where students first encounter molar-mass calculations and the precision question becomes pedagogically relevant. Three insertion points (per author guidance):
+
+| Chapter | Section (§) | Type |
+|---|---|---|
+| 1 | §1.12 "Significant Figures and Mathematical Operations" | Forward-pointer to §8.3 |
+| 8 | §8.3 "Significant Figures and Formula Mass" | Primary canonical statement |
+| 9 | §9.7 "Stoichiometry: Mole-to-Mole Calculations" | Reminder at first stoichiometry section |
+
+Candidate sentences are listed in §10.5 below. These docx edits are **applied by the textbook author in Word** per the project's docx-editing convention (CLAUDE.md: "Quote the existing passage to the user, propose the change in plain text, and let the user apply it in Word"). The Phase 3b PR does not include the docx edits — those land via the author's normal Word workflow and are picked up automatically by GitHub Pages on the next push to main.
+
 ## 4. Engine changes
 
 ### 4.1 New operation: `mass_percent`
@@ -387,6 +405,32 @@ The remaining 5 stoichiometry problems follow the same pattern:
 - 1 more mass-to-mass problem (Mg + O₂ → MgO) uses a 3-factor chain similar to the example above.
 
 Full YAML for all 8 problems will be authored during implementation per the writing-plans output.
+
+### 10.5 Candidate sentences for Chapters 1, 8, 9 (textbook prose insertions)
+
+Each sentence applies the convention from §3 / §3.1. Author edits each chapter's docx in Word; periodic-table and atomic-mass reference tables remain untouched.
+
+**Ch 8 §8.3 — Primary canonical statement (insert at end of §8.3 prose, before §8.4 heading):**
+
+> Throughout this textbook, atomic masses used in calculations are reported to **two decimal places** for elements with average atomic mass below 100 amu (e.g., O = 16.00, Ca = 40.08, Cu = 63.55) and to **one decimal place** for elements with average atomic mass above 100 amu (e.g., Pb = 207.2, U = 238.0). The full-precision values in the periodic table reference page are retained for lookup; the rounded values are what we use in worked examples and practice problems.
+
+**Ch 1 §1.12 — Forward-pointer (insert near the end of §1.12, after the existing sig-fig-arithmetic discussion):**
+
+> A related convention applied throughout the rest of this textbook: atomic masses used in calculations are rounded to two decimal places for elements with atomic mass below 100 amu, and to one decimal place for elements with atomic mass above 100 amu. The full-precision values in the periodic table reference page are retained for lookup. The convention and its rationale are discussed in detail in §8.3.
+
+**Ch 9 §9.7 — Reminder at first stoichiometry section (insert at the start of §9.7, before the first worked example):**
+
+> *Recall* (§8.3): atomic and molar masses used in our calculations are reported to two decimal places for elements below 100 amu and to one decimal place for elements above 100 amu. The periodic table reference page retains the full-precision values for lookup.
+
+**Word-application steps for the author (per chapter):**
+
+1. Open the chapter's `.docx` in Word.
+2. Navigate to the indicated section.
+3. Insert the sentence as a new paragraph (or as a NOTE callout if the surrounding section uses NOTEs — the author's call).
+4. Verify the symbols (`amu`, `²`, ³, etc.) render correctly. The actual chapter docx renders subscripts as Word formatted text; the sentences above use Unicode subscript-friendly notation.
+5. Save and close. The next `python .firecrawl/build_html.py` run picks up the change automatically; GitHub Pages auto-rebuilds on the next push to `main`.
+
+These three docx edits are **NOT part of the Phase 3b PR** (which contains only YAML, engine, and rebuilt HTML). They land separately as the author's editorial workflow allows.
 
 ## 11. Open follow-ups (Phase 3c+)
 
