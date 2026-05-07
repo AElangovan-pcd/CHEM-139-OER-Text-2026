@@ -233,13 +233,23 @@ export function mulberry32(seed) {
 }
 
 /**
- * Sample a single variable per its spec. Returns a numeric string formatted to declared precision.
+ * Sample a single variable per its spec. Returns a numeric string for scalar
+ * generators (range, random_decimal_with_features); returns an option struct
+ * (object) for pick_one. Callers handling structs (e.g., generateVariant) must
+ * unfold them into flat params.
  */
 export function sampleValue(spec, rng) {
   if (spec.generator === 'random_decimal_with_features') {
     const sigFigs = spec.sig_figs[Math.floor(rng() * spec.sig_figs.length)];
     const pattern = spec.patterns[Math.floor(rng() * spec.patterns.length)];
     return generateFeaturePattern(sigFigs, pattern, rng);
+  }
+  if (spec.generator === 'pick_one') {
+    if (!Array.isArray(spec.options) || spec.options.length === 0) {
+      throw new Error('pick_one requires non-empty options array');
+    }
+    const idx = Math.floor(rng() * spec.options.length);
+    return spec.options[idx];  // returns the option struct (object, not string)
   }
   if (spec.range) {
     const [low, high] = spec.range;

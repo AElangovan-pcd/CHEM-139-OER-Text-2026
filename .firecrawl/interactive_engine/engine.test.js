@@ -639,3 +639,45 @@ test('passesGuardrails: result_range works with mass_percent finalPercent', () =
   const rng = mulberry32(7);
   assert.throws(() => generateVariant(spec, rng), /guardrail/i);
 });
+
+test('sampleValue: pick_one returns option struct', () => {
+  const spec = {
+    generator: 'pick_one',
+    options: [
+      { formula: 'NH₃', element: 'N', partial: 14.01, total: 17.03 },
+      { formula: 'NO',  element: 'N', partial: 14.01, total: 30.01 },
+    ],
+  };
+  const rng = mulberry32(1);
+  const v = sampleValue(spec, rng);
+  assert.equal(typeof v, 'object');
+  assert.ok(v !== null);
+  assert.ok('formula' in v);
+  assert.ok('element' in v);
+  assert.ok(['NH₃', 'NO'].includes(v.formula));
+});
+
+test('sampleValue: pick_one with seeded rng is deterministic', () => {
+  const spec = {
+    generator: 'pick_one',
+    options: [
+      { x: 1 }, { x: 2 }, { x: 3 }, { x: 4 }, { x: 5 },
+    ],
+  };
+  const a = mulberry32(42);
+  const b = mulberry32(42);
+  for (let i = 0; i < 50; i++) {
+    assert.equal(sampleValue(spec, a).x, sampleValue(spec, b).x);
+  }
+});
+
+test('sampleValue: pick_one throws on empty options', () => {
+  assert.throws(
+    () => sampleValue({ generator: 'pick_one', options: [] }, mulberry32(1)),
+    /pick_one requires non-empty options/
+  );
+  assert.throws(
+    () => sampleValue({ generator: 'pick_one' }, mulberry32(1)),
+    /pick_one requires non-empty options/
+  );
+});
