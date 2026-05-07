@@ -24,7 +24,7 @@ from bs4 import BeautifulSoup
 SUPPORTED_OPERATIONS = {
     "subtract", "add", "multiply", "count_sig_figs",
     "to_sci_notation", "sci_notation_arithmetic", "linear_function",
-    "factor_label",
+    "factor_label", "mass_percent",
 }
 
 REQUIRED_PROBLEM_FIELDS = {"id", "match_text", "question", "answer", "explanation_template"}

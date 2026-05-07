@@ -546,3 +546,197 @@ test('passesGuardrails: result_range works with factor_label finalResult', () =>
   const rng = mulberry32(42);
   assert.throws(() => generateVariant(spec, rng), /guardrail/i);
 });
+
+import { computeMassPercent } from './engine.js';
+
+test('computeMassPercent: textbook example NH3 -> 82.27%', () => {
+  // 14.01 / 17.03 * 100 = 82.267... -> 2 decimals -> 82.27
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't', decimal_places: 2 },
+    { p: '14.01', t: '17.03' }
+  );
+  assert.equal(r.finalPercent, '82.27');
+  assert.equal(r.finalPercentLatex, '82.27');
+  assert.match(r.rawPercent, /^82\.26/);
+});
+
+test('computeMassPercent: heavy-element compound at 1 decimal', () => {
+  // % Pb in PbO: 207.2 / 223.2 * 100 = 92.83... -> 1 decimal -> 92.8
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't', decimal_places: 1 },
+    { p: '207.2', t: '223.2' }
+  );
+  assert.equal(r.finalPercent, '92.8');
+});
+
+test('computeMassPercent: defaults to 2 decimal places when omitted', () => {
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't' },
+    { p: '12.01', t: '44.01' }
+  );
+  assert.equal(r.finalPercent, '27.29');
+});
+
+test('computeAnswer: mass_percent dispatches via generateVariant', () => {
+  const spec = {
+    id: 'test.mp',
+    variables: {
+      p: { range: [14.01, 14.01], decimal_places: 2 },
+      t: { range: [17.03, 17.03], decimal_places: 2 },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'p',
+      total_mass_param: 't',
+      element_label_param: 'sym',
+      compound_label_param: 'cmp',
+      decimal_places: 2,
+    },
+  };
+  // sym/cmp aren't generated as variables here; computeMassPercent only reads
+  // partial_mass_param + total_mass_param. Label params are read by the LaTeX
+  // renderer, tested separately below.
+  const rng = mulberry32(1);
+  const v = generateVariant(spec, rng);
+  assert.equal(v.computed.finalPercent, '82.27');
+});
+
+test('renderLatexForOperation: mass_percent emits proper formula form', () => {
+  const variant = {
+    params: { p: '14.01', t: '17.03', sym: 'N', cmp: 'NH₃' },
+    computed: { finalPercent: '82.27', finalPercentLatex: '82.27' },
+  };
+  const answerSpec = {
+    operation: 'mass_percent',
+    partial_mass_param: 'p',
+    total_mass_param: 't',
+    element_label_param: 'sym',
+    compound_label_param: 'cmp',
+  };
+  const latex = renderLatexForOperation('mass_percent', variant, answerSpec);
+  assert.match(latex, /\\dfrac\{14\.01\\,\\text\{g N\}\}/);
+  assert.match(latex, /\{17\.03\\,\\text\{g NH₃\}\}/);
+  assert.match(latex, /\\times 100\\% = 82\.27\\%/);
+});
+
+test('passesGuardrails: result_range works with mass_percent finalPercent', () => {
+  const spec = {
+    id: 'test.mp_constrained',
+    variables: {
+      p: { range: [14.01, 14.01], decimal_places: 2 },
+      t: { range: [17.03, 17.03], decimal_places: 2 },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'p',
+      total_mass_param: 't',
+      element_label_param: 'sym',
+      compound_label_param: 'cmp',
+      decimal_places: 2,
+    },
+    constraints: { result_range: [0, 50] },  // 82.27% never satisfies
+  };
+  const rng = mulberry32(7);
+  assert.throws(() => generateVariant(spec, rng), /guardrail/i);
+});
+
+test('sampleValue: pick_one returns option struct', () => {
+  const spec = {
+    generator: 'pick_one',
+    options: [
+      { formula: 'NH₃', element: 'N', partial: 14.01, total: 17.03 },
+      { formula: 'NO',  element: 'N', partial: 14.01, total: 30.01 },
+    ],
+  };
+  const rng = mulberry32(1);
+  const v = sampleValue(spec, rng);
+  assert.equal(typeof v, 'object');
+  assert.ok(v !== null);
+  assert.ok('formula' in v);
+  assert.ok('element' in v);
+  assert.ok(['NH₃', 'NO'].includes(v.formula));
+});
+
+test('sampleValue: pick_one with seeded rng is deterministic', () => {
+  const spec = {
+    generator: 'pick_one',
+    options: [
+      { x: 1 }, { x: 2 }, { x: 3 }, { x: 4 }, { x: 5 },
+    ],
+  };
+  const a = mulberry32(42);
+  const b = mulberry32(42);
+  for (let i = 0; i < 50; i++) {
+    assert.equal(sampleValue(spec, a).x, sampleValue(spec, b).x);
+  }
+});
+
+test('sampleValue: pick_one throws on empty options', () => {
+  assert.throws(
+    () => sampleValue({ generator: 'pick_one', options: [] }, mulberry32(1)),
+    /pick_one requires non-empty options/
+  );
+  assert.throws(
+    () => sampleValue({ generator: 'pick_one' }, mulberry32(1)),
+    /pick_one requires non-empty options/
+  );
+});
+
+test('generateVariant: pick_one unfolds struct into prefixed flat params', () => {
+  const spec = {
+    id: 'test.unfold',
+    variables: {
+      compound: {
+        generator: 'pick_one',
+        options: [
+          { formula: 'NH₃', element: 'N', partial: 14.01, total: 17.03 },
+        ],
+      },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'compound_partial',
+      total_mass_param: 'compound_total',
+      element_label_param: 'compound_element',
+      compound_label_param: 'compound_formula',
+      decimal_places: 2,
+    },
+  };
+  const rng = mulberry32(1);
+  const v = generateVariant(spec, rng);
+  assert.equal(v.params.compound_formula, 'NH₃');
+  assert.equal(v.params.compound_element, 'N');
+  assert.equal(v.params.compound_partial, '14.01');
+  assert.equal(v.params.compound_total, '17.03');
+  assert.equal(v.computed.finalPercent, '82.27');
+});
+
+test('generateVariant: mass_percent + pick_one end-to-end (element varies)', () => {
+  const spec = {
+    id: 'test.element_varies',
+    variables: {
+      element: {
+        generator: 'pick_one',
+        options: [
+          { symbol: 'C', formula: 'CO₂', partial: 12.01, total: 44.01 },
+          { symbol: 'O', formula: 'CO₂', partial: 32.00, total: 44.01 },
+        ],
+      },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'element_partial',
+      total_mass_param: 'element_total',
+      element_label_param: 'element_symbol',
+      compound_label_param: 'element_formula',
+      decimal_places: 2,
+    },
+  };
+  // Run twice with different seeds to hit both options
+  const seen = new Set();
+  for (let s = 0; s < 20; s++) {
+    const v = generateVariant(spec, mulberry32(s));
+    seen.add(v.params.element_symbol);
+  }
+  assert.deepEqual([...seen].sort(), ['C', 'O']);
+});

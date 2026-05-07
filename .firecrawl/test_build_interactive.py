@@ -76,6 +76,10 @@ problems:
         with self.assertRaises(ValidationError):
             load_spec(path)
 
+    def test_mass_percent_in_supported_operations(self):
+        from build_interactive import SUPPORTED_OPERATIONS
+        self.assertIn("mass_percent", SUPPORTED_OPERATIONS)
+
 
 from build_interactive import attach_variant_attrs
 
