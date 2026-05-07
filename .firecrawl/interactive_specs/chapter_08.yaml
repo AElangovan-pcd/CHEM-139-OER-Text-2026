@@ -63,3 +63,30 @@ problems:
     explanation_template: |
       "mol" cancels via Avogadro's number (6.022 × 10²³ molecules per mole).
       {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} molecules.
+
+  - id: "8.10.atoms_to_mass"
+    match_text: "Mass of 3.011"
+    question: "What is the mass of {n_atoms} atoms of Cu? (M = 63.55 g/mol)"
+    variables:
+      n_atoms: { range: [1.0e22, 9.99e23], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: n_atoms
+      input_unit: atoms
+      chain:
+        # Avogadro's number (4 sig figs)
+        - num_value: 1
+          num_unit: mol
+          den_value: 6.022e23
+          den_unit: atoms
+          sig_figs: 4
+        # molar mass of Cu: 63.55 g/mol (4 sig figs)
+        - num_value: 63.55
+          num_unit: g
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: g
+    explanation_template: |
+      "atoms" cancels via Avogadro; "mol" cancels via Cu molar mass.
+      {limitingSigFigs} sig figs from "{n_atoms} atoms" yield {finalResult} g.
