@@ -546,3 +546,33 @@ test('passesGuardrails: result_range works with factor_label finalResult', () =>
   const rng = mulberry32(42);
   assert.throws(() => generateVariant(spec, rng), /guardrail/i);
 });
+
+import { computeMassPercent } from './engine.js';
+
+test('computeMassPercent: textbook example NH3 -> 82.27%', () => {
+  // 14.01 / 17.03 * 100 = 82.267... -> 2 decimals -> 82.27
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't', decimal_places: 2 },
+    { p: '14.01', t: '17.03' }
+  );
+  assert.equal(r.finalPercent, '82.27');
+  assert.equal(r.finalPercentLatex, '82.27');
+  assert.match(r.rawPercent, /^82\.26/);
+});
+
+test('computeMassPercent: heavy-element compound at 1 decimal', () => {
+  // % Pb in PbO: 207.2 / 223.2 * 100 = 92.83... -> 1 decimal -> 92.8
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't', decimal_places: 1 },
+    { p: '207.2', t: '223.2' }
+  );
+  assert.equal(r.finalPercent, '92.8');
+});
+
+test('computeMassPercent: defaults to 2 decimal places when omitted', () => {
+  const r = computeMassPercent(
+    { partial_mass_param: 'p', total_mass_param: 't' },
+    { p: '12.01', t: '44.01' }
+  );
+  assert.equal(r.finalPercent, '27.29');
+});

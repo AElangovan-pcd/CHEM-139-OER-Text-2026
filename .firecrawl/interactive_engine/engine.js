@@ -358,6 +358,25 @@ function computeSciNotationArith(answerSpec, params) {
   return decimalToSciNotation(product, sigFigs);
 }
 
+/**
+ * Mass-percent operation: (partial / total) * 100, rounded to N decimal places.
+ * Sister to to_sci_notation in that the precision idiom (decimals, not sig figs)
+ * is operation-specific. Author chooses decimal_places per the textbook
+ * convention (2 for light-element compounds, 1 for any-heavy compound).
+ */
+export function computeMassPercent(answerSpec, params) {
+  const partial = parseFloat(params[answerSpec.partial_mass_param]);
+  const total = parseFloat(params[answerSpec.total_mass_param]);
+  const decimals = answerSpec.decimal_places ?? 2;
+  const rawPercent = (partial / total) * 100;
+  const finalPercent = rawPercent.toFixed(decimals);
+  return {
+    rawPercent: rawPercent.toString(),
+    finalPercent,
+    finalPercentLatex: finalPercent,
+  };
+}
+
 function passesGuardrails(constraints, params, computed) {
   // result_must_be_positive
   if (constraints.result_must_be_positive) {
