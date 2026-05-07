@@ -445,6 +445,87 @@ test('renderLatexForOperation: factor_label dispatches correctly', () => {
   assert.match(latex, /=\s*2\.27\\,\\text\{kg\}/);
 });
 
+import { formatNumberForLatex } from './engine.js';
+
+test('formatNumberForLatex: positive sci-notation', () => {
+  assert.equal(formatNumberForLatex('6.022e+23'), '6.022 \\times 10^{23}');
+  assert.equal(formatNumberForLatex('1.0e+22'), '1.0 \\times 10^{22}');
+});
+
+test('formatNumberForLatex: negative exponent', () => {
+  assert.equal(formatNumberForLatex('3.5e-4'), '3.5 \\times 10^{-4}');
+});
+
+test('formatNumberForLatex: plain decimals pass through', () => {
+  assert.equal(formatNumberForLatex('5.00'), '5.00');
+  assert.equal(formatNumberForLatex('0.025'), '0.025');
+  assert.equal(formatNumberForLatex('350'), '350');
+});
+
+test('formatNumberForLatex: numeric input is coerced to string', () => {
+  assert.equal(formatNumberForLatex(6.022e23), '6.022 \\times 10^{23}');
+  assert.equal(formatNumberForLatex(42), '42');
+});
+
+test('factorLabelChain: large-magnitude result routes through sci-notation', () => {
+  // 0.100 mol × (6.022e+23 molecules / 1 mol) = 6.022e+22 molecules
+  // Engineering threshold (>= 1e6) routes through decimalToSciNotation —
+  // bypasses formatWithSigFigs's integer-branch IEEE-754 noise.
+  const r = factorLabelChain('0.100', 3, 'mol', [
+    { num_value: 6.022e+23, num_unit: 'molecules', den_value: 1, den_unit: 'mol', sig_figs: 4 },
+  ]);
+  assert.equal(r.finalResult, '6.02e+22');
+  assert.equal(r.finalResultLatex, '6.02 \\times 10^{22}');
+  assert.equal(r.finalUnit, 'molecules');
+});
+
+test('factorLabelChain: decimal-magnitude result keeps decimal form', () => {
+  // 70.0 kg × (5.00 mg / 1 kg) = 350 mg — well below 1e6, decimal branch.
+  const r = factorLabelChain('70.0', 3, 'kg', [
+    { num_value: 5.00, num_unit: 'mg', den_value: 1, den_unit: 'kg', sig_figs: 3 },
+  ]);
+  assert.equal(r.finalResult, '350');
+  assert.equal(r.finalResultLatex, '350');
+});
+
+test('renderFactorLabelLatex: emits \\times 10^{N} form for sci-notation factors', () => {
+  // Avogadro factor: den_value 6.022e+23 must render as "6.022 \times 10^{23}",
+  // not as JS-default "6.022e+23" plain text.
+  const latex = renderFactorLabelLatex(
+    '0.100', 'mol',
+    [{ num_value: 6.022e+23, num_unit: 'molecules', den_value: 1, den_unit: 'mol', sig_figs: 4 }],
+    '6.02e+22', 'molecules', '6.02 \\times 10^{22}',
+  );
+  assert.match(latex, /6\.022 \\times 10\^\{23\}/);  // factor's numerator
+  assert.match(latex, /6\.02 \\times 10\^\{22\}/);   // final result
+  assert.doesNotMatch(latex, /e\+/);                 // no JS sci-notation leakage
+});
+
+test('substituteTemplate: tokens inside \\(\\) get latex-formatted', () => {
+  const out = substituteTemplate(
+    'mass = \\({finalResult}\\) g, count = {limitingSigFigs}',
+    { finalResult: '6.02e+22', limitingSigFigs: 3 }
+  );
+  assert.equal(out, 'mass = \\(6.02 \\times 10^{22}\\) g, count = 3');
+});
+
+test('substituteTemplate: plain prose substitution stays raw', () => {
+  // No \(...\) wrap → tokens substitute as raw strings (existing behavior).
+  const out = substituteTemplate(
+    'mass = {finalResult} g',
+    { finalResult: '6.02e+22' }
+  );
+  assert.equal(out, 'mass = 6.02e+22 g');
+});
+
+test('substituteTemplate: mixed mathjax and plain regions', () => {
+  const out = substituteTemplate(
+    'For \\({n_atoms}\\) atoms, sig figs = {sigFigs}',
+    { n_atoms: '5.70e+23', sigFigs: 3 }
+  );
+  assert.equal(out, 'For \\(5.70 \\times 10^{23}\\) atoms, sig figs = 3');
+});
+
 test('passesGuardrails: result_range works with factor_label finalResult', () => {
   const spec = {
     id: 'test.factor_label_constrained',

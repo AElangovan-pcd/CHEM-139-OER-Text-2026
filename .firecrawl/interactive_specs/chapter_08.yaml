@@ -62,11 +62,11 @@ problems:
       target_unit: molecules
     explanation_template: |
       "mol" cancels via Avogadro's number (6.022 × 10²³ molecules per mole).
-      {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} molecules.
+      {limitingSigFigs} sig figs from "{moles} mol" yield \({finalResult}\) molecules.
 
   - id: "8.10.atoms_to_mass"
     match_text: "Mass of 3.011"
-    question: "What is the mass of {n_atoms} atoms of Cu? (M = 63.55 g/mol)"
+    question: "What is the mass of \\({n_atoms}\\) atoms of Cu? (M = 63.55 g/mol)"
     variables:
       n_atoms: { range: [1.0e+22, 9.99e+23], sig_figs: 3 }
     answer:
@@ -89,7 +89,7 @@ problems:
       target_unit: g
     explanation_template: |
       "atoms" cancels via Avogadro; "mol" cancels via Cu molar mass.
-      {limitingSigFigs} sig figs from "{n_atoms} atoms" yield {finalResult} g.
+      {limitingSigFigs} sig figs from "\({n_atoms}\) atoms" yield {finalResult} g.
 
   - id: "8.9.mole_ratio_subscript"
     match_text: "How many moles of H atoms in 0.50 mol C"
@@ -143,4 +143,4 @@ problems:
       target_unit: atoms
     explanation_template: |
       "g H₂O" cancels via molar mass; "mol H₂O" via subscript; "mol H" via Avogadro.
-      {limitingSigFigs} sig figs from "{mass} g H₂O" yield {finalResult} atoms.
+      {limitingSigFigs} sig figs from "{mass} g H₂O" yield \({finalResult}\) atoms.
