@@ -576,3 +576,45 @@ test('computeMassPercent: defaults to 2 decimal places when omitted', () => {
   );
   assert.equal(r.finalPercent, '27.29');
 });
+
+test('computeAnswer: mass_percent dispatches via generateVariant', () => {
+  const spec = {
+    id: 'test.mp',
+    variables: {
+      p: { range: [14.01, 14.01], decimal_places: 2 },
+      t: { range: [17.03, 17.03], decimal_places: 2 },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'p',
+      total_mass_param: 't',
+      element_label_param: 'sym',
+      compound_label_param: 'cmp',
+      decimal_places: 2,
+    },
+  };
+  // sym/cmp aren't generated as variables here; computeMassPercent only reads
+  // partial_mass_param + total_mass_param. Label params are read by the LaTeX
+  // renderer, tested separately below.
+  const rng = mulberry32(1);
+  const v = generateVariant(spec, rng);
+  assert.equal(v.computed.finalPercent, '82.27');
+});
+
+test('renderLatexForOperation: mass_percent emits proper formula form', () => {
+  const variant = {
+    params: { p: '14.01', t: '17.03', sym: 'N', cmp: 'NH₃' },
+    computed: { finalPercent: '82.27', finalPercentLatex: '82.27' },
+  };
+  const answerSpec = {
+    operation: 'mass_percent',
+    partial_mass_param: 'p',
+    total_mass_param: 't',
+    element_label_param: 'sym',
+    compound_label_param: 'cmp',
+  };
+  const latex = renderLatexForOperation('mass_percent', variant, answerSpec);
+  assert.match(latex, /\\dfrac\{14\.01\\,\\text\{g N\}\}/);
+  assert.match(latex, /\{17\.03\\,\\text\{g NH₃\}\}/);
+  assert.match(latex, /\\times 100\\% = 82\.27\\%/);
+});

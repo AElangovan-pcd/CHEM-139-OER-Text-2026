@@ -341,6 +341,8 @@ function computeAnswer(answerSpec, params) {
       const valueSigFigs = countSigFigs(value).count;
       return factorLabelChain(value, valueSigFigs, answerSpec.input_unit, answerSpec.chain);
     }
+    case 'mass_percent':
+      return computeMassPercent(answerSpec, params);
     default:
       throw new Error('Unknown operation: ' + op);
   }
@@ -452,6 +454,15 @@ export function renderLatexForOperation(op, variant, answerSpec) {
         c.finalUnit,
         c.finalResultLatex,
       );
+    case 'mass_percent': {
+      const partial = p[answerSpec.partial_mass_param];
+      const total = p[answerSpec.total_mass_param];
+      const elementLabel = p[answerSpec.element_label_param];
+      const compoundLabel = p[answerSpec.compound_label_param];
+      return '\\dfrac{' + partial + '\\,\\text{g ' + elementLabel + '}}'
+           + '{' + total + '\\,\\text{g ' + compoundLabel + '}}'
+           + ' \\times 100\\% = ' + c.finalPercent + '\\%';
+    }
     default:
       throw new Error('renderLatexForOperation: unknown op ' + op);
   }
