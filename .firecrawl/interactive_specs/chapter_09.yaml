@@ -1,0 +1,163 @@
+# Variable-problem specs for Chapter 9 (Chemical Calculations and Equations).
+# Schema reference: docs/superpowers/specs/2026-05-08-variable-problems-phase3b-design.md
+problems:
+  # --- §9.7 Mole-to-Mole Stoichiometry (2 problems) ---
+  - id: "9.7.mole_to_mole_water"
+    match_text: "how many moles of H₂O from 5.0 mol H₂"
+    question: "For 2 H₂ + O₂ → 2 H₂O, how many moles of H₂O are produced from {moles_h2} mol H₂ (excess O₂)?"
+    variables:
+      moles_h2: { range: [0.5, 10.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles_h2
+      input_unit: mol H₂
+      chain:
+        # Mole ratio H₂ : H₂O is 2 : 2 = 1 : 1, exact from balanced equation.
+        - num_value: 2
+          num_unit: mol H₂O
+          den_value: 2
+          den_unit: mol H₂
+          exact: true
+      target_unit: mol H₂O
+    explanation_template: |
+      Mole ratio from the balanced equation (H₂ : H₂O) is 2 : 2, or 1 : 1.
+      {limitingSigFigs} sig figs from "{moles_h2} mol H₂" yield {finalResult} mol H₂O.
+
+  - id: "9.7.mole_to_mole_ammonia"
+    match_text: "how many moles of NH₃ from 0.500 mol N₂"
+    question: "For N₂ + 3 H₂ → 2 NH₃, how many moles of NH₃ are produced from {moles_n2} mol N₂ (excess H₂)?"
+    variables:
+      moles_n2: { range: [0.05, 5.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles_n2
+      input_unit: mol N₂
+      chain:
+        # Mole ratio N₂ : NH₃ is 1 : 2, exact from balanced equation.
+        - num_value: 2
+          num_unit: mol NH₃
+          den_value: 1
+          den_unit: mol N₂
+          exact: true
+      target_unit: mol NH₃
+    explanation_template: |
+      Mole ratio from the balanced equation (N₂ : NH₃) is 1 : 2.
+      {limitingSigFigs} sig figs from "{moles_n2} mol N₂" yield {finalResult} mol NH₃.
+
+  # --- §9.8 Mole-to-Mass Stoichiometry (2 problems) ---
+  - id: "9.8.mole_to_mass_caco3"
+    match_text: "mass of CO₂ produced from 2.00 mol CaCO₃"
+    question: "For CaCO₃ → CaO + CO₂, what mass of CO₂ is produced from {moles_caco3} mol CaCO₃? (M(CO₂) = 44.01.)"
+    variables:
+      moles_caco3: { range: [0.5, 10.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles_caco3
+      input_unit: mol CaCO₃
+      chain:
+        # Mole ratio CaCO₃ : CO₂ is 1 : 1, exact.
+        - num_value: 1
+          num_unit: mol CO₂
+          den_value: 1
+          den_unit: mol CaCO₃
+          exact: true
+        # Molar mass of CO₂: 44.01 g/mol (4 sig figs, all light elements).
+        - num_value: 44.01
+          num_unit: g CO₂
+          den_value: 1
+          den_unit: mol CO₂
+          sig_figs: 4
+      target_unit: g CO₂
+    explanation_template: |
+      Mole ratio (CaCO₃ : CO₂) is 1 : 1; multiply by molar mass of CO₂.
+      {limitingSigFigs} sig figs from "{moles_caco3} mol CaCO₃" yield {finalResult} g CO₂.
+
+  - id: "9.8.mole_to_mass_propane"
+    match_text: "Mass of CO₂ from 1.00 mol of C₃H₈"
+    question: "For C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O, what mass of CO₂ is produced from {moles_c3h8} mol C₃H₈? (M(CO₂) = 44.01.)"
+    variables:
+      moles_c3h8: { range: [0.1, 5.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles_c3h8
+      input_unit: mol C₃H₈
+      chain:
+        # Mole ratio C₃H₈ : CO₂ is 1 : 3, exact.
+        - num_value: 3
+          num_unit: mol CO₂
+          den_value: 1
+          den_unit: mol C₃H₈
+          exact: true
+        - num_value: 44.01
+          num_unit: g CO₂
+          den_value: 1
+          den_unit: mol CO₂
+          sig_figs: 4
+      target_unit: g CO₂
+    explanation_template: |
+      Mole ratio (C₃H₈ : CO₂) is 1 : 3 from the balanced equation; multiply by molar mass of CO₂.
+      {limitingSigFigs} sig figs from "{moles_c3h8} mol C₃H₈" yield {finalResult} g CO₂.
+
+  # --- §9.9 Mass-to-Mass Stoichiometry (2 problems) ---
+  - id: "9.9.mass_to_mass_water"
+    match_text: "mass of water from 8.00 g H₂"
+    question: "For 2 H₂ + O₂ → 2 H₂O, what mass of water is produced from {mass_h2} g H₂? (M(H₂) = 2.02, M(H₂O) = 18.02.)"
+    variables:
+      mass_h2: { range: [1.0, 30.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass_h2
+      input_unit: g H₂
+      chain:
+        # Convert g H₂ to mol H₂ (M(H₂) = 2.02 per the textbook precision convention).
+        - num_value: 1
+          num_unit: mol H₂
+          den_value: 2.02
+          den_unit: g H₂
+          sig_figs: 3
+        # Mole ratio H₂ : H₂O is 2 : 2 = 1 : 1, exact.
+        - num_value: 2
+          num_unit: mol H₂O
+          den_value: 2
+          den_unit: mol H₂
+          exact: true
+        # Molar mass of H₂O.
+        - num_value: 18.02
+          num_unit: g H₂O
+          den_value: 1
+          den_unit: mol H₂O
+          sig_figs: 4
+      target_unit: g H₂O
+    explanation_template: |
+      Three factors: molar mass of H₂, balanced-equation mole ratio (2 : 2 = 1 : 1), molar mass of H₂O.
+      {limitingSigFigs} sig figs from "{mass_h2} g H₂" yield {finalResult} g H₂O.
+
+  - id: "9.9.mass_to_mass_mgo"
+    match_text: "mass of MgO from 12.0 g Mg"
+    question: "For 2 Mg + O₂ → 2 MgO, what mass of MgO is produced from {mass_mg} g Mg? (M(Mg) = 24.31, M(MgO) = 40.30.)"
+    variables:
+      mass_mg: { range: [1.0, 50.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass_mg
+      input_unit: g Mg
+      chain:
+        - num_value: 1
+          num_unit: mol Mg
+          den_value: 24.31
+          den_unit: g Mg
+          sig_figs: 4
+        - num_value: 2
+          num_unit: mol MgO
+          den_value: 2
+          den_unit: mol Mg
+          exact: true
+        - num_value: 40.30
+          num_unit: g MgO
+          den_value: 1
+          den_unit: mol MgO
+          sig_figs: 4
+      target_unit: g MgO
+    explanation_template: |
+      Three factors: molar mass of Mg, balanced-equation mole ratio (2 : 2 = 1 : 1), molar mass of MgO.
+      {limitingSigFigs} sig figs from "{mass_mg} g Mg" yield {finalResult} g MgO.
