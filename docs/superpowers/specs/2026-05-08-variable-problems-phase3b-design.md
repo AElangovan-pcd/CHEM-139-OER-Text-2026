@@ -326,7 +326,7 @@ All six use the existing `factor_label` operation with balanced-equation coeffic
         - {formula: "NO",       element: "N", partial: 14.01, total: 30.01}
         - {formula: "NO₂",      element: "N", partial: 14.01, total: 46.01}
         - {formula: "NH₃",      element: "N", partial: 14.01, total: 17.03}
-        - {formula: "NH₄NO₃",   element: "N", partial: 28.02, total: 80.04}
+        - {formula: "NH₄NO₃",   element: "N", partial: 28.02, total: 80.05}
         - {formula: "Ca(NO₃)₂", element: "N", partial: 28.02, total: 164.10}
   answer:
     operation: mass_percent

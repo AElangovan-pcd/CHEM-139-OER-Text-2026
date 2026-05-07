@@ -152,7 +152,7 @@ problems:
           den_value: 2
           den_unit: mol Mg
           exact: true
-        - num_value: 40.30
+        - num_value: "40.30"
           num_unit: g MgO
           den_value: 1
           den_unit: mol MgO
