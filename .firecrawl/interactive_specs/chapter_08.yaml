@@ -1,3 +1,23 @@
 # Variable-problem specs for Chapter 8 (Mole Concept and Chemical Formulas).
 # Schema reference: docs/superpowers/specs/2026-05-07-variable-problems-phase3a-design.md
-problems: []
+problems:
+  - id: "8.10.mass_to_mole"
+    match_text: "How many moles in 25.0 g of NaCl"
+    question: "How many moles are in {mass} g of NaCl? (M = 58.44 g/mol)"
+    variables:
+      mass: { range: [5.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g
+      chain:
+        # molar mass of NaCl: 58.44 g/mol per textbook (4 sig figs)
+        - num_value: 1
+          num_unit: mol
+          den_value: 58.44
+          den_unit: g
+          sig_figs: 4
+      target_unit: mol
+    explanation_template: |
+      "g" cancels via the 1 mol / 58.44 g molar-mass factor.
+      {limitingSigFigs} sig figs from "{mass} g" yield {finalResult} mol.
