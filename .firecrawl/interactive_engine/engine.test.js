@@ -618,3 +618,24 @@ test('renderLatexForOperation: mass_percent emits proper formula form', () => {
   assert.match(latex, /\{17\.03\\,\\text\{g NH₃\}\}/);
   assert.match(latex, /\\times 100\\% = 82\.27\\%/);
 });
+
+test('passesGuardrails: result_range works with mass_percent finalPercent', () => {
+  const spec = {
+    id: 'test.mp_constrained',
+    variables: {
+      p: { range: [14.01, 14.01], decimal_places: 2 },
+      t: { range: [17.03, 17.03], decimal_places: 2 },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'p',
+      total_mass_param: 't',
+      element_label_param: 'sym',
+      compound_label_param: 'cmp',
+      decimal_places: 2,
+    },
+    constraints: { result_range: [0, 50] },  // 82.27% never satisfies
+  };
+  const rng = mulberry32(7);
+  assert.throws(() => generateVariant(spec, rng), /guardrail/i);
+});

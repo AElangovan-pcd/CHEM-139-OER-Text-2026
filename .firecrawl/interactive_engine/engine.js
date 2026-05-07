@@ -382,13 +382,19 @@ export function computeMassPercent(answerSpec, params) {
 function passesGuardrails(constraints, params, computed) {
   // result_must_be_positive
   if (constraints.result_must_be_positive) {
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
+    const final = parseFloat(
+      computed.finalSum ?? computed.finalProduct ?? computed.y
+      ?? computed.finalResult ?? computed.finalPercent ?? '0'
+    );
     if (final <= 0) return false;
   }
   // result_range
   if (constraints.result_range) {
     const [low, high] = constraints.result_range;
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
+    const final = parseFloat(
+      computed.finalSum ?? computed.finalProduct ?? computed.y
+      ?? computed.finalResult ?? computed.finalPercent ?? '0'
+    );
     if (final < low || final > high) return false;
   }
   // avoid_round
