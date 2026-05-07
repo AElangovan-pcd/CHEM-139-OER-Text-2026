@@ -111,3 +111,36 @@ problems:
     explanation_template: |
       "mol C₆H₁₂O₆" cancels via the 12 mol H / 1 mol formula-unit subscript factor (exact).
       {limitingSigFigs} sig figs from "{moles} mol C₆H₁₂O₆" yield {finalResult} mol H.
+
+  - id: "8.10.three_step_chain"
+    match_text: "How many H atoms in 18.0 g H"
+    question: "How many H atoms are in {mass} g of H₂O? (M = 18.02 g/mol)"
+    variables:
+      mass: { range: [1.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g H₂O
+      chain:
+        # molar mass of H₂O: 18.02 g/mol (4 sig figs)
+        - num_value: 1
+          num_unit: mol H₂O
+          den_value: 18.02
+          den_unit: g H₂O
+          sig_figs: 4
+        # subscript factor: 2 H atoms per H₂O molecule (exact)
+        - num_value: 2
+          num_unit: mol H
+          den_value: 1
+          den_unit: mol H₂O
+          exact: true
+        # Avogadro's number (4 sig figs)
+        - num_value: 6.022e23
+          num_unit: atoms
+          den_value: 1
+          den_unit: mol H
+          sig_figs: 4
+      target_unit: atoms
+    explanation_template: |
+      "g H₂O" cancels via molar mass; "mol H₂O" via subscript; "mol H" via Avogadro.
+      {limitingSigFigs} sig figs from "{mass} g H₂O" yield {finalResult} atoms.
