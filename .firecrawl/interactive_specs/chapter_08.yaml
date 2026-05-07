@@ -21,3 +21,24 @@ problems:
     explanation_template: |
       "g" cancels via the 1 mol / 58.44 g molar-mass factor.
       {limitingSigFigs} sig figs from "{mass} g" yield {finalResult} mol.
+
+  - id: "8.10.mole_to_mass"
+    match_text: "Mass, in grams, of 0.250 mol H"
+    question: "What is the mass, in grams, of {moles} mol H₂O? (M = 18.02 g/mol)"
+    variables:
+      moles: { range: [0.05, 5.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol
+      chain:
+        # molar mass of H₂O: 18.02 g/mol per textbook (4 sig figs)
+        - num_value: 18.02
+          num_unit: g
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: g
+    explanation_template: |
+      "mol" cancels via the 18.02 g / 1 mol molar-mass factor.
+      {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} g.
