@@ -42,3 +42,24 @@ problems:
     explanation_template: |
       "mol" cancels via the 18.02 g / 1 mol molar-mass factor.
       {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} g.
+
+  - id: "8.10.mole_to_molecules"
+    match_text: "Number of molecules in 0.100 mol CO"
+    question: "How many molecules are in {moles} mol CO₂?"
+    variables:
+      moles: { range: [0.01, 1.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol
+      chain:
+        # Avogadro's number: 6.022 × 10²³ molecules / 1 mol (4 sig figs)
+        - num_value: 6.022e23
+          num_unit: molecules
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: molecules
+    explanation_template: |
+      "mol" cancels via Avogadro's number (6.022 × 10²³ molecules per mole).
+      {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} molecules.
