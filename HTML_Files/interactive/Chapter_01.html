@@ -161,8 +161,23 @@ details.solution > p:empty { display: none; }
 p.math-chain {
   text-align: left;
   margin-block: 0.4em;
+  max-width: 100%;
   overflow-x: auto;
 }
+
+/* MathJax v3 display containers default to intrinsic width, which pushes
+   the parent <td> wider than the page when a chain runs long. Constrain
+   to container width and let the equation scroll horizontally inside. */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Worked-example boxes are rendered as single-cell tables. Without this,
+   a long math chain inside the cell pushes the table wider than the
+   white page background. */
+table { max-width: 100%; }
 
 /* In case any <s> tags survive in solutions where MathJax was not applied
    (e.g. multi-step prose mixing words and math), give the strikethrough a
