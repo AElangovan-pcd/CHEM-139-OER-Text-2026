@@ -66,7 +66,7 @@ STOP_HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
 
 CSS = r"""
 :root {
-  --max-w: 800px;
+  --max-w: 1100px;
   --accent: #0b5cad;
   --accent-soft: #e8f0fb;
   --rule: #d8d8d8;
