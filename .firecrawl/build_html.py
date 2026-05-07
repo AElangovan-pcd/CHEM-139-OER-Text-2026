@@ -218,8 +218,23 @@ details.solution > p:empty { display: none; }
 p.math-chain {
   text-align: left;
   margin-block: 0.4em;
+  max-width: 100%;
   overflow-x: auto;
 }
+
+/* MathJax v3 display containers default to intrinsic width, which pushes
+   the parent <td> wider than the page when a chain runs long. Constrain
+   to container width and let the equation scroll horizontally inside. */
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Worked-example boxes are rendered as single-cell tables. Without this,
+   a long math chain inside the cell pushes the table wider than the
+   white page background. */
+table { max-width: 100%; }
 
 /* In case any <s> tags survive in solutions where MathJax was not applied
    (e.g. multi-step prose mixing words and math), give the strikethrough a
@@ -1056,7 +1071,18 @@ def _math_text_to_latex(s):
                 and not re.search(r"^\([^()]*?/[^()]*?\)\.?$", cand)):
             trailing = cand
             s = s[:m_trail.start()]
-    # 1. Fractions: (X / Y) -> \dfrac{X}{Y}. Iterate to handle nested chains.
+    # 1a. Protect compound-unit slashes (e.g. "g/mol", "mol/L", "J/(mol·K)").
+    #     The fraction regex below splits on the FIRST slash inside parens, so
+    #     "(180.16 g/mol) / (30.026 g/mol)" would otherwise turn the inner unit
+    #     slash into a fraction. Replace adjacent letter/letter slashes with a
+    #     sentinel; restore in 1c. Letter class includes \x01/\x02 strike
+    #     markers so a struck "g/mol" run survives intact.
+    s = re.sub(
+        r"([A-Za-zµ°\x01\x02]+)/([A-Za-zµ°\x01\x02]+)",
+        lambda m: m.group(1) + "\x03" + m.group(2),
+        s,
+    )
+    # 1b. Fractions: (X / Y) -> \dfrac{X}{Y}. Iterate to handle nested chains.
     for _ in range(4):
         new_s = re.sub(
             r"\(\s*([^()]+?)\s*/\s*([^()]+?)\s*\)",
@@ -1066,6 +1092,22 @@ def _math_text_to_latex(s):
         if new_s == s:
             break
         s = new_s
+    # 1c. Outer-paren division: (A) / (B) -> \dfrac{A}{B}. Required for
+    #     molar-mass ratios like "(180.16 g/mol) / (30.026 g/mol)" where
+    #     the inner unit slash is now protected, so neither (A) nor (B)
+    #     contains a "/" — the inner regex won't match. Iterate to handle
+    #     chains.
+    for _ in range(4):
+        new_s = re.sub(
+            r"\(\s*([^()]+?)\s*\)\s*/\s*\(\s*([^()]+?)\s*\)",
+            r"\\dfrac{\1}{\2}",
+            s,
+        )
+        if new_s == s:
+            break
+        s = new_s
+    # 1d. Restore protected unit slashes.
+    s = s.replace("\x03", "/")
     # 2. Operators / arrows / Unicode minus / approximate
     s = s.replace("×", r" \times ")
     s = s.replace("÷", r" \div ")
