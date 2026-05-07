@@ -129,5 +129,55 @@ class TestValidateFlag(unittest.TestCase):
         self.assertEqual(r.returncode, 0, msg=r.stderr)
 
 
+from build_interactive import discover_chapters
+
+
+class TestDiscoverChapters(unittest.TestCase):
+    def test_finds_chapter_01_yaml(self):
+        chapters = discover_chapters()
+        ids = [c['number'] for c in chapters]
+        self.assertIn('01', ids, msg=f'Expected 01 in {ids}')
+
+    def test_each_entry_has_required_fields(self):
+        chapters = discover_chapters()
+        self.assertGreaterEqual(len(chapters), 1)
+        for c in chapters:
+            self.assertIn('number', c)
+            self.assertIn('spec_path', c)
+            self.assertIn('input_html', c)
+            self.assertIn('output_html', c)
+
+    def test_paths_resolve_to_real_files(self):
+        chapters = discover_chapters()
+        for c in chapters:
+            self.assertTrue(c['spec_path'].exists(), msg=f"spec missing: {c['spec_path']}")
+            # input_html must exist for the build to work; output_html may not exist yet
+            self.assertTrue(c['input_html'].exists(), msg=f"input HTML missing: {c['input_html']}")
+
+
+class TestChapterFlag(unittest.TestCase):
+    def test_chapter_flag_in_help(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--help"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("--chapter", r.stdout)
+
+    def test_validate_chapter_01_explicit(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--validate", "--chapter", "01"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertEqual(r.returncode, 0, msg=r.stderr)
+
+    def test_validate_unknown_chapter_fails(self):
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--validate", "--chapter", "99"],
+            capture_output=True, text=True, cwd=str(REPO)
+        )
+        self.assertNotEqual(r.returncode, 0)
+
+
 if __name__ == "__main__":
     unittest.main()

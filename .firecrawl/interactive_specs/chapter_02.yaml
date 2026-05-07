@@ -1,0 +1,138 @@
+# Variable-problem specs for Chapter 2 (Unit Systems and Dimensional Analysis).
+# Schema reference: docs/superpowers/specs/2026-05-06-variable-problems-phase2-design.md
+problems:
+  - id: "2.4.metric_simple"
+    match_text: "A medication dosage is 250 µg"
+    question: "A medication dosage is {dose} µg. How many mg is this?"
+    variables:
+      dose: { range: [10, 990], decimal_places: 0 }
+    answer:
+      operation: factor_label
+      value_param: dose
+      input_unit: µg
+      chain:
+        - num_value: 1
+          num_unit: mg
+          den_value: 1000
+          den_unit: µg
+          exact: true
+      target_unit: mg
+    explanation_template: |
+      "µg" cancels, leaving "mg". {limitingSigFigs} sig figs from "{dose} µg" yield {finalResult} mg.
+
+  - id: "2.7.eng_metric_chain"
+    match_text: "Convert 5.00 lb to kg"
+    question: "Convert {mass} lb to kg."
+    variables:
+      mass: { range: [1.0, 20.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: lb
+      chain:
+        - num_value: 453.59
+          num_unit: g
+          den_value: 1
+          den_unit: lb
+          sig_figs: 5
+        - num_value: 1
+          num_unit: kg
+          den_value: 1000
+          den_unit: g
+          exact: true
+      target_unit: kg
+    explanation_template: |
+      "lb" cancels in step 1; "g" cancels in step 2. {limitingSigFigs} sig figs
+      from "{mass} lb" yield {finalResult} kg.
+
+  - id: "2.8.density_chain"
+    match_text: "volume of 1.50 kg of mercury"
+    question: "What is the volume of {mass} kg of mercury (d = 13.546 g/mL)?"
+    variables:
+      mass: { range: [0.50, 5.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: kg
+      chain:
+        - num_value: 1000
+          num_unit: g
+          den_value: 1
+          den_unit: kg
+          exact: true
+        - num_value: 1
+          num_unit: mL
+          den_value: 13.546
+          den_unit: g
+          sig_figs: 5
+      target_unit: mL
+    constraints:
+      result_must_be_positive: true
+    explanation_template: |
+      "kg" cancels in step 1; "g" cancels in step 2 via density.
+      {limitingSigFigs} sig figs from "{mass} kg" yield {finalResult} mL.
+
+  - id: "2.9.dosage"
+    match_text: "5.00 mg per kg of body mass"
+    question: "A drug is dosed at 5.00 mg per kg of body mass. What dose is needed for a {weight} kg adult?"
+    variables:
+      weight: { range: [40.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: weight
+      input_unit: kg
+      chain:
+        - num_value: 5.00
+          num_unit: mg
+          den_value: 1
+          den_unit: kg
+          sig_figs: 3
+      target_unit: mg
+    explanation_template: |
+      "kg" cancels via the 5.00 mg/kg dosage factor. {limitingSigFigs} sig figs from
+      "{weight} kg" yield {finalResult} mg.
+
+  - id: "2.9.alloy_mass_percent"
+    match_text: "alloy is 35.0% silver"
+    question: "An alloy is 35.0% silver. How much silver is in {mass} g of alloy?"
+    variables:
+      mass: { range: [10.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g alloy
+      chain:
+        - num_value: 35.0
+          num_unit: g Ag
+          den_value: 100
+          den_unit: g alloy
+          sig_figs: 3
+      target_unit: g Ag
+    explanation_template: |
+      "g alloy" cancels via the 35.0% mass-percent factor.
+      {limitingSigFigs} sig figs from "{mass} g alloy" yield {finalResult} g Ag.
+
+  - id: "2.9.cost_chain"
+    match_text: "car gets 32.0 mi/gal"
+    question: "A car gets 32.0 mi/gal and the gas is $3.99/gal. What does it cost to drive {distance} mi?"
+    variables:
+      distance: { range: [50, 500], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: distance
+      input_unit: mi
+      chain:
+        - num_value: 1
+          num_unit: gal
+          den_value: 32.0
+          den_unit: mi
+          sig_figs: 3
+        - num_value: 3.99
+          num_unit: dollar
+          den_value: 1
+          den_unit: gal
+          sig_figs: 3
+      target_unit: dollar
+    explanation_template: |
+      "mi" cancels in step 1; "gal" cancels in step 2. {limitingSigFigs} sig figs
+      from "{distance} mi" yield ${finalResult}.
