@@ -74,6 +74,14 @@ export function formatWithSigFigs(value, n) {
   if (value === 0) return n === 1 ? '0' : '0.' + '0'.repeat(n - 1);
   const sign = value < 0 ? '-' : '';
   const abs = Math.abs(value);
+  // Engineering threshold: route Avogadro-scale and sub-millimagnitude values
+  // through decimalToSciNotation to bypass IEEE-754 noise in the integer branch
+  // (Math.round on doubles like 5.7e+23 can leak "5.700000000000001e+23").
+  if (abs >= 1e6 || abs < 1e-3) {
+    const sci = decimalToSciNotation(value, n);
+    const expSign = sci.exponent >= 0 ? '+' : '';
+    return sci.coefficient + 'e' + expSign + sci.exponent;
+  }
   const magnitude = Math.floor(Math.log10(abs));
   const factor = Math.pow(10, n - 1 - magnitude);
   const rounded = Math.round(abs * factor) / factor;
@@ -112,6 +120,23 @@ export function decimalToSciNotation(value, sigFigs) {
   }
   const latex = sign + coefficient + ' \\times 10^{' + exponent + '}';
   return { coefficient: sign + coefficient, exponent, latex };
+}
+
+/**
+ * Convert a JS-stringified number to MathJax LaTeX form. JS sci-notation
+ * (e.g. "6.022e+23") becomes "6.022 \\times 10^{23}". Plain decimals
+ * pass through unchanged. No-op on already-formatted LaTeX strings.
+ *
+ * Used at every site where a numeric string flows into a \[...\] block
+ * so MathJax never sees raw "e+N" plain text.
+ */
+export function formatNumberForLatex(s) {
+  const str = String(s);
+  const m = str.match(/^([+-]?\d+(?:\.\d+)?)[eE]([+-]?\d+)$/);
+  if (!m) return str;
+  const coefficient = m[1];
+  const exponent = parseInt(m[2], 10);
+  return coefficient + ' \\times 10^{' + exponent + '}';
 }
 
 /**
@@ -356,11 +381,21 @@ function passesGuardrails(constraints, params, computed) {
 
 /**
  * Substitute {token} placeholders in a string with values from a map.
+ *
+ * MathJax-aware: tokens inside `\(...\)` regions are formatted via
+ * formatNumberForLatex so JS sci-notation values (e.g. "6.022e+23") render as
+ * "6.022 \times 10^{23}". Tokens outside `\(...\)` are substituted raw.
+ * This lets YAML authors opt a single token into LaTeX form by wrapping it,
+ * without polluting plain-prose substitution elsewhere.
  */
 export function substituteTemplate(template, tokens) {
-  return template.replace(/\{(\w+)\}/g, (_, key) => {
-    if (key in tokens) return String(tokens[key]);
-    return '{' + key + '}';
+  return template.replace(/(\\\([\s\S]*?\\\))|(\{(\w+)\})/g, (match, mathjax, _whole, key) => {
+    if (mathjax !== undefined) {
+      return mathjax.replace(/\{(\w+)\}/g, (_, k) =>
+        k in tokens ? formatNumberForLatex(String(tokens[k])) : '{' + k + '}'
+      );
+    }
+    return key in tokens ? String(tokens[key]) : match;
   });
 }
 
@@ -395,7 +430,8 @@ export function renderLatexForOperation(op, variant, answerSpec) {
         answerSpec.input_unit,
         answerSpec.chain,
         c.finalResult,
-        c.finalUnit
+        c.finalUnit,
+        c.finalResultLatex,
       );
     default:
       throw new Error('renderLatexForOperation: unknown op ' + op);
@@ -444,9 +480,27 @@ export function factorLabelChain(value, valueSigFigs, valueUnit, steps) {
     }
   }
 
+  // Engineering-threshold sci-notation: |result| >= 1e6 or < 1e-3 routes
+  // through decimalToSciNotation so the displayed value is built from integer
+  // coefficient/exponent arithmetic. formatWithSigFigs's integer branch can
+  // leak IEEE-754 noise on Avogadro-scale doubles (e.g. 3.80e+24 → "3.7999...").
+  const absResult = Math.abs(result);
+  const useSci = absResult >= 1e6 || (absResult > 0 && absResult < 1e-3);
+  let finalResult, finalResultLatex;
+  if (useSci) {
+    const sci = decimalToSciNotation(result, limitingSigFigs);
+    const expSign = sci.exponent >= 0 ? '+' : '';
+    finalResult = sci.coefficient + 'e' + expSign + sci.exponent;
+    finalResultLatex = sci.latex;
+  } else {
+    finalResult = formatWithSigFigs(result, limitingSigFigs);
+    finalResultLatex = finalResult;
+  }
+
   return {
     rawResult: result.toString(),
-    finalResult: formatWithSigFigs(result, limitingSigFigs),
+    finalResult,
+    finalResultLatex,
     finalUnit: prevNumUnit,
     limitingSigFigs,
     limitingSource,
@@ -458,13 +512,18 @@ export function factorLabelChain(value, valueSigFigs, valueUnit, steps) {
  * Output format matches the textbook's Option-C convention exactly:
  *   value\,\cancel{\text{unit}} \times \frac{num\,\text{numUnit}}{den\,\cancel{\text{denUnit}}} ... = result\,\text{finalUnit}
  */
-export function renderFactorLabelLatex(value, valueUnit, steps, finalResult, finalUnit) {
-  let latex = value + '\\,\\cancel{\\text{' + valueUnit + '}}';
+export function renderFactorLabelLatex(value, valueUnit, steps, finalResult, finalUnit, finalResultLatex) {
+  let latex = formatNumberForLatex(value) + '\\,\\cancel{\\text{' + valueUnit + '}}';
   for (const s of steps) {
-    latex += ' \\times \\frac{' + s.num_value + '\\,\\text{' + s.num_unit + '}}'
-           + '{' + s.den_value + '\\,\\cancel{\\text{' + s.den_unit + '}}}';
+    latex += ' \\times \\frac{' + formatNumberForLatex(s.num_value) + '\\,\\text{' + s.num_unit + '}}'
+           + '{' + formatNumberForLatex(s.den_value) + '\\,\\cancel{\\text{' + s.den_unit + '}}}';
   }
-  latex += ' = ' + finalResult + '\\,\\text{' + finalUnit + '}';
+  // Prefer caller-supplied finalResultLatex (precision-safe sci-notation form);
+  // fall back to formatting finalResult for backward compat.
+  const resultLatex = finalResultLatex !== undefined
+    ? finalResultLatex
+    : formatNumberForLatex(finalResult);
+  latex += ' = ' + resultLatex + '\\,\\text{' + finalUnit + '}';
   return latex;
 }
 
