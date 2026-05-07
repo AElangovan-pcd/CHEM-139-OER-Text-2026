@@ -54,7 +54,7 @@ problems:
       input_unit: mol
       chain:
         # Avogadro's number: 6.022 × 10²³ molecules / 1 mol (4 sig figs)
-        - num_value: 6.022e23
+        - num_value: 6.022e+23
           num_unit: molecules
           den_value: 1
           den_unit: mol
@@ -68,7 +68,7 @@ problems:
     match_text: "Mass of 3.011"
     question: "What is the mass of {n_atoms} atoms of Cu? (M = 63.55 g/mol)"
     variables:
-      n_atoms: { range: [1.0e22, 9.99e23], sig_figs: 3 }
+      n_atoms: { range: [1.0e+22, 9.99e+23], sig_figs: 3 }
     answer:
       operation: factor_label
       value_param: n_atoms
@@ -77,7 +77,7 @@ problems:
         # Avogadro's number (4 sig figs)
         - num_value: 1
           num_unit: mol
-          den_value: 6.022e23
+          den_value: 6.022e+23
           den_unit: atoms
           sig_figs: 4
         # molar mass of Cu: 63.55 g/mol (4 sig figs)
@@ -135,7 +135,7 @@ problems:
           den_unit: mol H₂O
           exact: true
         # Avogadro's number (4 sig figs)
-        - num_value: 6.022e23
+        - num_value: 6.022e+23
           num_unit: atoms
           den_value: 1
           den_unit: mol H
