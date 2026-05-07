@@ -233,13 +233,23 @@ export function mulberry32(seed) {
 }
 
 /**
- * Sample a single variable per its spec. Returns a numeric string formatted to declared precision.
+ * Sample a single variable per its spec. Returns a numeric string for scalar
+ * generators (range, random_decimal_with_features); returns an option struct
+ * (object) for pick_one. Callers handling structs (e.g., generateVariant) must
+ * unfold them into flat params.
  */
 export function sampleValue(spec, rng) {
   if (spec.generator === 'random_decimal_with_features') {
     const sigFigs = spec.sig_figs[Math.floor(rng() * spec.sig_figs.length)];
     const pattern = spec.patterns[Math.floor(rng() * spec.patterns.length)];
     return generateFeaturePattern(sigFigs, pattern, rng);
+  }
+  if (spec.generator === 'pick_one') {
+    if (!Array.isArray(spec.options) || spec.options.length === 0) {
+      throw new Error('pick_one requires non-empty options array');
+    }
+    const idx = Math.floor(rng() * spec.options.length);
+    return spec.options[idx];  // returns the option struct (object, not string)
   }
   if (spec.range) {
     const [low, high] = spec.range;
@@ -306,7 +316,15 @@ export function generateVariant(problemSpec, rng) {
   for (let i = 0; i < MAX_RETRIES; i++) {
     const params = {};
     for (const [name, varSpec] of Object.entries(problemSpec.variables || {})) {
-      params[name] = sampleValue(varSpec, rng);
+      const value = sampleValue(varSpec, rng);
+      if (value !== null && typeof value === 'object') {
+        // pick_one returned a struct → unfold into prefixed flat keys.
+        for (const [k, v] of Object.entries(value)) {
+          params[name + '_' + k] = String(v);
+        }
+      } else {
+        params[name] = value;
+      }
     }
     const computed = computeAnswer(problemSpec.answer, params);
     if (passesGuardrails(problemSpec.constraints || {}, params, computed)) {
@@ -341,6 +359,8 @@ function computeAnswer(answerSpec, params) {
       const valueSigFigs = countSigFigs(value).count;
       return factorLabelChain(value, valueSigFigs, answerSpec.input_unit, answerSpec.chain);
     }
+    case 'mass_percent':
+      return computeMassPercent(answerSpec, params);
     default:
       throw new Error('Unknown operation: ' + op);
   }
@@ -358,16 +378,41 @@ function computeSciNotationArith(answerSpec, params) {
   return decimalToSciNotation(product, sigFigs);
 }
 
+/**
+ * Mass-percent operation: (partial / total) * 100, rounded to N decimal places.
+ * Sister to to_sci_notation in that the precision idiom (decimals, not sig figs)
+ * is operation-specific. Author chooses decimal_places per the textbook
+ * convention (2 for light-element compounds, 1 for any-heavy compound).
+ */
+export function computeMassPercent(answerSpec, params) {
+  const partial = parseFloat(params[answerSpec.partial_mass_param]);
+  const total = parseFloat(params[answerSpec.total_mass_param]);
+  const decimals = answerSpec.decimal_places ?? 2;
+  const rawPercent = (partial / total) * 100;
+  const finalPercent = rawPercent.toFixed(decimals);
+  return {
+    rawPercent: rawPercent.toString(),
+    finalPercent,
+    finalPercentLatex: finalPercent,
+  };
+}
+
 function passesGuardrails(constraints, params, computed) {
   // result_must_be_positive
   if (constraints.result_must_be_positive) {
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
+    const final = parseFloat(
+      computed.finalSum ?? computed.finalProduct ?? computed.y
+      ?? computed.finalResult ?? computed.finalPercent ?? '0'
+    );
     if (final <= 0) return false;
   }
   // result_range
   if (constraints.result_range) {
     const [low, high] = constraints.result_range;
-    const final = parseFloat(computed.finalSum ?? computed.finalProduct ?? computed.y ?? computed.finalResult ?? '0');
+    const final = parseFloat(
+      computed.finalSum ?? computed.finalProduct ?? computed.y
+      ?? computed.finalResult ?? computed.finalPercent ?? '0'
+    );
     if (final < low || final > high) return false;
   }
   // avoid_round
@@ -433,6 +478,15 @@ export function renderLatexForOperation(op, variant, answerSpec) {
         c.finalUnit,
         c.finalResultLatex,
       );
+    case 'mass_percent': {
+      const partial = p[answerSpec.partial_mass_param];
+      const total = p[answerSpec.total_mass_param];
+      const elementLabel = p[answerSpec.element_label_param];
+      const compoundLabel = p[answerSpec.compound_label_param];
+      return '\\dfrac{' + partial + '\\,\\text{g ' + elementLabel + '}}'
+           + '{' + total + '\\,\\text{g ' + compoundLabel + '}}'
+           + ' \\times 100\\% = ' + c.finalPercent + '\\%';
+    }
     default:
       throw new Error('renderLatexForOperation: unknown op ' + op);
   }
