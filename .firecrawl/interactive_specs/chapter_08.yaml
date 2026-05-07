@@ -90,3 +90,24 @@ problems:
     explanation_template: |
       "atoms" cancels via Avogadro; "mol" cancels via Cu molar mass.
       {limitingSigFigs} sig figs from "{n_atoms} atoms" yield {finalResult} g.
+
+  - id: "8.9.mole_ratio_subscript"
+    match_text: "How many moles of H atoms in 0.50 mol C"
+    question: "How many moles of H atoms are in {moles} mol of glucose (C₆H₁₂O₆)?"
+    variables:
+      moles: { range: [0.05, 5.00], sig_figs: 2 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol C₆H₁₂O₆
+      chain:
+        # subscript-derived factor: glucose has 12 H atoms per molecule (exact integer)
+        - num_value: 12
+          num_unit: mol H
+          den_value: 1
+          den_unit: mol C₆H₁₂O₆
+          exact: true
+      target_unit: mol H
+    explanation_template: |
+      "mol C₆H₁₂O₆" cancels via the 12 mol H / 1 mol formula-unit subscript factor (exact).
+      {limitingSigFigs} sig figs from "{moles} mol C₆H₁₂O₆" yield {finalResult} mol H.
