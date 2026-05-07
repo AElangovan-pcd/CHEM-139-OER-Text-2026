@@ -7,6 +7,8 @@ Output: HTML_Files/index.html plus one HTML page per source document.
 import io
 import re
 import sys
+import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 
 import mammoth
@@ -1184,10 +1186,255 @@ def mathjax_ify_solutions(soup):
     return count
 
 
+# ---- OMML (Word equation field) → LaTeX conversion ----
+#
+# Word's "Insert Equation" produces an <m:oMath> tree inside document.xml.
+# Mammoth doesn't process OMML — the equation vanishes silently in the
+# default conversion. The pre-pass here parses each <m:oMath>, converts to
+# MathJax-ready LaTeX, replaces the OMML in document.xml with a placeholder
+# text run, repackages the docx in memory, and feeds that to mammoth.
+# Post-mammoth, the placeholder is swapped for a math-chain <p>.
+
+NS_M = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+NS_W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+
+# Letters that, when struck inside a Word equation run, are unit tokens —
+# wrap their contents in \text{} before \cancel{} so MathJax renders them
+# upright inside the cancellation. Other struck content stays in math mode.
+_OMML_UNIT_TOKENS = {"g", "mol", "kg", "mg", "L", "mL", "cm", "m", "kJ", "kcal",
+                     "kPa", "atm", "K", "J", "M", "s", "h", "min", "Hz", "Pa",
+                     "g/mol"}
+
+
+def _qn(ns, tag):
+    return f"{{{ns}}}{tag}"
+
+
+def _omml_run_text(r_node):
+    parts = []
+    for t in r_node.iter(_qn(NS_M, "t")):
+        parts.append(t.text or "")
+    return "".join(parts)
+
+
+def _omml_run_is_struck(r_node):
+    rpr = r_node.find(_qn(NS_W, "rPr"))
+    if rpr is None:
+        return False
+    strike = rpr.find(_qn(NS_W, "strike"))
+    if strike is None:
+        return False
+    # <w:strike w:val="false"/> means strike is OFF
+    val = strike.get(_qn(NS_W, "val"))
+    return val != "false"
+
+
+def _omml_run_is_plain(r_node):
+    """True if <m:rPr><m:sty m:val="p"/> — render upright via \\text{}."""
+    m_rpr = r_node.find(_qn(NS_M, "rPr"))
+    if m_rpr is None:
+        return False
+    sty = m_rpr.find(_qn(NS_M, "sty"))
+    if sty is None:
+        return False
+    return sty.get(_qn(NS_M, "val")) == "p"
+
+
+_OMML_MATH_SAFE_RE = re.compile(r"^[\d=+\-./,()\s]+$")
+
+
+def _omml_convert_run(r):
+    text = _omml_run_text(r)
+    if not text:
+        return ""
+    struck = _omml_run_is_struck(r)
+    # "Plain" styling in OMML applies to letters AND operators alike — Word
+    # marks an entire equation's runs as plain even when the content is
+    # digits or "=". Math-safe content (digits, operators, punctuation,
+    # whitespace) should stay in math mode regardless so MathJax produces
+    # the proper "=" / "+" / "-" spacing. Unit tokens always go through
+    # \text{} so "g", "mol", "kg" render upright instead of italicized.
+    is_math_safe = bool(_OMML_MATH_SAFE_RE.match(text))
+    is_unit = text in _OMML_UNIT_TOKENS
+    is_plain = (_omml_run_is_plain(r) and not is_math_safe) or is_unit
+    if struck and is_plain:
+        return r"\cancel{\text{" + text + "}}"
+    if struck:
+        return r"\cancel{" + text + "}"
+    if is_plain:
+        return r"\text{" + text + "}"
+    return text
+
+
+def _omml_convert_children(parent):
+    return "".join(_omml_convert_node(c) for c in parent)
+
+
+def _omml_convert_node(node):
+    tag = node.tag
+    if tag == _qn(NS_M, "r"):
+        return _omml_convert_run(node)
+    if tag == _qn(NS_M, "f"):
+        num = node.find(_qn(NS_M, "num"))
+        den = node.find(_qn(NS_M, "den"))
+        return (r"\dfrac{"
+                + (_omml_convert_children(num) if num is not None else "")
+                + "}{"
+                + (_omml_convert_children(den) if den is not None else "")
+                + "}")
+    if tag == _qn(NS_M, "d"):
+        beg, end = "(", ")"
+        dpr = node.find(_qn(NS_M, "dPr"))
+        if dpr is not None:
+            beg_chr = dpr.find(_qn(NS_M, "begChr"))
+            end_chr = dpr.find(_qn(NS_M, "endChr"))
+            if beg_chr is not None:
+                beg = beg_chr.get(_qn(NS_M, "val"), "(")
+            if end_chr is not None:
+                end = end_chr.get(_qn(NS_M, "val"), ")")
+        # \left ... \right scales the delimiters to fraction height.
+        # MathJax requires escaping { } [ ] but ( ) are fine bare.
+        beg_tex = beg if beg in "([" else r"\{" if beg == "{" else beg
+        end_tex = end if end in ")]" else r"\}" if end == "}" else end
+        inner = "".join(_omml_convert_children(e)
+                        for e in node.findall(_qn(NS_M, "e")))
+        return r"\left" + beg_tex + inner + r"\right" + end_tex
+    if tag == _qn(NS_M, "e"):
+        return _omml_convert_children(node)
+    if tag == _qn(NS_M, "sSub"):
+        e = node.find(_qn(NS_M, "e"))
+        sub = node.find(_qn(NS_M, "sub"))
+        return (_omml_convert_children(e) if e is not None else "") + "_{" + (_omml_convert_children(sub) if sub is not None else "") + "}"
+    if tag == _qn(NS_M, "sSup"):
+        e = node.find(_qn(NS_M, "e"))
+        sup = node.find(_qn(NS_M, "sup"))
+        return (_omml_convert_children(e) if e is not None else "") + "^{" + (_omml_convert_children(sup) if sup is not None else "") + "}"
+    if tag == _qn(NS_M, "rad"):
+        e = node.find(_qn(NS_M, "e"))
+        return r"\sqrt{" + (_omml_convert_children(e) if e is not None else "") + "}"
+    # Skip control-property nodes (m:fPr, m:dPr, m:rPr, w:rPr, etc.)
+    return ""
+
+
+_OMATH_RE = re.compile(rb"<m:oMath\b[^>]*>.*?</m:oMath>", re.DOTALL)
+
+
+def _omml_extract_and_inject(docx_path):
+    """Read docx, convert each <m:oMath> to LaTeX, replace each block in
+    document.xml with a unique placeholder text run, return (BytesIO of
+    modified docx, {placeholder_index: latex_string}).
+    """
+    latex_map = {}
+    with zipfile.ZipFile(docx_path, "r") as zin:
+        all_parts = {item: zin.read(item) for item in zin.namelist()}
+    document_xml = all_parts.get("word/document.xml", b"")
+
+    def replace(m):
+        omml_xml = m.group(0).decode("utf-8")
+        wrapped = (
+            f'<root xmlns:m="{NS_M}" xmlns:w="{NS_W}">'
+            + omml_xml + "</root>"
+        )
+        try:
+            root = ET.fromstring(wrapped)
+            omath = root.find(_qn(NS_M, "oMath"))
+            latex = _omml_convert_children(omath) if omath is not None else ""
+        except ET.ParseError as e:
+            print(f"WARN: OMML parse failed: {e}", file=sys.stderr)
+            return m.group(0)
+        idx = len(latex_map)
+        latex_map[idx] = latex
+        placeholder = (
+            f'<w:r><w:t xml:space="preserve">{{OMML_LATEX_{idx}}}</w:t></w:r>'
+        )
+        return placeholder.encode("utf-8")
+
+    document_xml = _OMATH_RE.sub(replace, document_xml)
+    if not latex_map:
+        # No OMML; just re-open the original file for mammoth.
+        return open(docx_path, "rb"), latex_map
+
+    out_buf = io.BytesIO()
+    with zipfile.ZipFile(out_buf, "w", zipfile.ZIP_DEFLATED) as zout:
+        for name, data in all_parts.items():
+            if name == "word/document.xml":
+                zout.writestr(name, document_xml)
+            else:
+                zout.writestr(name, data)
+    out_buf.seek(0)
+    return out_buf, latex_map
+
+
+_OMML_PLACEHOLDER_RE = re.compile(r"\{OMML_LATEX_(\d+)\}")
+
+
+def _omml_substitute_placeholders(soup, latex_map):
+    """For each <p> containing an {OMML_LATEX_N} placeholder, fold the entire
+    paragraph into a math-chain. Surrounding prose (e.g. "Step 2 — ") is
+    wrapped in \\text{...} so the whole paragraph renders as one display
+    equation, matching the textbook's worked-example convention.
+    """
+    count = 0
+    for p in list(soup.find_all("p")):
+        text = p.get_text()
+        if not _OMML_PLACEHOLDER_RE.search(text):
+            continue
+        # Build the LaTeX body: walk children, preserving inline order,
+        # converting placeholders to LaTeX math and prose to \text{}.
+        latex_parts = []
+        for fragment in _split_paragraph_for_omml(p):
+            kind, payload = fragment
+            if kind == "text":
+                stripped = payload.strip()
+                if not stripped:
+                    if payload:
+                        latex_parts.append(r"\ ")
+                    continue
+                # Trim trailing punctuation period for cleaner display
+                latex_parts.append(r"\text{" + payload.strip() + "}")
+                # Restore a thin space if there was trailing whitespace
+                if payload != payload.rstrip():
+                    latex_parts.append(r"\ ")
+            elif kind == "omml":
+                latex_parts.append(latex_map.get(payload, ""))
+        latex_body = "".join(latex_parts).strip()
+        p.clear()
+        classes = p.get("class") or []
+        if "math-chain" not in classes:
+            classes.append("math-chain")
+        p["class"] = classes
+        p.append(NavigableString(f"\\[{latex_body}\\]"))
+        count += 1
+    return count
+
+
+def _split_paragraph_for_omml(p):
+    """Walk paragraph text in document order, yielding ("text", str) or
+    ("omml", placeholder_index) tuples. Placeholders embedded in arbitrary
+    descendant text nodes are split so prose and math interleave correctly.
+    """
+    pieces = []
+    text = p.get_text()
+    last = 0
+    for m in _OMML_PLACEHOLDER_RE.finditer(text):
+        if m.start() > last:
+            pieces.append(("text", text[last:m.start()]))
+        pieces.append(("omml", int(m.group(1))))
+        last = m.end()
+    if last < len(text):
+        pieces.append(("text", text[last:]))
+    return pieces
+
+
 def convert_one(docx_path):
-    with open(docx_path, "rb") as f:
-        result = mammoth.convert_to_html(f, style_map=MAMMOTH_STYLE_MAP)
+    docx_buf, omml_latex_map = _omml_extract_and_inject(docx_path)
+    try:
+        result = mammoth.convert_to_html(docx_buf, style_map=MAMMOTH_STYLE_MAP)
+    finally:
+        docx_buf.close()
     soup = BeautifulSoup(f'<div class="doc">{result.value}</div>', "html.parser")
+    if omml_latex_map:
+        _omml_substitute_placeholders(soup, omml_latex_map)
     style_figure_descriptions(soup)
     n_splits = split_merged_lists_after_solution(soup)
     n_solutions = wrap_solutions(soup)
