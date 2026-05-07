@@ -681,3 +681,62 @@ test('sampleValue: pick_one throws on empty options', () => {
     /pick_one requires non-empty options/
   );
 });
+
+test('generateVariant: pick_one unfolds struct into prefixed flat params', () => {
+  const spec = {
+    id: 'test.unfold',
+    variables: {
+      compound: {
+        generator: 'pick_one',
+        options: [
+          { formula: 'NH₃', element: 'N', partial: 14.01, total: 17.03 },
+        ],
+      },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'compound_partial',
+      total_mass_param: 'compound_total',
+      element_label_param: 'compound_element',
+      compound_label_param: 'compound_formula',
+      decimal_places: 2,
+    },
+  };
+  const rng = mulberry32(1);
+  const v = generateVariant(spec, rng);
+  assert.equal(v.params.compound_formula, 'NH₃');
+  assert.equal(v.params.compound_element, 'N');
+  assert.equal(v.params.compound_partial, '14.01');
+  assert.equal(v.params.compound_total, '17.03');
+  assert.equal(v.computed.finalPercent, '82.27');
+});
+
+test('generateVariant: mass_percent + pick_one end-to-end (element varies)', () => {
+  const spec = {
+    id: 'test.element_varies',
+    variables: {
+      element: {
+        generator: 'pick_one',
+        options: [
+          { symbol: 'C', formula: 'CO₂', partial: 12.01, total: 44.01 },
+          { symbol: 'O', formula: 'CO₂', partial: 32.00, total: 44.01 },
+        ],
+      },
+    },
+    answer: {
+      operation: 'mass_percent',
+      partial_mass_param: 'element_partial',
+      total_mass_param: 'element_total',
+      element_label_param: 'element_symbol',
+      compound_label_param: 'element_formula',
+      decimal_places: 2,
+    },
+  };
+  // Run twice with different seeds to hit both options
+  const seen = new Set();
+  for (let s = 0; s < 20; s++) {
+    const v = generateVariant(spec, mulberry32(s));
+    seen.add(v.params.element_symbol);
+  }
+  assert.deepEqual([...seen].sort(), ['C', 'O']);
+});

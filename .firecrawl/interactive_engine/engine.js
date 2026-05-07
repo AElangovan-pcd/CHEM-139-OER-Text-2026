@@ -316,7 +316,15 @@ export function generateVariant(problemSpec, rng) {
   for (let i = 0; i < MAX_RETRIES; i++) {
     const params = {};
     for (const [name, varSpec] of Object.entries(problemSpec.variables || {})) {
-      params[name] = sampleValue(varSpec, rng);
+      const value = sampleValue(varSpec, rng);
+      if (value !== null && typeof value === 'object') {
+        // pick_one returned a struct → unfold into prefixed flat keys.
+        for (const [k, v] of Object.entries(value)) {
+          params[name + '_' + k] = String(v);
+        }
+      } else {
+        params[name] = value;
+      }
     }
     const computed = computeAnswer(problemSpec.answer, params);
     if (passesGuardrails(problemSpec.constraints || {}, params, computed)) {
