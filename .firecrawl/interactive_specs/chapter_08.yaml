@@ -1,0 +1,146 @@
+# Variable-problem specs for Chapter 8 (Mole Concept and Chemical Formulas).
+# Schema reference: docs/superpowers/specs/2026-05-07-variable-problems-phase3a-design.md
+problems:
+  - id: "8.10.mass_to_mole"
+    match_text: "How many moles in 25.0 g of NaCl"
+    question: "How many moles are in {mass} g of NaCl? (M = 58.44 g/mol)"
+    variables:
+      mass: { range: [5.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g
+      chain:
+        # molar mass of NaCl: 58.44 g/mol per textbook (4 sig figs)
+        - num_value: 1
+          num_unit: mol
+          den_value: 58.44
+          den_unit: g
+          sig_figs: 4
+      target_unit: mol
+    explanation_template: |
+      "g" cancels via the 1 mol / 58.44 g molar-mass factor.
+      {limitingSigFigs} sig figs from "{mass} g" yield {finalResult} mol.
+
+  - id: "8.10.mole_to_mass"
+    match_text: "Mass, in grams, of 0.250 mol H"
+    question: "What is the mass, in grams, of {moles} mol H₂O? (M = 18.02 g/mol)"
+    variables:
+      moles: { range: [0.05, 5.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol
+      chain:
+        # molar mass of H₂O: 18.02 g/mol per textbook (4 sig figs)
+        - num_value: 18.02
+          num_unit: g
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: g
+    explanation_template: |
+      "mol" cancels via the 18.02 g / 1 mol molar-mass factor.
+      {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} g.
+
+  - id: "8.10.mole_to_molecules"
+    match_text: "Number of molecules in 0.100 mol CO"
+    question: "How many molecules are in {moles} mol CO₂?"
+    variables:
+      moles: { range: [0.01, 1.00], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol
+      chain:
+        # Avogadro's number: 6.022 × 10²³ molecules / 1 mol (4 sig figs)
+        - num_value: 6.022e+23
+          num_unit: molecules
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: molecules
+    explanation_template: |
+      "mol" cancels via Avogadro's number (6.022 × 10²³ molecules per mole).
+      {limitingSigFigs} sig figs from "{moles} mol" yield {finalResult} molecules.
+
+  - id: "8.10.atoms_to_mass"
+    match_text: "Mass of 3.011"
+    question: "What is the mass of {n_atoms} atoms of Cu? (M = 63.55 g/mol)"
+    variables:
+      n_atoms: { range: [1.0e+22, 9.99e+23], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: n_atoms
+      input_unit: atoms
+      chain:
+        # Avogadro's number (4 sig figs)
+        - num_value: 1
+          num_unit: mol
+          den_value: 6.022e+23
+          den_unit: atoms
+          sig_figs: 4
+        # molar mass of Cu: 63.55 g/mol (4 sig figs)
+        - num_value: 63.55
+          num_unit: g
+          den_value: 1
+          den_unit: mol
+          sig_figs: 4
+      target_unit: g
+    explanation_template: |
+      "atoms" cancels via Avogadro; "mol" cancels via Cu molar mass.
+      {limitingSigFigs} sig figs from "{n_atoms} atoms" yield {finalResult} g.
+
+  - id: "8.9.mole_ratio_subscript"
+    match_text: "How many moles of H atoms in 0.50 mol C"
+    question: "How many moles of H atoms are in {moles} mol of glucose (C₆H₁₂O₆)?"
+    variables:
+      moles: { range: [0.05, 5.00], sig_figs: 2 }
+    answer:
+      operation: factor_label
+      value_param: moles
+      input_unit: mol C₆H₁₂O₆
+      chain:
+        # subscript-derived factor: glucose has 12 H atoms per molecule (exact integer)
+        - num_value: 12
+          num_unit: mol H
+          den_value: 1
+          den_unit: mol C₆H₁₂O₆
+          exact: true
+      target_unit: mol H
+    explanation_template: |
+      "mol C₆H₁₂O₆" cancels via the 12 mol H / 1 mol formula-unit subscript factor (exact).
+      {limitingSigFigs} sig figs from "{moles} mol C₆H₁₂O₆" yield {finalResult} mol H.
+
+  - id: "8.10.three_step_chain"
+    match_text: "How many H atoms in 18.0 g H"
+    question: "How many H atoms are in {mass} g of H₂O? (M = 18.02 g/mol)"
+    variables:
+      mass: { range: [1.0, 100.0], sig_figs: 3 }
+    answer:
+      operation: factor_label
+      value_param: mass
+      input_unit: g H₂O
+      chain:
+        # molar mass of H₂O: 18.02 g/mol (4 sig figs)
+        - num_value: 1
+          num_unit: mol H₂O
+          den_value: 18.02
+          den_unit: g H₂O
+          sig_figs: 4
+        # subscript factor: 2 H atoms per H₂O molecule (exact)
+        - num_value: 2
+          num_unit: mol H
+          den_value: 1
+          den_unit: mol H₂O
+          exact: true
+        # Avogadro's number (4 sig figs)
+        - num_value: 6.022e+23
+          num_unit: atoms
+          den_value: 1
+          den_unit: mol H
+          sig_figs: 4
+      target_unit: atoms
+    explanation_template: |
+      "g H₂O" cancels via molar mass; "mol H₂O" via subscript; "mol H" via Avogadro.
+      {limitingSigFigs} sig figs from "{mass} g H₂O" yield {finalResult} atoms.
